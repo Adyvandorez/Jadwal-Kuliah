@@ -1,0 +1,42 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Main Icon Group centered in 66x66 safe zone (21,21 to 87,87) -->
+
+    <!-- Open Book / Notepad Base -->
+    <path
+        android:fillColor="#E6C58A"
+        android:pathData="M35,35 h38 a4,4 0 0 1 4,4 v30 a4,4 0 0 1 -4,4 h-38 a4,4 0 0 1 -4,-4 v-30 a4,4 0 0 1 4,-4 z" />
+
+    <!-- Book Spine / Middle Line -->
+    <path
+        android:fillColor="#B38922"
+        android:pathData="M53,35 h2 v38 h-2 z" />
+
+    <!-- Stylized Coffee Bean / Dot in the center -->
+    <path
+        android:fillColor="#B38922"
+        android:pathData="M50,54 a4,6 0 1 0 8,0 a4,6 0 1 0 -8,0" />
+    <path
+        android:strokeColor="#FFF4D6"
+        android:strokeWidth="1"
+        android:pathData="M54,49 c0,0 2,5 -2,10" />
+
+    <!-- Schedule/Task Lines -->
+    <path
+        android:fillColor="#B38922"
+        android:pathData="M38,42 h10 v2 h-10 z M38,48 h10 v2 h-10 z M38,54 h5 v2 h-5 z" />
+    <path
+        android:fillColor="#B38922"
+        android:pathData="M60,42 h10 v2 h-10 z M60,48 h10 v2 h-10 z M63,54 h7 v2 h-7 z" />
+
+    <!-- Graduation Cap Symbol simplified at bottom corner -->
+    <path
+        android:fillColor="#2B2B2B"
+        android:pathData="M70,65 l7,-3 l7,3 l-7,3 z" />
+    <path
+        android:fillColor="#2B2B2B"
+        android:pathData="M74,66 v3 c0,1 1,2 3,2 s3,-1 3,-2 v-3" />
+</vector>

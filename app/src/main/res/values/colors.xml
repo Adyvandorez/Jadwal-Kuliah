@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ========================= -->
+    <!-- LIGHT MODE -->
+    <!-- ========================= -->
+
+    <color name="light_background">#FEDEA0</color>
+    <color name="light_card">#CCAB6C</color>
+    <color name="light_accent">#B38922</color>
+    <color name="light_text">#34312F</color>
+
+    <!-- ========================= -->
+    <!-- DARK MODE -->
+    <!-- ========================= -->
+
+    <color name="dark_background">#34312F</color>
+    <color name="dark_card">#3E3A38</color>
+    <color name="dark_accent">#B38922</color>
+    <color name="dark_text">#FEDEA0</color>
+
+    <!-- ========================= -->
+    <!-- GLOBAL / SHARED -->
+    <!-- ========================= -->
+
+    <color name="gold_primary">#B38922</color>
+    <color name="beige_soft">#FEDEA0</color>
+    <color name="brown_soft">#CCAB6C</color>
+    <color name="brown_dark">#34312F</color>
+
+    <!-- OPTIONAL SHADOW / OVERLAY -->
+    <color name="shadow_light">#1A000000</color>
+    <color name="shadow_dark">#33000000</color>
+
+</resources>

@@ -1,0 +1,24 @@
+package com.example.jadwalkuliah.ui.navigation
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.Assignment
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.ui.graphics.vector.ImageVector
+
+sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
+    object Beranda : Screen("beranda", "Beranda", Icons.Default.Home)
+    object Jadwal : Screen("jadwal", "Jadwal", Icons.Default.Schedule)
+    object Tugas : Screen("tugas", "Tugas", Icons.Default.Assignment)
+    object Pengaturan : Screen("pengaturan", "Pengaturan", Icons.Default.Settings)
+    object Pengingat : Screen("pengingat", "Pengingat", Icons.Default.Notifications)
+    object DetailPengingat : Screen("detail_pengingat/{pengingatId}", "Detail Pengingat", Icons.Default.Notifications) {
+        fun createRoute(pengingatId: Int) = "detail_pengingat/$pengingatId"
+    }
+    object AddPengingat : Screen("add_pengingat", "Tambah Pengingat", Icons.Default.Notifications)
+    object EditPengingat : Screen("edit_pengingat/{pengingatId}", "Edit Pengingat", Icons.Default.Notifications) {
+        fun createRoute(pengingatId: Int) = "edit_pengingat/$pengingatId"
+    }
+}
