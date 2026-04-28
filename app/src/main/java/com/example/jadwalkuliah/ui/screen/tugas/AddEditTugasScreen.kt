@@ -125,7 +125,10 @@ fun AddEditTugasScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                    focusedBorderColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             )
 
@@ -137,7 +140,10 @@ fun AddEditTugasScreen(
                 minLines = 4,
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                    focusedBorderColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             )
 
@@ -186,7 +192,10 @@ fun AddEditTugasScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                    focusedBorderColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
                 trailingIcon = {
                     if (deadlineText.isNotEmpty()) {
@@ -253,7 +262,11 @@ fun AddEditTugasScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                shape = RoundedCornerShape(28.dp)
+                shape = RoundedCornerShape(28.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.tertiary,
+                    contentColor = MaterialTheme.colorScheme.onTertiary
+                )
             ) {
                 Text("Simpan", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
             }

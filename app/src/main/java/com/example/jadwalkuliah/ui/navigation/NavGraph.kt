@@ -276,7 +276,7 @@ fun MainScreen(themePreferences: ThemePreferences) {
                     Box(
                         modifier = Modifier
                             .graphicsLayer {
-                                translationY = 30f.dp.toPx() // Kurangi sink agar tidak menutupi menu
+                                translationY = 70f.dp.toPx() // Geser lebih bawah lagi agar tidak menutupi menu
                             }
                             .size(64.dp)
                             .shadow(
@@ -308,7 +308,10 @@ fun MainScreen(themePreferences: ThemePreferences) {
                         onClick = { onFabClickAction() },
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.onPrimary,
-                        shape = CircleShape
+                        shape = CircleShape,
+                        modifier = Modifier.graphicsLayer {
+                            translationY = 70f.dp.toPx()
+                        }
                     ) {
                         Icon(Icons.Default.Add, contentDescription = "Tambah")
                     }

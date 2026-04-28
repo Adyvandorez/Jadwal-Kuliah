@@ -33,6 +33,8 @@ val md_theme_light_surface = LightCard
 val md_theme_light_onSurface = LightTextMain
 val md_theme_light_surfaceVariant = LightCard
 val md_theme_light_onSurfaceVariant = LightTextSecondary
+val md_theme_light_outline = Color(0xFFD2B48C) // Brownish outline for light mode
+val md_theme_light_onTertiary = Color.White
 
 val md_theme_dark_primary = DarkPrimary
 val md_theme_dark_onPrimary = DarkTextPrimary

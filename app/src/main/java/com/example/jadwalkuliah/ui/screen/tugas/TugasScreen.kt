@@ -110,15 +110,18 @@ fun TugasScreen(
                         showDeleteDialog?.let { viewModel.deleteTugas(it) }
                         showDeleteDialog = null
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = DeleteRed),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = DeleteRed,
+                        contentColor = Color.White
+                    ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Hapus", color = Color.White, fontWeight = FontWeight.Bold)
+                    Text("Hapus", fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = null }) {
-                    Text("Batal", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Batal", color = MaterialTheme.colorScheme.tertiary)
                 }
             },
             shape = RoundedCornerShape(24.dp),

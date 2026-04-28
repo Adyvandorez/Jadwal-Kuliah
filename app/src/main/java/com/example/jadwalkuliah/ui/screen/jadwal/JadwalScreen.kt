@@ -58,7 +58,6 @@ fun JadwalScreen(
                     items(jadwalHariIni) { jadwal ->
                         JadwalItem(
                             jadwal = jadwal,
-                            onDelete = { showDeleteDialog = jadwal },
                             onClick = { onNavigateToDetail(jadwal.id) }
                         )
                     }
@@ -68,33 +67,6 @@ fun JadwalScreen(
                 Spacer(modifier = Modifier.height(80.dp))
             }
         }
-    }
-
-    if (showDeleteDialog != null) {
-        AlertDialog(
-            onDismissRequest = { showDeleteDialog = null },
-            title = { Text("Konfirmasi Hapus", fontWeight = FontWeight.Bold) },
-            text = { Text("Yakin ingin menghapus?") },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        showDeleteDialog?.let { viewModel.deleteJadwal(it) }
-                        showDeleteDialog = null
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = DeleteRed),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text("Hapus", color = Color.White, fontWeight = FontWeight.Bold)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDeleteDialog = null }) {
-                    Text("Batal", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-            },
-            shape = RoundedCornerShape(24.dp),
-            containerColor = MaterialTheme.colorScheme.surface
-        )
     }
 }
 
@@ -127,7 +99,6 @@ fun HeaderSection(title: String) {
 @Composable
 fun JadwalItem(
     jadwal: JadwalEntity,
-    onDelete: () -> Unit,
     onClick: () -> Unit
 ) {
     Card(
@@ -171,16 +142,6 @@ fun JadwalItem(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomEnd) {
-                IconButton(onClick = onDelete) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = "Hapus",
-                        tint = DeleteRed
-                    )
-                }
-            }
         }
     }
 }

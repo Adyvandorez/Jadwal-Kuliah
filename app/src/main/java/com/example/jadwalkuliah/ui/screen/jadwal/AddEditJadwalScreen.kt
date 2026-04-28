@@ -87,7 +87,10 @@ fun AddEditJadwalScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                    focusedBorderColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             )
 
@@ -98,7 +101,10 @@ fun AddEditJadwalScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                    focusedBorderColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             )
 
@@ -164,7 +170,10 @@ fun AddEditJadwalScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                    focusedBorderColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             )
 
@@ -195,7 +204,11 @@ fun AddEditJadwalScreen(
                     }
                 },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
-                shape = RoundedCornerShape(28.dp)
+                shape = RoundedCornerShape(28.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.tertiary,
+                    contentColor = MaterialTheme.colorScheme.onTertiary
+                )
             ) {
                 Text("Simpan Jadwal", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
             }

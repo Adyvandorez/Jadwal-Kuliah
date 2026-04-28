@@ -21,7 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -161,13 +161,15 @@ fun PengingatItem(
     onDelete: () -> Unit,
     onClick: () -> Unit
 ) {
+    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
+    
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
         shape = RoundedCornerShape(28.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF1E1A17) // Dark Brown Card
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
@@ -177,18 +179,18 @@ fun PengingatItem(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Kotak Ikon yang lebih gelap dan presisi
+            // Kotak Ikon
             Box(
                 modifier = Modifier
                     .size(56.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(Color(0xFF2A231D)),
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = if (pengingat.judul.lowercase().contains("makan")) Icons.Default.Restaurant else Icons.Default.Notifications,
                     contentDescription = null,
-                    tint = Color(0xFF8B5E3C),
+                    tint = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -199,20 +201,20 @@ fun PengingatItem(
                 Text(
                     text = pengingat.judul,
                     style = MaterialTheme.typography.titleMedium,
-                    color = Color.White,
+                    color = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = pengingat.waktu,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color(0xFF8B5E3C),
+                        color = MaterialTheme.colorScheme.tertiary,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
                         text = " • ${if (pengingat.tipeUlang == "Daily") "Harian" else pengingat.tipeUlang}",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFFB7A89A)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -228,7 +230,7 @@ fun PengingatItem(
                 Icon(
                     Icons.Default.Delete,
                     contentDescription = "Delete",
-                    tint = Color(0xFF7A747E), // Muted trash icon color
+                    tint = if (isDark) Color(0xFF7A747E) else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(24.dp)
                 )
             }

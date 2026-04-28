@@ -92,7 +92,9 @@ fun AddEditPengingatScreen(
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             )
 
@@ -195,7 +197,7 @@ fun TipeUlangChipS(label: String, selected: Boolean, onClick: () -> Unit) {
             .clip(RoundedCornerShape(12.dp))
             .clickable { onClick() },
         color = if (selected) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.surfaceVariant,
-        border = if (selected) null else BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
+        border = if (selected) null else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
