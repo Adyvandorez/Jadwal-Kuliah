@@ -24,7 +24,7 @@ val DarkTextPrimary = Color(0xFFEDE0D4)
 val DarkTextSecondary = Color(0xFFB7A89A)
 val DarkBorder = Color(0xFF3A332D)
 
-// M3 Mapping
+// M3 Mappingg
 val md_theme_light_primary = GoldAccent
 val md_theme_light_onPrimary = Color.White
 val md_theme_light_background = LightBackground
