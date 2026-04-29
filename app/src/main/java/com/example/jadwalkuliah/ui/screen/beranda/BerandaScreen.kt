@@ -3,14 +3,16 @@ package com.example.jadwalkuliah.ui.screen.beranda
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.NotificationsActive
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,14 +21,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import java.io.File
 import com.example.jadwalkuliah.data.local.entity.JadwalEntity
 import com.example.jadwalkuliah.data.local.entity.TugasEntity
+import com.example.jadwalkuliah.ui.theme.*
 import com.example.jadwalkuliah.util.DateTimeUtils
+import java.io.File
 
 @Composable
 fun BerandaScreen(
@@ -40,12 +46,9 @@ fun BerandaScreen(
 
     Scaffold(
         topBar = {
-            HeaderSection(
-                title = "Halo, Selamat Datang!",
-                subtitle = userName,
-                date = viewModel.getFormattedDate(),
-                photoPath = photoPath,
-                onPengingatClick = onNavigateToPengingat
+            TopAppBarCustom(
+                userName = userName,
+                photoPath = photoPath
             )
         },
         containerColor = MaterialTheme.colorScheme.background
@@ -58,7 +61,21 @@ fun BerandaScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
+                WelcomeCard(
+                    userName = userName,
+                    date = viewModel.getFormattedDate(),
+                    photoPath = photoPath
+                )
+            }
+
+            item {
+                AlarmPengingatSection(
+                    onPengingatClick = onNavigateToPengingat
+                )
+            }
+
+            item {
                 SectionHeader(title = "Jadwal Hari Ini")
             }
 
@@ -94,41 +111,76 @@ fun BerandaScreen(
 }
 
 @Composable
-fun HeaderSection(
-    title: String,
-    subtitle: String,
-    date: String,
-    photoPath: String?,
-    onPengingatClick: () -> Unit
+fun TopAppBarCustom(
+    userName: String,
+    photoPath: String?
 ) {
-    Box(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp)
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
-                    )
-                ),
-                shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
-            )
-            .padding(24.dp),
-        contentAlignment = Alignment.BottomStart
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+        Text(
+            text = "Aplikasi Jadwal Kuliah",
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.SemiBold,
+                color = if (isSystemInDarkTheme()) TextSoftSecondary else MaterialTheme.colorScheme.onBackground
+            )
+        )
+        
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(if (isSystemInDarkTheme()) DarkOutline else MaterialTheme.colorScheme.surfaceVariant),
+            contentAlignment = Alignment.Center
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+            Text(
+                text = if (userName.isNotEmpty()) userName.take(1).uppercase() else "A",
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                color = if (isSystemInDarkTheme()) WhiteSoft else MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.wrapContentSize(Alignment.Center)
+            )
+        }
+    }
+}
+
+@Composable
+fun WelcomeCard(
+    userName: String,
+    date: String,
+    photoPath: String?
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(140.dp),
+        shape = RoundedCornerShape(30.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = listOf(CoffeeBrown, CoffeeDark)
+                    )
+                )
+                .padding(20.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Box(
                     modifier = Modifier
                         .size(64.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.2f))
-                        .border(1.dp, MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.3f), RoundedCornerShape(16.dp)),
+                        .clip(CircleShape)
+                        .background(if (isSystemInDarkTheme()) DarkSurfaceVariant else Color(0xFF8A8A8A))
+                        .border(2.5.dp, Color.White, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     photoPath?.let { path ->
@@ -139,11 +191,10 @@ fun HeaderSection(
                             contentScale = ContentScale.Crop
                         )
                     } ?: run {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Default Profile",
-                            modifier = Modifier.size(40.dp),
-                            tint = MaterialTheme.colorScheme.onPrimary
+                        Text(
+                            text = if (userName.isNotEmpty()) userName.take(1).uppercase() else "A",
+                            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                            color = Color.White
                         )
                     }
                 }
@@ -152,43 +203,103 @@ fun HeaderSection(
                 
                 Column {
                     Text(
-                        text = title,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f)
+                        text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = WhiteSoft)) {
+                                append("Halo, Selamat Datang! ")
+                            }
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold, color = GoldSoft)) {
+                                append(userName)
+                            }
+                        },
+                        style = MaterialTheme.typography.titleLarge
                     )
-                    Text(
-                        text = subtitle,
-                        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = date,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+                        color = GoldSoft.copy(alpha = 0.8f)
                     )
                 }
             }
+        }
+    }
+}
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(16.dp))
-                    .clickable { onPengingatClick() }
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.15f))
-                    .padding(8.dp)
+@Composable
+fun AlarmPengingatSection(
+    onPengingatClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(28.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    brush = Brush.linearGradient(
+                        colors = listOf(DarkSurfaceVariant, DarkSurface)
+                    )
+                )
+                .padding(horizontal = 16.dp, vertical = 14.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Icon(
-                    imageVector = Icons.Default.NotificationsActive,
-                    contentDescription = "Pengingat",
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.size(32.dp)
-                )
-                Text(
-                    text = "Pengingat",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(38.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(IconBgCoffee),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.NotificationsActive,
+                            contentDescription = null,
+                            tint = GoldSoft,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = "Alarm Pengingat",
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            color = WhiteSoft
+                        )
+                    )
+                }
+                
+                Surface(
+                    onClick = onPengingatClick,
+                    shape = CircleShape,
+                    color = Color.Transparent,
+                    modifier = Modifier.clip(CircleShape)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                brush = Brush.linearGradient(
+                                    colors = listOf(CoffeeBrown, DarkTertiary)
+                                )
+                            )
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "+ Tambah Alarm",
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = WhiteSoft
+                            )
+                        )
+                    }
+                }
             }
         }
     }
@@ -200,57 +311,78 @@ fun SectionHeader(title: String) {
         text = title,
         style = MaterialTheme.typography.titleMedium.copy(
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.tertiary
+            color = if (isSystemInDarkTheme()) GoldSoft else MaterialTheme.colorScheme.tertiary
         ),
         modifier = Modifier.padding(vertical = 4.dp)
     )
 }
 
 @Composable
-fun JadwalCard(jadwal: JadwalEntity) {
+fun JadwalCard(jadwal: JadwalEntity, onClick: () -> Unit = {}) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.large,
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = DarkSurface
         )
     ) {
-        Column(modifier = Modifier.padding(20.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(IconBgCoffee)
+                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Surface(
-                    color = Color.Transparent,
-                    shape = RoundedCornerShape(12.dp)
-                ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        imageVector = Icons.Default.AccessTime,
+                        contentDescription = null,
+                        tint = GoldSoft,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "${jadwal.waktuMulai} - ${jadwal.waktuSelesai}",
-                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
-                        color = MaterialTheme.colorScheme.tertiary,
-                        modifier = Modifier.padding(vertical = 4.dp)
+                        text = jadwal.waktuMulai,
+                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                        color = GoldSoft
+                    )
+                    Text(
+                        text = jadwal.waktuSelesai,
+                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                        color = GoldSoft
                     )
                 }
+            }
+            
+            Spacer(modifier = Modifier.width(16.dp))
+            
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = jadwal.namaMatkul,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = WhiteSoft
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = jadwal.dosen,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextSoftSecondary
+                )
                 Text(
                     text = jadwal.ruangan,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextSoftSecondary
                 )
             }
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = jadwal.namaMatkul,
-                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = jadwal.dosen,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
     }
 }
@@ -259,57 +391,77 @@ fun JadwalCard(jadwal: JadwalEntity) {
 fun TugasCard(tugas: TugasEntity) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.large,
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(32.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = DarkSurfaceVariant.copy(alpha = 0.5f)
         )
     ) {
-        Column(modifier = Modifier.padding(20.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
+        Column(modifier = Modifier.padding(24.dp)) {
+            Text(
+                text = tugas.judul,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                color = WhiteSoft
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Surface(
+                color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
+                shape = RoundedCornerShape(12.dp)
             ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = tugas.judul,
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Surface(
-                        color = Color.Transparent,
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Text(
-                            text = tugas.kategori,
-                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                            color = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier.padding(vertical = 2.dp)
-                        )
-                    }
-                }
-                
-                if (tugas.deadline != null) {
-                    val isUrgent = DateTimeUtils.isUrgent(tugas.deadline)
-                    val isOverdue = DateTimeUtils.isOverdue(tugas.deadline)
-                    Text(
-                        text = DateTimeUtils.getCountdown(tugas.deadline),
-                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                        color = if (isOverdue) com.example.jadwalkuliah.ui.theme.DeleteRed else if (isUrgent) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary
-                    )
-                }
+                Text(
+                    text = tugas.kategori,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.tertiary
+                )
             }
             
             if (tugas.deskripsi.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = tugas.deskripsi,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2
+                    color = TextSoftSecondary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
+            }
+            
+            if (tugas.deadline != null) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.CalendarToday,
+                            contentDescription = null,
+                            tint = Color(0xFF8FBCFF),
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = DateTimeUtils.formatDeadline(tugas.deadline).substringBefore(","),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = TextSoftSecondary
+                        )
+                    }
+
+                    val countdown = DateTimeUtils.getCountdown(tugas.deadline)
+                    if (countdown.isNotEmpty()) {
+                        Text(
+                            text = countdown,
+                            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                            color = if (DateTimeUtils.isOverdue(tugas.deadline)) DeleteRed 
+                                    else if (DateTimeUtils.isUrgent(tugas.deadline)) GoldSoft
+                                    else TextSoftSecondary
+                        )
+                    }
+                }
             }
         }
     }

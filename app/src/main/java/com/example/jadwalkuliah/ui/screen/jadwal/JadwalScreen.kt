@@ -7,17 +7,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.jadwalkuliah.data.local.entity.JadwalEntity
-import com.example.jadwalkuliah.ui.theme.DeleteRed
+import com.example.jadwalkuliah.ui.theme.*
 
 @Composable
 fun JadwalScreen(
@@ -33,7 +35,7 @@ fun JadwalScreen(
         topBar = {
             HeaderSection(title = "Jadwal Kuliah")
         },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = DarkBackground
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -50,7 +52,7 @@ fun JadwalScreen(
                         Text(
                             text = hari,
                             style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.tertiary,
+                            color = GoldSoft,
                             modifier = Modifier.padding(vertical = 4.dp),
                             fontWeight = FontWeight.Bold
                         )
@@ -79,8 +81,8 @@ fun HeaderSection(title: String) {
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+                        CoffeeBrown,
+                        CoffeeDark
                     )
                 ),
                 shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
@@ -91,7 +93,7 @@ fun HeaderSection(title: String) {
         Text(
             text = title,
             style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-            color = MaterialTheme.colorScheme.onPrimary
+            color = WhiteSoft
         )
     }
 }
@@ -105,43 +107,66 @@ fun JadwalItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        shape = MaterialTheme.shapes.large,
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        colors = CardDefaults.cardColors(containerColor = DarkSurface)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+            // Bagian Kiri (Waktu)
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(IconBgCoffee)
+                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "${jadwal.waktuMulai} - ${jadwal.waktuSelesai}",
-                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.tertiary
-                )
-                Text(
-                    text = "(${jadwal.ruangan})",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Bold
-                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        imageVector = Icons.Default.AccessTime,
+                        contentDescription = null,
+                        tint = GoldSoft,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = jadwal.waktuMulai,
+                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                        color = GoldSoft
+                    )
+                    Text(
+                        text = jadwal.waktuSelesai,
+                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                        color = GoldSoft
+                    )
+                }
             }
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.width(16.dp))
             
-            Text(
-                text = jadwal.namaMatkul,
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = "Dosen: ${jadwal.dosen}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            // Bagian Kanan (Info)
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = jadwal.namaMatkul,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = WhiteSoft
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = jadwal.dosen,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextSoftSecondary
+                )
+                Text(
+                    text = jadwal.ruangan,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextSoftSecondary
+                )
+            }
         }
     }
 }

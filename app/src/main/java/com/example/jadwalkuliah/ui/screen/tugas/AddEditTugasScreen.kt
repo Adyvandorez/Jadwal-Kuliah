@@ -40,11 +40,12 @@ import java.util.*
 fun AddEditTugasScreen(
     viewModel: TugasViewModel,
     onNavigateBack: () -> Unit,
-    tugasId: Int? = null
+    tugasId: Int? = null,
+    initialType: String = "Tugas"
 ) {
     var judul by remember { mutableStateOf("") }
     var deskripsi by remember { mutableStateOf("") }
-    var kategori by remember { mutableStateOf("Tugas") }
+    var kategori by remember { mutableStateOf(initialType) }
     var deadline by remember { mutableStateOf<Long?>(System.currentTimeMillis()) }
     var isCompleted by remember { mutableStateOf(false) }
     var lampiran by remember { mutableStateOf<List<String>>(emptyList()) }
@@ -179,35 +180,37 @@ fun AddEditTugasScreen(
                 }
             }
 
-            OutlinedTextField(
-                value = deadlineText,
-                onValueChange = { 
-                    deadlineText = it
-                    try {
-                        deadline = if (it.isBlank()) null else sdf.parse(it)?.time
-                    } catch (e: Exception) { }
-                },
-                label = { Text("Deadline (tgl/bln/thn jam:menit)") },
-                placeholder = { Text("01/01/2024 23:59 (Kosongkan jika Catatan)") },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                    focusedLabelColor = MaterialTheme.colorScheme.tertiary,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
-                ),
-                trailingIcon = {
-                    if (deadlineText.isNotEmpty()) {
-                        IconButton(onClick = { 
-                            deadlineText = ""
-                            deadline = null
-                        }) {
-                            Icon(Icons.Default.Close, contentDescription = "Clear")
+            if (kategori == "Tugas") {
+                OutlinedTextField(
+                    value = deadlineText,
+                    onValueChange = { 
+                        deadlineText = it
+                        try {
+                            deadline = if (it.isBlank()) null else sdf.parse(it)?.time
+                        } catch (e: Exception) { }
+                    },
+                    label = { Text("Deadline (tgl/bln/thn jam:menit)") },
+                    placeholder = { Text("01/01/2024 23:59") },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.tertiary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                        focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    ),
+                    trailingIcon = {
+                        if (deadlineText.isNotEmpty()) {
+                            IconButton(onClick = { 
+                                deadlineText = ""
+                                deadline = null
+                            }) {
+                                Icon(Icons.Default.Close, contentDescription = "Clear")
+                            }
                         }
                     }
-                }
-            )
+                )
+            }
 
             // Lampiran Section
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
