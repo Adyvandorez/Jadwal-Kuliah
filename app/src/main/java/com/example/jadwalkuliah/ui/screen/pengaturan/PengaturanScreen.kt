@@ -22,7 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.jadwalkuliah.data.local.ThemePreferences
+import com.example.jadwalkuliah.ui.theme.*
 import kotlinx.coroutines.launch
 
 @Composable
@@ -38,7 +40,7 @@ fun PengaturanScreen(
         topBar = {
             HeaderSection(title = "Pengaturan")
         },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = DarkBackground
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -53,7 +55,7 @@ fun PengaturanScreen(
             Text(
                 text = "Profil Pengguna",
                 style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.tertiary
+                color = DarkTertiary
             )
 
             Card(
@@ -61,7 +63,7 @@ fun PengaturanScreen(
                     .fillMaxWidth()
                     .clickable { onNavigateToEditProfil() },
                 shape = RoundedCornerShape(28.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                colors = CardDefaults.cardColors(containerColor = DarkSurface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
             ) {
                 Row(
@@ -75,28 +77,28 @@ fun PengaturanScreen(
                         Box(
                             modifier = Modifier
                                 .size(56.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(MaterialTheme.colorScheme.surfaceVariant),
+                                .clip(RoundedCornerShape(20.dp))
+                                .background(DarkSurfaceVariant),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Person,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.tertiary
+                                tint = DarkTertiary
                             )
                         }
                         Spacer(modifier = Modifier.width(16.dp))
                         Text(
                             text = "Edit Profil",
                             style = MaterialTheme.typography.titleMedium,
-                            color = if (isDarkTheme) Color.White else MaterialTheme.colorScheme.onSurface,
+                            color = WhiteSoft,
                             fontWeight = FontWeight.Bold
                         )
                     }
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                         contentDescription = null,
-                        tint = if (isDarkTheme) Color(0xFF7A747E) else MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = TextSoftSecondary
                     )
                 }
             }
@@ -104,14 +106,14 @@ fun PengaturanScreen(
             Text(
                 text = "Tampilan & Tema",
                 style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.tertiary,
+                color = DarkTertiary,
                 modifier = Modifier.padding(top = 8.dp)
             )
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(28.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                colors = CardDefaults.cardColors(containerColor = DarkSurface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
             ) {
                 Row(
@@ -125,21 +127,21 @@ fun PengaturanScreen(
                         Box(
                             modifier = Modifier
                                 .size(56.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(MaterialTheme.colorScheme.surfaceVariant),
+                                .clip(RoundedCornerShape(20.dp))
+                                .background(DarkSurfaceVariant),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Palette,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.tertiary
+                                tint = DarkTertiary
                             )
                         }
                         Spacer(modifier = Modifier.width(16.dp))
                         Text(
                             text = "Mode Gelap",
                             style = MaterialTheme.typography.titleMedium,
-                            color = if (isDarkTheme) Color.White else MaterialTheme.colorScheme.onSurface,
+                            color = WhiteSoft,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -155,14 +157,14 @@ fun PengaturanScreen(
             Text(
                 text = "Notifikasi",
                 style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.tertiary,
+                color = DarkTertiary,
                 modifier = Modifier.padding(top = 8.dp)
             )
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(28.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                colors = CardDefaults.cardColors(containerColor = DarkSurface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
             ) {
                 Row(
@@ -176,21 +178,21 @@ fun PengaturanScreen(
                         Box(
                             modifier = Modifier
                                 .size(56.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(MaterialTheme.colorScheme.surfaceVariant),
+                                .clip(RoundedCornerShape(20.dp))
+                                .background(DarkSurfaceVariant),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Notifications,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.tertiary
+                                tint = DarkTertiary
                             )
                         }
                         Spacer(modifier = Modifier.width(16.dp))
                         Text(
                             text = "Pengingat Jadwal",
                             style = MaterialTheme.typography.titleMedium,
-                            color = if (isDarkTheme) Color.White else MaterialTheme.colorScheme.onSurface,
+                            color = WhiteSoft,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -204,32 +206,40 @@ fun PengaturanScreen(
             Text(
                 text = "Tentang Aplikasi",
                 style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.tertiary
+                color = DarkTertiary
             )
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.large,
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                shape = RoundedCornerShape(28.dp),
+                colors = CardDefaults.cardColors(containerColor = DarkSurface),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
             ) {
-                Column(modifier = Modifier.padding(20.dp)) {
+                Column(modifier = Modifier.padding(24.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Info, contentDescription = null, tint = MaterialTheme.colorScheme.tertiary)
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(DarkSurfaceVariant, RoundedCornerShape(12.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(Icons.Default.Info, contentDescription = null, tint = DarkTertiary, modifier = Modifier.size(24.dp))
+                        }
                         Spacer(modifier = Modifier.width(16.dp))
-                        Text(text = "Jadwal Kuliah v1.2", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
+                        Text(text = "Jadwal Kuliah v1.2", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium, color = WhiteSoft)
                     }
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = "Aplikasi asisten pribadi kuliah untuk mengelola jadwal, tugas, dan pengingat otomatis dengan estetika modern.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = TextSoftSecondary,
+                        lineHeight = 22.sp
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = "Dibuat dengan ❤️ untuk membantu mahasiswa tetap produktif.",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        color = TextSoftSecondary.copy(alpha = 0.6f)
                     )
                 }
             }
@@ -247,20 +257,17 @@ fun HeaderSection(title: String) {
             .height(140.dp)
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
-                    )
+                    colors = listOf(DarkPrimary, DarkTertiary)
                 ),
-                shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
+                shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)
             )
             .padding(24.dp),
         contentAlignment = Alignment.BottomStart
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-            color = MaterialTheme.colorScheme.onPrimary
+            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+            color = WhiteSoft
         )
     }
 }

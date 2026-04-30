@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.jadwalkuliah.data.repository.UserProfileRepository
+import com.example.jadwalkuliah.ui.theme.*
 import com.example.jadwalkuliah.util.FileUtils
 import kotlinx.coroutines.launch
 import java.io.File
@@ -61,7 +62,7 @@ fun EditProfilScreen(
         topBar = {
             HeaderSectionWithBack(title = "Edit Profil", onBack = onNavigateBack)
         },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = DarkBackground
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -75,8 +76,8 @@ fun EditProfilScreen(
                 modifier = Modifier
                     .size(120.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surface)
-                    .border(2.dp, MaterialTheme.colorScheme.tertiary, CircleShape)
+                    .background(DarkSurface)
+                    .border(2.dp, GoldSoft, CircleShape)
                     .clickable {
                         photoPickerLauncher.launch(
                         androidx.activity.result.PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -98,7 +99,7 @@ fun EditProfilScreen(
                         imageVector = Icons.Default.Person,
                         contentDescription = null,
                         modifier = Modifier.size(64.dp),
-                        tint = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f)
+                        tint = GoldSoft.copy(alpha = 0.5f)
                     )
                 }
                 Box(
@@ -121,8 +122,17 @@ fun EditProfilScreen(
                 onValueChange = { name = it },
                 label = { Text("Nama Mahasiswa") },
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true
+                shape = RoundedCornerShape(20.dp),
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = WhiteSoft,
+                    unfocusedTextColor = WhiteSoft,
+                    focusedBorderColor = GoldSoft,
+                    unfocusedBorderColor = DarkOutline,
+                    focusedLabelColor = GoldSoft,
+                    unfocusedLabelColor = TextSoftSecondary,
+                    cursorColor = GoldSoft
+                )
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -135,9 +145,10 @@ fun EditProfilScreen(
                     }
                 },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
-                shape = RoundedCornerShape(28.dp)
+                shape = RoundedCornerShape(20.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = GoldSoft)
             ) {
-                Text("Simpan Perubahan", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+                Text("Simpan Perubahan", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), color = DarkBackground)
             }
         }
     }
@@ -151,28 +162,26 @@ fun HeaderSectionWithBack(title: String, onBack: () -> Unit) {
             .height(140.dp)
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
-                    )
+                    colors = listOf(CoffeeBrown, CoffeeDark)
                 ),
-                shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
+                shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)
             )
             .padding(top = 16.dp, start = 8.dp, end = 24.dp, bottom = 24.dp),
         contentAlignment = Alignment.BottomStart
     ) {
-        Column {
+        Column(modifier = Modifier.fillMaxSize()) {
             IconButton(onClick = onBack) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    tint = WhiteSoft
                 )
             }
+            Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = title,
-                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                color = WhiteSoft,
                 modifier = Modifier.padding(start = 16.dp)
             )
         }

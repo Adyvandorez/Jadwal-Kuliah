@@ -3,16 +3,19 @@ package com.example.jadwalkuliah.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // Shared Colors
-val GoldAccent = Color(0xFFB38922)
-val DeleteRed = Color(0xFFD32F2F)
+val GoldAccent = Color(0xFF8B5E3C) // Accent
+val DeleteRed = Color(0xFFFF3B3B) // Status merah
+val SuccessGreen = Color(0xFF00C853) // Status hijau
+val PdfRed = Color(0xFFC62828) // Icon PDF
+val ImageGold = Color(0xFFB38922) // Icon image
 
 // Premium Coffee Palette (Constants used in code)
 val CoffeeBrown = Color(0xFF6F4E37)
 val CoffeeDark = Color(0xFF4B3425)
-val GoldSoft = Color(0xFFC89B3C)
+val GoldSoft = Color(0xFF8B5E3C) // Use Accent
 val WhiteSoft = Color(0xFFEDE0D4)
 val TextSoftSecondary = Color(0xFFB7A89A)
-val IconBgCoffee = Color(0xFF3A2F27)
+val IconBgCoffee = Color(0xFF2A231D)
 
 // Light Mode (Warm Coffee Theme)
 val LightBackground = Color(0xFFFFF4D6)
@@ -26,7 +29,7 @@ val LightTextSecondary = Color(0xFF5D4037)
 val LightOutline = Color(0xFFD2B48C)
 
 // Dark Mode (Premium Brown Coffee Theme)
-val DarkBackground = Color(0xFF0F0E0D)
+val DarkBackground = Color(0xFF000000)
 val DarkSurface = Color(0xFF1E1A17)
 val DarkSurfaceVariant = Color(0xFF2A231D)
 val DarkPrimary = Color(0xFF6F4E37)
@@ -34,7 +37,7 @@ val DarkSecondary = Color(0xFFA67B5B)
 val DarkTertiary = Color(0xFF8B5E3C)
 val DarkTextPrimary = Color(0xFFEDE0D4)
 val DarkTextSecondary = Color(0xFFB7A89A)
-val DarkOutline = Color(0xFF3A332D)
+val DarkOutline = Color(0xFF2A231D)
 
 // M3 Mapping
 val md_theme_light_primary = LightPrimary

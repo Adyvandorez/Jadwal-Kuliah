@@ -30,6 +30,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.example.jadwalkuliah.ui.component.AppSwitch
 import com.example.jadwalkuliah.data.local.entity.PengingatEntity
+import com.example.jadwalkuliah.ui.screen.tugas.HeaderSection
+import com.example.jadwalkuliah.ui.theme.*
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -58,29 +60,39 @@ fun PengingatScreen(
         }
     }
 
+    var searchQuery by remember { mutableStateOf("") }
+    var isSearching by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Pengingat Rutin", color = MaterialTheme.colorScheme.onSurface) },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onSurface)
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+            HeaderSection(
+                title = "Pengingat Rutin",
+                subtitle = "Kelola pengingat harian Anda",
+                searchQuery = searchQuery,
+                onSearchQueryChange = { searchQuery = it },
+                isSearching = isSearching,
+                onSearchToggle = { 
+                    isSearching = it
+                    if (!it) searchQuery = ""
+                }
             )
         },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = DarkBackground
     ) { padding ->
+        val filteredList = remember(pengingatList, searchQuery) {
+            if (searchQuery.isEmpty()) pengingatList
+            else pengingatList.filter { it.judul.contains(searchQuery, ignoreCase = true) }
+        }
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(bottom = 80.dp)
+                .padding(horizontal = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(top = 16.dp, bottom = 100.dp)
         ) {
-            items(pengingatList) { pengingat ->
+            items(filteredList, key = { it.id }) { pengingat ->
                 PengingatItem(
                     pengingat = pengingat,
                     onToggle = { viewModel.togglePengingat(pengingat) },
@@ -128,27 +140,29 @@ fun PengingatScreen(
         pengingatToDelete?.let { pengingat ->
             AlertDialog(
                 onDismissRequest = { pengingatToDelete = null },
-                title = { Text("Hapus Pengingat") },
-                text = { Text("Apakah Anda yakin ingin menghapus pengingat '${pengingat.judul}'?") },
+                title = { Text("Konfirmasi Hapus", fontWeight = FontWeight.Bold) },
+                text = { Text("Yakin ingin menghapus pengingat '${pengingat.judul}'?") },
                 confirmButton = {
-                    TextButton(
+                    Button(
                         onClick = {
                             viewModel.delete(pengingat)
                             pengingatToDelete = null
                         },
-                        colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFFD32F2F))
+                        colors = ButtonDefaults.buttonColors(containerColor = DeleteRed),
+                        shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("Hapus")
+                        Text("Hapus", fontWeight = FontWeight.Bold)
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { pengingatToDelete = null }) {
-                        Text("Batal", color = MaterialTheme.colorScheme.onSurface)
+                        Text("Batal", color = GoldSoft)
                     }
                 },
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                titleContentColor = MaterialTheme.colorScheme.onSurface,
-                textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                shape = RoundedCornerShape(24.dp),
+                containerColor = DarkSurface,
+                titleContentColor = WhiteSoft,
+                textContentColor = TextSoftSecondary
             )
         }
     }
@@ -161,36 +175,33 @@ fun PengingatItem(
     onDelete: () -> Unit,
     onClick: () -> Unit
 ) {
-    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
         shape = RoundedCornerShape(28.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+            containerColor = DarkSurface
+        )
     ) {
         Row(
             modifier = Modifier
-                .padding(12.dp)
+                .padding(20.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Kotak Ikon
             Box(
                 modifier = Modifier
-                    .size(56.dp)
+                    .size(52.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                    .background(CoffeeBrown.copy(alpha = 0.1f)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = if (pengingat.judul.lowercase().contains("makan")) Icons.Default.Restaurant else Icons.Default.Notifications,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.tertiary,
+                    tint = GoldSoft,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -200,21 +211,19 @@ fun PengingatItem(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = pengingat.judul,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = if (isDark) Color.White else MaterialTheme.colorScheme.onSurface,
-                    fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = WhiteSoft
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = pengingat.waktu,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.tertiary,
-                        fontWeight = FontWeight.SemiBold
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                        color = GoldSoft
                     )
                     Text(
-                        text = " • ${if (pengingat.tipeUlang == "Daily") "Harian" else pengingat.tipeUlang}",
+                        text = " • ${if (pengingat.tipeUlang == "Daily") "Harian" else if (pengingat.tipeUlang == "Sekali") "Sekali" else "Kustom"}",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = TextSoftSecondary
                     )
                 }
             }
@@ -224,15 +233,18 @@ fun PengingatItem(
                 onCheckedChange = { onToggle() }
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(12.dp))
 
-            IconButton(onClick = onDelete) {
-                Icon(
-                    Icons.Default.Delete,
-                    contentDescription = "Delete",
-                    tint = if (isDark) Color(0xFF7A747E) else MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(24.dp)
-                )
+            IconButton(
+                onClick = onDelete,
+                modifier = Modifier.size(32.dp)
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize().background(DeleteRed.copy(alpha = 0.1f), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(Icons.Default.Delete, null, tint = DeleteRed, modifier = Modifier.size(16.dp))
+                }
             }
         }
     }
@@ -259,8 +271,8 @@ fun AddEditPengingatDialog(
 
     Dialog(onDismissRequest = onDismiss) {
         Surface(
-            shape = RoundedCornerShape(28.dp),
-            color = MaterialTheme.colorScheme.surface,
+            shape = RoundedCornerShape(32.dp),
+            color = DarkSurface,
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(
@@ -271,9 +283,8 @@ fun AddEditPengingatDialog(
             ) {
                 Text(
                     text = if (pengingat == null) "Tambah Pengingat" else "Edit Pengingat",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                    color = WhiteSoft
                 )
 
                 OutlinedTextField(
@@ -282,12 +293,14 @@ fun AddEditPengingatDialog(
                     label = { Text("Judul Kegiatan") },
                     placeholder = { Text("Contoh: Beri Makan") },
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(16.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                        focusedLabelColor = MaterialTheme.colorScheme.tertiary,
-                        unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                        focusedBorderColor = GoldSoft,
+                        unfocusedBorderColor = DarkOutline,
+                        focusedLabelColor = GoldSoft,
+                        unfocusedLabelColor = TextSoftSecondary,
+                        focusedTextColor = WhiteSoft,
+                        unfocusedTextColor = WhiteSoft
                     )
                 )
 
@@ -302,17 +315,17 @@ fun AddEditPengingatDialog(
                         ).show()
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = CoffeeBrown.copy(alpha = 0.1f))
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.AccessTime, contentDescription = null, tint = MaterialTheme.colorScheme.tertiary)
+                        Icon(Icons.Default.AccessTime, contentDescription = null, tint = GoldSoft)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Waktu: $waktu", color = MaterialTheme.colorScheme.tertiary)
+                        Text("Waktu: $waktu", color = GoldSoft)
                     }
                 }
 
-                Text("Ulangi", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("Ulangi", style = MaterialTheme.typography.labelLarge, color = TextSoftSecondary)
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     TipeUlangChip("Harian", tipeUlang == "Daily") { tipeUlang = "Daily" }
@@ -334,9 +347,11 @@ fun AddEditPengingatDialog(
                                 onClick = { if (isSelected) selectedDays.remove(day) else selectedDays.add(day) },
                                 label = { Text(day, fontSize = 12.sp) },
                                 colors = FilterChipDefaults.filterChipColors(
-                                    selectedContainerColor = MaterialTheme.colorScheme.tertiary,
-                                    selectedLabelColor = MaterialTheme.colorScheme.onTertiary
-                                )
+                                    selectedContainerColor = GoldSoft,
+                                    selectedLabelColor = DarkBackground,
+                                    labelColor = TextSoftSecondary
+                                ),
+                                shape = RoundedCornerShape(12.dp)
                             )
                         }
                     }
@@ -348,15 +363,15 @@ fun AddEditPengingatDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TextButton(onClick = onDismiss) {
-                        Text("Batal", color = MaterialTheme.colorScheme.tertiary)
+                        Text("Batal", color = GoldSoft)
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
                         onClick = { if (judul.isNotBlank()) onConfirm(judul, waktu, tipeUlang, selectedDays.toList()) },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
-                        shape = RoundedCornerShape(12.dp)
+                        colors = ButtonDefaults.buttonColors(containerColor = GoldSoft),
+                        shape = RoundedCornerShape(16.dp)
                     ) {
-                        Text("Simpan", color = MaterialTheme.colorScheme.onTertiary)
+                        Text("Simpan", color = DarkBackground, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -368,10 +383,10 @@ fun AddEditPengingatDialog(
 fun TipeUlangChip(label: String, selected: Boolean, onClick: () -> Unit) {
     Surface(
         modifier = Modifier
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(16.dp))
             .clickable { onClick() },
-        color = if (selected) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.surfaceVariant,
-        border = if (selected) null else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+        color = if (selected) GoldSoft else CoffeeBrown.copy(alpha = 0.1f),
+        border = if (selected) null else BorderStroke(1.dp, DarkOutline)
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
@@ -381,15 +396,15 @@ fun TipeUlangChip(label: String, selected: Boolean, onClick: () -> Unit) {
                 selected = selected,
                 onClick = null,
                 colors = RadioButtonDefaults.colors(
-                    selectedColor = MaterialTheme.colorScheme.onTertiary,
-                    unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    selectedColor = DarkBackground,
+                    unselectedColor = TextSoftSecondary
                 )
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = label,
-                color = if (selected) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.labelLarge
+                color = if (selected) DarkBackground else TextSoftSecondary,
+                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
             )
         }
     }

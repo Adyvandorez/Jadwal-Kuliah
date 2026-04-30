@@ -1,5 +1,6 @@
 package com.example.jadwalkuliah.ui.screen.jadwal
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jadwalkuliah.data.local.entity.JadwalEntity
-import com.example.jadwalkuliah.ui.theme.DeleteRed
+import com.example.jadwalkuliah.ui.theme.*
 
 @Composable
 fun DetailJadwalScreen(
@@ -42,7 +43,7 @@ fun DetailJadwalScreen(
                 onBack = onNavigateBack
             )
         },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = DarkBackground
     ) { innerPadding ->
         jadwal?.let { data ->
             Column(
@@ -53,10 +54,10 @@ fun DetailJadwalScreen(
                     .verticalScroll(rememberScrollState())
             ) {
                 InfoColumn(label = "Mata Kuliah", value = data.namaMatkul, isTitle = true)
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(24.dp))
                 
                 InfoColumn(label = "Dosen Pengampu", value = data.dosen, isAccent = true)
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.weight(1f)) {
@@ -66,7 +67,7 @@ fun DetailJadwalScreen(
                         InfoColumn(label = "Waktu", value = "${data.waktuMulai} - ${data.waktuSelesai}")
                     }
                 }
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 InfoColumn(label = "Ruangan", value = data.ruangan)
 
@@ -80,7 +81,9 @@ fun DetailJadwalScreen(
                     OutlinedButton(
                         onClick = { onEditNavigate(data.id) },
                         modifier = Modifier.weight(1f).height(56.dp),
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(20.dp),
+                        border = BorderStroke(1.dp, DarkOutline),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = GoldSoft)
                     ) {
                         Icon(Icons.Default.Edit, contentDescription = null)
                         Spacer(Modifier.width(8.dp))
@@ -91,11 +94,11 @@ fun DetailJadwalScreen(
                         onClick = { showDeleteDialog = true },
                         modifier = Modifier.weight(1f).height(56.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = DeleteRed),
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(20.dp)
                     ) {
                         Icon(Icons.Default.Delete, contentDescription = null)
                         Spacer(Modifier.width(8.dp))
-                        Text("Hapus", fontWeight = FontWeight.Bold)
+                        Text("Hapus", fontWeight = FontWeight.Bold, color = Color.White)
                     }
                 }
             }
@@ -122,11 +125,13 @@ fun DetailJadwalScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Batal", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Batal", color = GoldSoft)
                 }
             },
-            shape = RoundedCornerShape(24.dp),
-            containerColor = MaterialTheme.colorScheme.surface
+            shape = RoundedCornerShape(32.dp),
+            containerColor = DarkSurface,
+            titleContentColor = WhiteSoft,
+            textContentColor = TextSoftSecondary
         )
     }
 }
@@ -139,12 +144,9 @@ fun HeaderSectionWithBack(title: String, onBack: () -> Unit) {
             .height(140.dp)
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
-                    )
+                    colors = listOf(CoffeeBrown, CoffeeDark)
                 ),
-                shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
+                shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)
             )
             .padding(top = 16.dp, start = 8.dp, end = 24.dp, bottom = 24.dp),
         contentAlignment = Alignment.BottomStart
@@ -154,14 +156,14 @@ fun HeaderSectionWithBack(title: String, onBack: () -> Unit) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    tint = WhiteSoft
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = title,
-                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                color = WhiteSoft,
                 modifier = Modifier.padding(start = 16.dp)
             )
         }
@@ -180,13 +182,14 @@ fun InfoColumn(
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = TextSoftSecondary
         )
+        Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = value,
             style = if (isTitle) MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
                     else MaterialTheme.typography.titleMedium,
-            color = valueColor ?: if (isAccent) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurface,
+            color = valueColor ?: if (isAccent) GoldSoft else WhiteSoft,
             lineHeight = 24.sp
         )
     }

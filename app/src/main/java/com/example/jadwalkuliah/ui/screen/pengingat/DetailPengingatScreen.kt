@@ -1,22 +1,25 @@
 package com.example.jadwalkuliah.ui.screen.pengingat
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.jadwalkuliah.data.local.entity.PengingatEntity
-import com.example.jadwalkuliah.ui.screen.jadwal.HeaderSectionWithBack
-import com.example.jadwalkuliah.ui.screen.jadwal.InfoColumn
-import com.example.jadwalkuliah.ui.theme.DeleteRed
+import com.example.jadwalkuliah.ui.theme.*
 
 @Composable
 fun DetailPengingatScreen(
@@ -39,7 +42,7 @@ fun DetailPengingatScreen(
                 onBack = onNavigateBack
             )
         },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = DarkBackground
     ) { innerPadding ->
         pengingat?.let { data ->
             Column(
@@ -49,31 +52,31 @@ fun DetailPengingatScreen(
                     .padding(24.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                InfoColumn(label = "Judul Kegiatan", value = data.judul, isTitle = true)
-                Spacer(modifier = Modifier.height(20.dp))
+                InfoItem(label = "Judul Kegiatan", value = data.judul, isTitle = true)
+                Spacer(modifier = Modifier.height(24.dp))
 
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.weight(1f)) {
-                        InfoColumn(label = "Waktu", value = data.waktu, isAccent = true)
+                        InfoItem(label = "Waktu", value = data.waktu, isAccent = true)
                     }
                     Column(modifier = Modifier.weight(1f)) {
-                        InfoColumn(label = "Status", value = if (data.isActive) "Aktif" else "Nonaktif")
+                        InfoItem(label = "Status", value = if (data.isActive) "Aktif" else "Nonaktif")
                     }
                 }
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-                InfoColumn(
+                InfoItem(
                     label = "Tipe Pengulangan", 
                     value = if (data.tipeUlang == "Daily") "Setiap Hari" else if (data.tipeUlang == "Sekali") "Sekali Saja" else "Kustom"
                 )
                 
                 if (data.tipeUlang == "Custom" && data.hariTerpilih.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(20.dp))
-                    InfoColumn(label = "Hari Terpilih", value = data.hariTerpilih.joinToString(", "))
+                    Spacer(modifier = Modifier.height(24.dp))
+                    InfoItem(label = "Hari Terpilih", value = data.hariTerpilih.joinToString(", "))
                 }
 
                 Spacer(modifier = Modifier.weight(1f))
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -82,22 +85,23 @@ fun DetailPengingatScreen(
                     OutlinedButton(
                         onClick = { onEditNavigate(data.id) },
                         modifier = Modifier.weight(1f).height(56.dp),
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(20.dp),
+                        border = BorderStroke(1.dp, GoldSoft.copy(alpha = 0.5f))
                     ) {
-                        Icon(Icons.Default.Edit, contentDescription = null)
+                        Icon(Icons.Default.Edit, contentDescription = null, tint = GoldSoft)
                         Spacer(Modifier.width(8.dp))
-                        Text("Edit", fontWeight = FontWeight.Bold)
+                        Text("Edit", fontWeight = FontWeight.Bold, color = GoldSoft)
                     }
                     
                     Button(
                         onClick = { showDeleteDialog = true },
                         modifier = Modifier.weight(1f).height(56.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = DeleteRed),
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(20.dp)
                     ) {
-                        Icon(Icons.Default.Delete, contentDescription = null)
+                        Icon(Icons.Default.Delete, contentDescription = null, tint = Color.White)
                         Spacer(Modifier.width(8.dp))
-                        Text("Hapus", fontWeight = FontWeight.Bold)
+                        Text("Hapus", fontWeight = FontWeight.Bold, color = Color.White)
                     }
                 }
             }
@@ -124,11 +128,70 @@ fun DetailPengingatScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Batal", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Batal", color = GoldSoft)
                 }
             },
             shape = RoundedCornerShape(24.dp),
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = DarkSurface,
+            titleContentColor = WhiteSoft,
+            textContentColor = TextSoftSecondary
+        )
+    }
+}
+
+@Composable
+fun HeaderSectionWithBack(title: String, onBack: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(140.dp)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(CoffeeBrown, CoffeeDark)
+                ),
+                shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)
+            )
+            .padding(top = 16.dp, start = 8.dp, end = 24.dp, bottom = 24.dp),
+        contentAlignment = Alignment.BottomStart
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            IconButton(onClick = onBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = WhiteSoft
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                color = WhiteSoft,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun InfoItem(
+    label: String,
+    value: String,
+    isTitle: Boolean = false,
+    isAccent: Boolean = false
+) {
+    Column {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            color = TextSoftSecondary
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = value,
+            style = if (isTitle) MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+                    else MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+            color = if (isAccent) GoldSoft else WhiteSoft
         )
     }
 }

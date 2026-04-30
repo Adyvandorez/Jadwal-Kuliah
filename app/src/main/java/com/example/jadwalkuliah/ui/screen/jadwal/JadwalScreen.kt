@@ -47,16 +47,14 @@ fun JadwalScreen(
             item { Spacer(modifier = Modifier.height(8.dp)) }
             hariList.forEach { hari ->
                 val jadwalHariIni = allJadwal.filter { it.hari == hari }
-                if (jadwalHariIni.isNotEmpty()) {
+                item {
+                    DayHeader(hari = hari)
+                }
+                if (jadwalHariIni.isEmpty()) {
                     item {
-                        Text(
-                            text = hari,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = GoldSoft,
-                            modifier = Modifier.padding(vertical = 4.dp),
-                            fontWeight = FontWeight.Bold
-                        )
+                        EmptyJadwalItem()
                     }
+                } else {
                     items(jadwalHariIni) { jadwal ->
                         JadwalItem(
                             jadwal = jadwal,
@@ -81,8 +79,8 @@ fun HeaderSection(title: String) {
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        CoffeeBrown,
-                        CoffeeDark
+                        DarkPrimary,
+                        DarkTertiary
                     )
                 ),
                 shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
@@ -107,7 +105,7 @@ fun JadwalItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        shape = RoundedCornerShape(24.dp),
+        shape = RoundedCornerShape(28.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         colors = CardDefaults.cardColors(containerColor = DarkSurface)
     ) {
@@ -121,7 +119,7 @@ fun JadwalItem(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(16.dp))
-                    .background(IconBgCoffee)
+                    .background(DarkSurfaceVariant)
                     .padding(horizontal = 12.dp, vertical = 10.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -129,19 +127,19 @@ fun JadwalItem(
                     Icon(
                         imageVector = Icons.Default.AccessTime,
                         contentDescription = null,
-                        tint = GoldSoft,
+                        tint = DarkTertiary,
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = jadwal.waktuMulai,
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                        color = GoldSoft
+                        color = DarkTertiary
                     )
                     Text(
                         text = jadwal.waktuSelesai,
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                        color = GoldSoft
+                        color = DarkTertiary
                     )
                 }
             }
@@ -167,6 +165,60 @@ fun JadwalItem(
                     color = TextSoftSecondary
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun DayHeader(hari: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(0.5.dp)
+                .background(TextSoftSecondary.copy(alpha = 0.2f))
+        )
+        Text(
+            text = hari,
+            style = MaterialTheme.typography.titleMedium,
+            color = WhiteSoft,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(0.5.dp)
+                .background(TextSoftSecondary.copy(alpha = 0.2f))
+        )
+    }
+}
+
+@Composable
+fun EmptyJadwalItem() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(28.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        colors = CardDefaults.cardColors(containerColor = DarkSurface)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(32.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Tidak ada jadwal",
+                style = MaterialTheme.typography.bodyMedium,
+                color = TextSoftSecondary
+            )
         }
     }
 }

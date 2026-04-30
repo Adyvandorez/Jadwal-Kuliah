@@ -1,7 +1,7 @@
 package com.example.jadwalkuliah.ui.screen.pengingat
 
-import android.app.TimePickerDialog
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -15,11 +15,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.style.TextOverflow
 import com.example.jadwalkuliah.data.local.entity.PengingatEntity
+import com.example.jadwalkuliah.ui.theme.*
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -36,6 +39,7 @@ fun AddEditPengingatScreen(
     var isActive by remember { mutableStateOf(true) }
 
     val context = LocalContext.current
+    val localeId = remember { Locale.getAvailableLocales().find { it.language == "id" && it.country == "ID" } ?: Locale("id", "ID") }
     val calendar = Calendar.getInstance()
 
     LaunchedEffect(pengingatId) {
@@ -54,24 +58,12 @@ fun AddEditPengingatScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        if (pengingatId == null) "Tambah Pengingat" else "Edit Pengingat",
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Kembali")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
-                )
+            HeaderSectionAddEdit(
+                title = if (pengingatId == null) "Tambah Pengingat" else "Edit Pengingat",
+                onBack = onNavigateBack
             )
         },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = DarkBackground
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -81,7 +73,7 @@ fun AddEditPengingatScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = judul,
@@ -91,10 +83,12 @@ fun AddEditPengingatScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                    focusedLabelColor = MaterialTheme.colorScheme.tertiary,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    focusedBorderColor = GoldSoft,
+                    unfocusedBorderColor = DarkOutline,
+                    focusedLabelColor = GoldSoft,
+                    unfocusedLabelColor = TextSoftSecondary,
+                    focusedTextColor = WhiteSoft,
+                    unfocusedTextColor = WhiteSoft
                 )
             )
 
@@ -103,31 +97,31 @@ fun AddEditPengingatScreen(
                     val timeParts = waktu.split(":")
                     val h = timeParts[0].toInt()
                     val m = timeParts[1].toInt()
-                    TimePickerDialog(
+                    android.app.TimePickerDialog(
                         context,
                         { _, hour, minute -> 
-                            waktu = String.format(Locale.getDefault(), "%02d:%02d", hour, minute) 
+                            waktu = String.format(localeId, "%02d:%02d", hour, minute) 
                         },
                         h, m, true
                     ).show()
                 },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(20.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                colors = ButtonDefaults.buttonColors(containerColor = DarkSurface)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.AccessTime, contentDescription = null, tint = MaterialTheme.colorScheme.tertiary)
+                    Icon(Icons.Default.AccessTime, contentDescription = null, tint = GoldSoft)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Waktu: $waktu", color = MaterialTheme.colorScheme.tertiary, fontWeight = FontWeight.Medium)
+                    Text("Waktu: $waktu", color = GoldSoft, fontWeight = FontWeight.Medium)
                 }
             }
 
-            Text("Ulangi", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("Ulangi", style = MaterialTheme.typography.labelLarge, color = TextSoftSecondary)
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                TipeUlangChipS( "Harian", tipeUlang == "Daily") { tipeUlang = "Daily" }
-                TipeUlangChipS("Sekali", tipeUlang == "Sekali") { tipeUlang = "Sekali" }
-                TipeUlangChipS("Custom", tipeUlang == "Custom") { tipeUlang = "Custom" }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                TipeUlangChipS( "Harian", tipeUlang == "Daily", Modifier.weight(1f)) { tipeUlang = "Daily" }
+                TipeUlangChipS("Sekali", tipeUlang == "Sekali", Modifier.weight(1f)) { tipeUlang = "Sekali" }
+                TipeUlangChipS("Custom", tipeUlang == "Custom", Modifier.weight(1f)) { tipeUlang = "Custom" }
             }
 
             if (tipeUlang == "Custom") {
@@ -142,10 +136,16 @@ fun AddEditPengingatScreen(
                         FilterChip(
                             selected = isSelected,
                             onClick = { if (isSelected) selectedDays.remove(day) else selectedDays.add(day) },
-                            label = { Text(day, fontSize = 12.sp) },
+                            label = { Text(day, fontSize = 12.sp, color = if(isSelected) DarkBackground else WhiteSoft) },
                             colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = MaterialTheme.colorScheme.tertiary,
-                                selectedLabelColor = MaterialTheme.colorScheme.onTertiary
+                                selectedContainerColor = GoldSoft,
+                                containerColor = DarkSurface
+                            ),
+                            border = FilterChipDefaults.filterChipBorder(
+                                enabled = true,
+                                selected = isSelected,
+                                borderColor = DarkOutline,
+                                selectedBorderColor = GoldSoft
                             )
                         )
                     }
@@ -176,12 +176,12 @@ fun AddEditPengingatScreen(
                 },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(28.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)
+                colors = ButtonDefaults.buttonColors(containerColor = GoldSoft)
             ) {
                 Text(
                     if (pengingatId == null) "Simpan Pengingat" else "Simpan Perubahan",
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onTertiary
+                    color = DarkBackground
                 )
             }
 
@@ -191,31 +191,68 @@ fun AddEditPengingatScreen(
 }
 
 @Composable
-fun TipeUlangChipS(label: String, selected: Boolean, onClick: () -> Unit) {
+fun TipeUlangChipS(label: String, selected: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Surface(
-        modifier = Modifier
-            .clip(RoundedCornerShape(12.dp))
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
             .clickable { onClick() },
-        color = if (selected) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.surfaceVariant,
-        border = if (selected) null else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+        color = if (selected) GoldSoft else DarkSurface,
+        border = if (selected) null else BorderStroke(1.dp, DarkOutline)
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
             RadioButton(
                 selected = selected,
                 onClick = null,
                 colors = RadioButtonDefaults.colors(
-                    selectedColor = MaterialTheme.colorScheme.onTertiary,
-                    unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    selectedColor = DarkBackground,
+                    unselectedColor = TextSoftSecondary
                 )
             )
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(2.dp))
             Text(
                 text = label,
-                color = if (selected) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.labelLarge
+                color = if (selected) DarkBackground else WhiteSoft,
+                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+@Composable
+fun HeaderSectionAddEdit(title: String, onBack: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(140.dp)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(CoffeeBrown, CoffeeDark)
+                ),
+                shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)
+            )
+            .padding(top = 16.dp, start = 8.dp, end = 24.dp, bottom = 24.dp),
+        contentAlignment = Alignment.BottomStart
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            IconButton(onClick = onBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = WhiteSoft
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                color = WhiteSoft,
+                modifier = Modifier.padding(start = 16.dp)
             )
         }
     }

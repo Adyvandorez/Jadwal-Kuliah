@@ -15,10 +15,10 @@ interface TugasDao {
     @Delete
     suspend fun deleteTugas(tugas: TugasEntity)
 
-    @Query("SELECT * FROM tugas ORDER BY deadline ASC")
+    @Query("SELECT * FROM tugas ORDER BY id DESC")
     fun getAllTugas(): Flow<List<TugasEntity>>
 
-    @Query("SELECT * FROM tugas WHERE isCompleted = :isCompleted ORDER BY deadline ASC")
+    @Query("SELECT * FROM tugas WHERE isCompleted = :isCompleted ORDER BY id DESC")
     fun getTugasByStatus(isCompleted: Boolean): Flow<List<TugasEntity>>
 
     @Query("SELECT * FROM tugas WHERE id = :id")

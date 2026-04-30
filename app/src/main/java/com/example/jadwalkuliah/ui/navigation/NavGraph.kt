@@ -1,27 +1,37 @@
 package com.example.jadwalkuliah.ui.navigation
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.*
 import com.example.jadwalkuliah.data.local.AppDatabase
@@ -36,6 +46,7 @@ import com.example.jadwalkuliah.ui.screen.jadwal.*
 import com.example.jadwalkuliah.ui.screen.tugas.*
 import com.example.jadwalkuliah.ui.screen.pengaturan.*
 import com.example.jadwalkuliah.ui.screen.pengingat.*
+import com.example.jadwalkuliah.ui.theme.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.navigation.NavType
@@ -47,6 +58,7 @@ fun MainScreen(themePreferences: ThemePreferences) {
 
     val navController = rememberNavController()
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     val database = remember { AppDatabase.getDatabase(context) }
     val userProfilePreferences = remember { UserProfilePreferences(context) }
@@ -60,8 +72,6 @@ fun MainScreen(themePreferences: ThemePreferences) {
         Screen.Beranda,
         Screen.Jadwal,
         Screen.Tugas,
-        Screen.Catatan,
-        Screen.Ide,
         Screen.Pengaturan
     )
 
@@ -70,24 +80,33 @@ fun MainScreen(themePreferences: ThemePreferences) {
 
     Scaffold(
         bottomBar = {
-            val isDark = isSystemInDarkTheme()
+            val isDark = isSystemInDarkTheme() || true // Force Dark for Premium Coffee theme
             val isMainScreen = screens.any { it.route == currentRoute } || currentRoute == null || currentRoute == Screen.Pengingat.route
 
-            if (isDark) {
+            if (true) { // Premium Coffee Navigation Bar
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(100.dp),
                     contentAlignment = Alignment.BottomCenter
                 ) {
-                    // Custom Background with Dynamic Cutout
-                    val backgroundColor = MaterialTheme.colorScheme.surface
-                    val borderColor = MaterialTheme.colorScheme.outline
+                    val currentIndex = screens.indexOfFirst { it.route == currentRoute }.coerceAtLeast(0)
                     
-                    // No cutout for 6 items to keep it clean
-                    androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+                    // Animation for cutout progress (0f when at Pengaturan or sub-screens, 1f otherwise)
+                    val cutoutProgress by animateFloatAsState(
+                        targetValue = if (isMainScreen && currentIndex != 3) 1f else 0f,
+                        animationSpec = tween(durationMillis = 500),
+                        label = "cutoutProgress"
+                    )
+
+                    // Custom Background with Dynamic Cutout
+                    val backgroundColor = DarkSurface
+                    val borderColor = DarkOutline
+                    
+                    Canvas(modifier = Modifier.fillMaxSize()) {
                         val width = size.width
                         val height = size.height
+                        val cutoutRadius = 45.dp.toPx() * cutoutProgress
                         val cornerRadius = 28.dp.toPx()
                         val navHeight = 80.dp.toPx()
                         val topY = height - navHeight
@@ -101,6 +120,21 @@ fun MainScreen(themePreferences: ThemePreferences) {
                                 sweepAngleDegrees = 90f,
                                 forceMoveTo = false
                             )
+                            
+                            if (cutoutProgress > 0.01f) {
+                                lineTo(width / 2 - cutoutRadius * 1.5f, topY)
+                                cubicTo(
+                                    x1 = width / 2 - cutoutRadius * 0.8f, y1 = topY,
+                                    x2 = width / 2 - cutoutRadius * 0.9f, y2 = topY + cutoutRadius,
+                                    x3 = width / 2, y3 = topY + cutoutRadius
+                                )
+                                cubicTo(
+                                    x1 = width / 2 + cutoutRadius * 0.9f, y1 = topY + cutoutRadius,
+                                    x2 = width / 2 + cutoutRadius * 0.8f, y2 = topY,
+                                    x3 = width / 2 + cutoutRadius * 1.5f, topY
+                                )
+                            }
+                            
                             lineTo(width - cornerRadius, topY)
                             arcTo(
                                 rect = Rect(width - cornerRadius * 2, topY, width, topY + cornerRadius * 2),
@@ -128,23 +162,39 @@ fun MainScreen(themePreferences: ThemePreferences) {
                             .align(Alignment.BottomCenter),
                         windowInsets = WindowInsets(0)
                     ) {
-                        screens.forEach { screen ->
+                        screens.forEachIndexed { index, screen ->
+                            if (index == 2 && cutoutProgress > 0.5f) {
+                                Spacer(modifier = Modifier.weight(1f))
+                            }
+                            
                             val isSelected = currentRoute == screen.route
                             NavigationBarItem(
                                 icon = {
                                     Icon(
                                         imageVector = screen.icon,
                                         contentDescription = null,
-                                        modifier = Modifier.size(22.dp)
+                                        modifier = Modifier.size(24.dp)
                                     )
                                 },
                                 label = {
-                                    Text(
-                                        text = screen.title,
-                                        style = MaterialTheme.typography.labelSmall,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Text(
+                                            text = screen.title,
+                                            style = MaterialTheme.typography.labelSmall
+                                        )
+                                        if (isSelected) {
+                                            Spacer(modifier = Modifier.height(4.dp))
+                                            Box(
+                                                modifier = Modifier
+                                                    .width(12.dp)
+                                                    .height(3.dp)
+                                                    .background(
+                                                        color = DarkTertiary,
+                                                        shape = RoundedCornerShape(2.dp)
+                                                    )
+                                            )
+                                        }
+                                    }
                                 },
                                 selected = isSelected,
                                 onClick = {
@@ -159,11 +209,11 @@ fun MainScreen(themePreferences: ThemePreferences) {
                                     }
                                 },
                                 colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = MaterialTheme.colorScheme.tertiary,
-                                    selectedTextColor = MaterialTheme.colorScheme.tertiary,
+                                    selectedIconColor = DarkTertiary,
+                                    selectedTextColor = DarkTertiary,
                                     indicatorColor = Color.Transparent,
-                                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                                    unselectedIconColor = TextSoftSecondary,
+                                    unselectedTextColor = TextSoftSecondary.copy(alpha = 0.7f)
                                 )
                             )
                         }
@@ -208,26 +258,22 @@ fun MainScreen(themePreferences: ThemePreferences) {
             val isMainScreen = screens.any { it.route == currentRoute } || currentRoute == null || currentRoute == Screen.Pengingat.route
             val currentIndex = screens.indexOfFirst { it.route == currentRoute }.coerceAtLeast(0)
 
-            // FAB shown on Beranda, Jadwal, Tugas, Catatan, Ide, and Pengingat
-            if (isMainScreen && (currentIndex < 5 || currentRoute == Screen.Pengingat.route)) {
+            // FAB shown on Beranda, Jadwal, Tugas, and Pengingat
+            if (isMainScreen && (currentIndex < 3 || currentRoute == Screen.Pengingat.route)) {
                 val onFabClickAction = {
                     try {
-                        when (currentRoute) {
-                            Screen.Beranda.route, Screen.Jadwal.route -> 
+                        when {
+                            currentRoute == Screen.Beranda.route || currentRoute == Screen.Jadwal.route -> 
                                 navController.navigate("add_jadwal")
-                            Screen.Tugas.route -> 
-                                navController.navigate("add_tugas?type=Tugas")
-                            Screen.Catatan.route -> 
-                                navController.navigate("add_tugas?type=Catatan")
-                            Screen.Ide.route -> 
-                                navController.navigate("add_tugas?type=Ide")
-                            Screen.Pengingat.route -> 
+                            currentRoute == Screen.Tugas.route -> 
+                                navController.navigate("add_tugas")
+                            currentRoute == Screen.Pengingat.route -> 
                                 navController.navigate("add_pengingat")
                         }
-                    } catch (_: Exception) {}
+                    } catch (e: Exception) {}
                 }
 
-                if (isDark) {
+                if (true) {
                     Box(
                         modifier = Modifier
                             .graphicsLayer {
@@ -237,14 +283,14 @@ fun MainScreen(themePreferences: ThemePreferences) {
                             .shadow(
                                 elevation = 12.dp,
                                 shape = CircleShape,
-                                spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
+                                spotColor = DarkTertiary.copy(alpha = 0.6f)
                             )
                             .clip(CircleShape) // Pastikan klik hanya di area lingkaran
                             .background(
                                 brush = Brush.radialGradient(
                                     colors = listOf(
-                                        MaterialTheme.colorScheme.tertiary,
-                                        MaterialTheme.colorScheme.primary
+                                        DarkTertiary,
+                                        GoldAccent
                                     )
                                 )
                             )
@@ -254,7 +300,7 @@ fun MainScreen(themePreferences: ThemePreferences) {
                         Icon(
                             Icons.Default.Add,
                             contentDescription = "Tambah",
-                            tint = Color.White,
+                            tint = DarkBackground,
                             modifier = Modifier.size(32.dp)
                         )
                     }
@@ -293,9 +339,15 @@ fun MainScreen(themePreferences: ThemePreferences) {
                         onNavigateToPengingat = { 
                             try {
                                 navController.navigate(Screen.Pengingat.route)
-                            } catch (_: Exception) {
+                            } catch (e: Exception) {
                                 // Handle cases where graph is not yet set
                             }
+                        },
+                        onNavigateToDetailJadwal = { id ->
+                            navController.navigate("detail_jadwal/$id")
+                        },
+                        onNavigateToDetailTugas = { id ->
+                            navController.navigate("detail_tugas/$id")
                         }
                     )
                 }
@@ -318,28 +370,6 @@ fun MainScreen(themePreferences: ThemePreferences) {
                         viewModel = viewModel,
                         onNavigateToDetail = { tugasId ->
                             navController.navigate("detail_tugas/$tugasId")
-                        }
-                    )
-                }
-                composable(Screen.Catatan.route) {
-                    val viewModel: TugasViewModel = viewModel(
-                        factory = TugasViewModelFactory(tugasRepository)
-                    )
-                    CatatanScreen(
-                        viewModel = viewModel,
-                        onNavigateToDetail = { id ->
-                            navController.navigate("detail_tugas/$id")
-                        }
-                    )
-                }
-                composable(Screen.Ide.route) {
-                    val viewModel: TugasViewModel = viewModel(
-                        factory = TugasViewModelFactory(tugasRepository)
-                    )
-                    IdeScreen(
-                        viewModel = viewModel,
-                        onNavigateToDetail = { id ->
-                            navController.navigate("detail_tugas/$id")
                         }
                     )
                 }
@@ -488,24 +518,6 @@ fun MainScreen(themePreferences: ThemePreferences) {
                     AddEditTugasScreen(
                         viewModel = viewModel,
                         tugasId = tugasId,
-                        onNavigateBack = { navController.popBackStack() }
-                    )
-                }
-
-                composable(
-                    "add_tugas?type={type}",
-                    arguments = listOf(navArgument("type") { 
-                        type = NavType.StringType
-                        defaultValue = "Tugas"
-                    })
-                ) { backStackEntry ->
-                    val type = backStackEntry.arguments?.getString("type") ?: "Tugas"
-                    val viewModel: TugasViewModel = viewModel(
-                        factory = TugasViewModelFactory(tugasRepository)
-                    )
-                    AddEditTugasScreen(
-                        viewModel = viewModel,
-                        initialType = type,
                         onNavigateBack = { navController.popBackStack() }
                     )
                 }

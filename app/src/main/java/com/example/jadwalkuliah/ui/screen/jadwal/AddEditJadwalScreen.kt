@@ -1,5 +1,6 @@
 package com.example.jadwalkuliah.ui.screen.jadwal
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -8,11 +9,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.jadwalkuliah.data.local.entity.JadwalEntity
+import com.example.jadwalkuliah.ui.theme.*
 import com.example.jadwalkuliah.util.AlarmScheduler
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,24 +55,12 @@ fun AddEditJadwalScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { 
-                    Text(
-                        if (jadwalId == null) "Tambah Jadwal" else "Edit Jadwal",
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                    ) 
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Kembali")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
-                )
+            HeaderSectionAddEdit(
+                title = if (jadwalId == null) "Tambah Jadwal" else "Edit Jadwal",
+                onBack = onNavigateBack
             )
         },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = DarkBackground
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -78,7 +70,7 @@ fun AddEditJadwalScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = namaMatkul,
@@ -87,10 +79,12 @@ fun AddEditJadwalScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                    focusedLabelColor = MaterialTheme.colorScheme.tertiary,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    focusedBorderColor = GoldSoft,
+                    unfocusedBorderColor = DarkOutline,
+                    focusedLabelColor = GoldSoft,
+                    unfocusedLabelColor = TextSoftSecondary,
+                    focusedTextColor = WhiteSoft,
+                    unfocusedTextColor = WhiteSoft
                 )
             )
 
@@ -101,10 +95,12 @@ fun AddEditJadwalScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                    focusedLabelColor = MaterialTheme.colorScheme.tertiary,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    focusedBorderColor = GoldSoft,
+                    unfocusedBorderColor = DarkOutline,
+                    focusedLabelColor = GoldSoft,
+                    unfocusedLabelColor = TextSoftSecondary,
+                    focusedTextColor = WhiteSoft,
+                    unfocusedTextColor = WhiteSoft
                 )
             )
 
@@ -121,16 +117,22 @@ fun AddEditJadwalScreen(
                     modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                        focusedBorderColor = GoldSoft,
+                        unfocusedBorderColor = DarkOutline,
+                        focusedLabelColor = GoldSoft,
+                        unfocusedLabelColor = TextSoftSecondary,
+                        focusedTextColor = WhiteSoft,
+                        unfocusedTextColor = WhiteSoft
                     )
                 )
                 ExposedDropdownMenu(
                     expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.background(DarkSurface)
                 ) {
                     hariList.forEach { selectionOption ->
                         DropdownMenuItem(
-                            text = { Text(selectionOption) },
+                            text = { Text(selectionOption, color = WhiteSoft) },
                             onClick = {
                                 hari = selectionOption
                                 expanded = false
@@ -148,7 +150,12 @@ fun AddEditJadwalScreen(
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(20.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                        focusedBorderColor = GoldSoft,
+                        unfocusedBorderColor = DarkOutline,
+                        focusedLabelColor = GoldSoft,
+                        unfocusedLabelColor = TextSoftSecondary,
+                        focusedTextColor = WhiteSoft,
+                        unfocusedTextColor = WhiteSoft
                     )
                 )
                 OutlinedTextField(
@@ -158,7 +165,12 @@ fun AddEditJadwalScreen(
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(20.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                        focusedBorderColor = GoldSoft,
+                        unfocusedBorderColor = DarkOutline,
+                        focusedLabelColor = GoldSoft,
+                        unfocusedLabelColor = TextSoftSecondary,
+                        focusedTextColor = WhiteSoft,
+                        unfocusedTextColor = WhiteSoft
                     )
                 )
             }
@@ -170,10 +182,12 @@ fun AddEditJadwalScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                    focusedLabelColor = MaterialTheme.colorScheme.tertiary,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    focusedBorderColor = GoldSoft,
+                    unfocusedBorderColor = DarkOutline,
+                    focusedLabelColor = GoldSoft,
+                    unfocusedLabelColor = TextSoftSecondary,
+                    focusedTextColor = WhiteSoft,
+                    unfocusedTextColor = WhiteSoft
                 )
             )
 
@@ -203,11 +217,11 @@ fun AddEditJadwalScreen(
                         }
                     }
                 },
-                modifier = Modifier.fillMaxWidth().height(56.dp),
-                shape = RoundedCornerShape(28.dp),
+                modifier = Modifier.fillMaxWidth().height(60.dp),
+                shape = RoundedCornerShape(30.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.tertiary,
-                    contentColor = MaterialTheme.colorScheme.onTertiary
+                    containerColor = GoldSoft,
+                    contentColor = DarkBackground
                 )
             ) {
                 Text("Simpan Jadwal", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
@@ -217,4 +231,38 @@ fun AddEditJadwalScreen(
         }
     }
 
+}
+
+@Composable
+fun HeaderSectionAddEdit(title: String, onBack: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(140.dp)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(CoffeeBrown, CoffeeDark)
+                ),
+                shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)
+            )
+            .padding(top = 16.dp, start = 8.dp, end = 24.dp, bottom = 24.dp),
+        contentAlignment = Alignment.BottomStart
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            IconButton(onClick = onBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = WhiteSoft
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                color = WhiteSoft,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
+    }
 }
