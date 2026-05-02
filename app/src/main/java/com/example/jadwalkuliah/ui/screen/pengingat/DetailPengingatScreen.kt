@@ -37,10 +37,47 @@ fun DetailPengingatScreen(
 
     Scaffold(
         topBar = {
-            HeaderSectionWithBack(
+            DetailPengingatHeader(
                 title = "Detail Pengingat",
                 onBack = onNavigateBack
             )
+        },
+        bottomBar = {
+            pengingat?.let { data ->
+                Surface(
+                    color = DarkBackground,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp, vertical = 16.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        OutlinedButton(
+                            onClick = { onEditNavigate(data.id) },
+                            modifier = Modifier.weight(1f).height(56.dp),
+                            shape = RoundedCornerShape(20.dp),
+                            border = BorderStroke(1.dp, GoldSoft.copy(alpha = 0.5f))
+                        ) {
+                            Icon(Icons.Default.Edit, contentDescription = null, tint = GoldSoft)
+                            Spacer(Modifier.width(8.dp))
+                            Text("Edit", fontWeight = FontWeight.Bold, color = GoldSoft)
+                        }
+
+                        Button(
+                            onClick = { showDeleteDialog = true },
+                            modifier = Modifier.weight(1f).height(56.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = DeleteRed),
+                            shape = RoundedCornerShape(20.dp)
+                        ) {
+                            Icon(Icons.Default.Delete, contentDescription = null, tint = Color.White)
+                            Spacer(Modifier.width(8.dp))
+                            Text("Hapus", fontWeight = FontWeight.Bold, color = Color.White)
+                        }
+                    }
+                }
+            }
         },
         containerColor = DarkBackground
     ) { innerPadding ->
@@ -49,7 +86,7 @@ fun DetailPengingatScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .padding(24.dp)
+                    .padding(horizontal = 24.dp, vertical = 24.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 InfoItem(label = "Judul Kegiatan", value = data.judul, isTitle = true)
@@ -74,36 +111,8 @@ fun DetailPengingatScreen(
                     Spacer(modifier = Modifier.height(24.dp))
                     InfoItem(label = "Hari Terpilih", value = data.hariTerpilih.joinToString(", "))
                 }
-
-                Spacer(modifier = Modifier.weight(1f))
-                Spacer(modifier = Modifier.height(40.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    OutlinedButton(
-                        onClick = { onEditNavigate(data.id) },
-                        modifier = Modifier.weight(1f).height(56.dp),
-                        shape = RoundedCornerShape(20.dp),
-                        border = BorderStroke(1.dp, GoldSoft.copy(alpha = 0.5f))
-                    ) {
-                        Icon(Icons.Default.Edit, contentDescription = null, tint = GoldSoft)
-                        Spacer(Modifier.width(8.dp))
-                        Text("Edit", fontWeight = FontWeight.Bold, color = GoldSoft)
-                    }
-                    
-                    Button(
-                        onClick = { showDeleteDialog = true },
-                        modifier = Modifier.weight(1f).height(56.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = DeleteRed),
-                        shape = RoundedCornerShape(20.dp)
-                    ) {
-                        Icon(Icons.Default.Delete, contentDescription = null, tint = Color.White)
-                        Spacer(Modifier.width(8.dp))
-                        Text("Hapus", fontWeight = FontWeight.Bold, color = Color.White)
-                    }
-                }
+                
+                Spacer(modifier = Modifier.height(24.dp))
             }
         }
     }
@@ -112,7 +121,7 @@ fun DetailPengingatScreen(
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
             title = { Text("Konfirmasi Hapus", fontWeight = FontWeight.Bold) },
-            text = { Text("Apakah Anda yakin ingin menghapus pengingat ini?") },
+            text = { Text("Apakah kamu yakin ingin menghapus pengingat ini?") },
             confirmButton = {
                 Button(
                     onClick = {
@@ -140,34 +149,41 @@ fun DetailPengingatScreen(
 }
 
 @Composable
-fun HeaderSectionWithBack(title: String, onBack: () -> Unit) {
+fun DetailPengingatHeader(title: String, onBack: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(140.dp)
+            .height(180.dp)
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(CoffeeBrown, CoffeeDark)
                 ),
-                shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)
+                shape = RoundedCornerShape(bottomStart = 60.dp, bottomEnd = 60.dp)
             )
-            .padding(top = 16.dp, start = 8.dp, end = 24.dp, bottom = 24.dp),
+            .padding(horizontal = 24.dp, vertical = 24.dp),
         contentAlignment = Alignment.BottomStart
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            IconButton(onClick = onBack) {
+        Column {
+            IconButton(
+                onClick = onBack,
+                modifier = Modifier.offset(x = (-12).dp, y = (-40).dp)
+            ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = WhiteSoft
+                    tint = WhiteSoft,
+                    modifier = Modifier.size(28.dp)
                 )
             }
-            Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = title,
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                color = WhiteSoft,
-                modifier = Modifier.padding(start = 16.dp)
+                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                color = WhiteSoft
+            )
+            Text(
+                text = "Detail informasi pengingat kamu!",
+                style = MaterialTheme.typography.bodyMedium,
+                color = WhiteSoft.copy(alpha = 0.7f)
             )
         }
     }

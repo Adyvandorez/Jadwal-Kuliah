@@ -30,24 +30,31 @@ import kotlinx.coroutines.launch
 @Composable
 fun PengaturanScreen(
     themePreferences: ThemePreferences,
-    onNavigateToEditProfil: () -> Unit
+    onNavigateToEditProfil: () -> Unit,
+    onNavigateToNadaDering: () -> Unit,
+    onNavigateToAbout: () -> Unit
 ) {
     var notificationsEnabled by remember { mutableStateOf(true) }
     val isDarkTheme by themePreferences.isDarkTheme.collectAsState(initial = false)
     val scope = rememberCoroutineScope()
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(Unit) {
+        scrollState.scrollTo(0)
+    }
 
     Scaffold(
         topBar = {
             HeaderSection(title = "Pengaturan")
         },
-        containerColor = DarkBackground
+        containerColor = Color.Transparent
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
                 .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Spacer(modifier = Modifier.height(8.dp))
@@ -167,39 +174,84 @@ fun PengaturanScreen(
                 colors = CardDefaults.cardColors(containerColor = DarkSurface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
             ) {
-                Row(
-                    modifier = Modifier
-                        .padding(12.dp)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(56.dp)
-                                .clip(RoundedCornerShape(20.dp))
-                                .background(DarkSurfaceVariant),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Notifications,
-                                contentDescription = null,
-                                tint = DarkTertiary
+                Column {
+                    Row(
+                        modifier = Modifier
+                            .padding(12.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                modifier = Modifier
+                                    .size(56.dp)
+                                    .clip(RoundedCornerShape(20.dp))
+                                    .background(DarkSurfaceVariant),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Notifications,
+                                    contentDescription = null,
+                                    tint = DarkTertiary
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text(
+                                text = "Pengingat Jadwal",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = WhiteSoft,
+                                fontWeight = FontWeight.Bold
                             )
                         }
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Text(
-                            text = "Pengingat Jadwal",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = WhiteSoft,
-                            fontWeight = FontWeight.Bold
+                        AppSwitch(
+                            checked = notificationsEnabled,
+                            onCheckedChange = { notificationsEnabled = it }
                         )
                     }
-                    AppSwitch(
-                        checked = notificationsEnabled,
-                        onCheckedChange = { notificationsEnabled = it }
+
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 24.dp),
+                        thickness = 0.5.dp,
+                        color = WhiteSoft.copy(alpha = 0.1f)
                     )
+
+                    Row(
+                        modifier = Modifier
+                            .clickable { onNavigateToNadaDering() }
+                            .padding(12.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                modifier = Modifier
+                                    .size(56.dp)
+                                    .clip(RoundedCornerShape(20.dp))
+                                    .background(DarkSurfaceVariant),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Notifications,
+                                    contentDescription = null,
+                                    tint = DarkTertiary
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text(
+                                text = "Nada Dering Alarm",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = WhiteSoft,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = null,
+                            tint = TextSoftSecondary
+                        )
+                    }
                 }
             }
 
@@ -210,23 +262,36 @@ fun PengaturanScreen(
             )
 
             Card(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onNavigateToAbout() },
                 shape = RoundedCornerShape(28.dp),
                 colors = CardDefaults.cardColors(containerColor = DarkSurface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
             ) {
                 Column(modifier = Modifier.padding(24.dp)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .background(DarkSurfaceVariant, RoundedCornerShape(12.dp)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(Icons.Default.Info, contentDescription = null, tint = DarkTertiary, modifier = Modifier.size(24.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .background(DarkSurfaceVariant, RoundedCornerShape(12.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(Icons.Default.Info, contentDescription = null, tint = DarkTertiary, modifier = Modifier.size(24.dp))
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text(text = "Jadwal Kuliah v1.2", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium, color = WhiteSoft)
                         }
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Text(text = "Jadwal Kuliah v1.2", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium, color = WhiteSoft)
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = null,
+                            tint = TextSoftSecondary
+                        )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
@@ -234,12 +299,6 @@ fun PengaturanScreen(
                         style = MaterialTheme.typography.bodyMedium,
                         color = TextSoftSecondary,
                         lineHeight = 22.sp
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = "Dibuat dengan ❤️ untuk membantu mahasiswa tetap produktif.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextSoftSecondary.copy(alpha = 0.6f)
                     )
                 }
             }
@@ -254,20 +313,28 @@ fun HeaderSection(title: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(140.dp)
+            .height(150.dp)
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(DarkPrimary, DarkTertiary)
+                    colors = listOf(CoffeeBrown, CoffeeDark)
                 ),
-                shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)
+                shape = RoundedCornerShape(bottomStart = 60.dp, bottomEnd = 60.dp)
             )
-            .padding(24.dp),
+            .padding(horizontal = 32.dp, vertical = 24.dp),
         contentAlignment = Alignment.BottomStart
     ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-            color = WhiteSoft
-        )
+        Column {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                color = WhiteSoft
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Sesuaikan pengalaman aplikasi kamu!",
+                style = MaterialTheme.typography.bodyMedium,
+                color = WhiteSoft.copy(alpha = 0.8f)
+            )
+        }
     }
 }

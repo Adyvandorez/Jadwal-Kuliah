@@ -14,19 +14,20 @@
     <!-- DARK MODE -->
     <!-- ========================= -->
 
-    <color name="dark_background">#34312F</color>
-    <color name="dark_card">#3E3A38</color>
-    <color name="dark_accent">#B38922</color>
-    <color name="dark_text">#FEDEA0</color>
+    <color name="dark_background">#000000</color>
+    <color name="dark_card">#1E1A17</color>
+    <color name="dark_accent">#8B5E3C</color>
+    <color name="dark_text">#EDE0D4</color>
 
     <!-- ========================= -->
     <!-- GLOBAL / SHARED -->
     <!-- ========================= -->
 
-    <color name="gold_primary">#B38922</color>
-    <color name="beige_soft">#FEDEA0</color>
-    <color name="brown_soft">#CCAB6C</color>
-    <color name="brown_dark">#34312F</color>
+    <color name="gold_primary">#8B5E3C</color>
+    <color name="beige_soft">#EDE0D4</color>
+    <color name="brown_soft">#6F4E37</color>
+    <color name="brown_dark">#1E1A17</color>
+    <color name="coffee_darker">#12100E</color>
 
     <!-- OPTIONAL SHADOW / OVERLAY -->
     <color name="shadow_light">#1A000000</color>

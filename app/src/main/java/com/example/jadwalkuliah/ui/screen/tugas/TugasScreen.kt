@@ -1,5 +1,7 @@
 package com.example.jadwalkuliah.ui.screen.tugas
 
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,6 +48,18 @@ fun TugasScreen(
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val scope = rememberCoroutineScope()
     
+    val scrollState0 = rememberLazyListState()
+    val scrollState1 = rememberLazyListState()
+    val scrollState2 = rememberLazyListState()
+
+    // Reset scroll and pager when screen is entered
+    LaunchedEffect(Unit) {
+        pagerState.scrollToPage(0)
+        scrollState0.scrollToItem(0)
+        scrollState1.scrollToItem(0)
+        scrollState2.scrollToItem(0)
+    }
+
     var searchQuery by remember { mutableStateOf("") }
     var isSearching by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf<TugasEntity?>(null) }
@@ -54,7 +68,7 @@ fun TugasScreen(
         topBar = {
             HeaderSection(
                 title = "Tugas & Catatan",
-                subtitle = "Kelola semua tugas kuliah Anda",
+                subtitle = "Kelola semua tugas kuliah kamu",
                 searchQuery = searchQuery,
                 onSearchQueryChange = { searchQuery = it },
                 isSearching = isSearching,
@@ -64,7 +78,7 @@ fun TugasScreen(
                 }
             )
         },
-        containerColor = DarkBackground
+        containerColor = Color.Transparent
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -81,7 +95,7 @@ fun TugasScreen(
                 tabs.forEachIndexed { index, title ->
                     val isSelected = pagerState.currentPage == index
                     Surface(
-                        onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
+                        onClick = { scope.launch { pagerState.scrollToPage(index) } },
                         color = if (isSelected) DarkTertiary else DarkSurfaceVariant,
                         shape = RoundedCornerShape(20.dp),
                         modifier = Modifier.height(36.dp)
@@ -131,6 +145,11 @@ fun TugasScreen(
                     }
                 } else {
                     LazyColumn(
+                        state = when(pageIndex) {
+                            1 -> scrollState1
+                            2 -> scrollState2
+                            else -> scrollState0
+                        },
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(horizontal = 24.dp),
@@ -147,7 +166,12 @@ fun TugasScreen(
                                         tugas = tugas,
                                         onToggleCompletion = { viewModel.toggleTugasCompletion(tugas) },
                                         onDelete = { showDeleteDialog = tugas },
-                                        onClick = { onNavigateToDetail(tugas.id) }
+                                        onClick = { onNavigateToDetail(tugas.id) },
+                                        modifier = Modifier.animateItem(
+                                            fadeInSpec = tween(150),
+                                            fadeOutSpec = tween(150),
+                                            placementSpec = tween(150)
+                                        )
                                     )
                                 }
                             }
@@ -160,7 +184,12 @@ fun TugasScreen(
                                     CatatanItem(
                                         item = item,
                                         onDelete = { showDeleteDialog = item },
-                                        onClick = { onNavigateToDetail(item.id) }
+                                        onClick = { onNavigateToDetail(item.id) },
+                                        modifier = Modifier.animateItem(
+                                            fadeInSpec = tween(150),
+                                            fadeOutSpec = tween(150),
+                                            placementSpec = tween(150)
+                                        )
                                     )
                                 }
                             }
@@ -170,7 +199,12 @@ fun TugasScreen(
                                     tugas = tugas,
                                     onToggleCompletion = { viewModel.toggleTugasCompletion(tugas) },
                                     onDelete = { showDeleteDialog = tugas },
-                                    onClick = { onNavigateToDetail(tugas.id) }
+                                    onClick = { onNavigateToDetail(tugas.id) },
+                                    modifier = Modifier.animateItem(
+                                        fadeInSpec = tween(150),
+                                        fadeOutSpec = tween(150),
+                                        placementSpec = tween(150)
+                                    )
                                 )
                             }
                         } else {
@@ -178,7 +212,12 @@ fun TugasScreen(
                                 CatatanItem(
                                     item = item,
                                     onDelete = { showDeleteDialog = item },
-                                    onClick = { onNavigateToDetail(item.id) }
+                                    onClick = { onNavigateToDetail(item.id) },
+                                    modifier = Modifier.animateItem(
+                                        fadeInSpec = tween(150),
+                                        fadeOutSpec = tween(150),
+                                        placementSpec = tween(150)
+                                    )
                                 )
                             }
                         }
@@ -192,7 +231,7 @@ fun TugasScreen(
         AlertDialog(
             onDismissRequest = { showDeleteDialog = null },
             title = { Text("Konfirmasi Hapus", fontWeight = FontWeight.Bold) },
-            text = { Text("Yakin ingin menghapus item ini?") },
+            text = { Text("Yakin ingin menghapus item ini kamu?") },
             confirmButton = {
                 Button(
                     onClick = {
@@ -217,12 +256,32 @@ fun TugasScreen(
 
 @Composable
 fun SectionHeader(title: String) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-        color = WhiteSoft,
-        modifier = Modifier.padding(top = 8.dp)
-    )
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(0.5.dp)
+                .background(TextSoftSecondary.copy(alpha = 0.2f))
+        )
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            color = WhiteSoft,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(0.5.dp)
+                .background(TextSoftSecondary.copy(alpha = 0.2f))
+        )
+    }
 }
 
 @Composable
@@ -237,14 +296,14 @@ fun HeaderSection(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(160.dp)
+            .height(150.dp)
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(DarkPrimary, DarkTertiary)
+                    colors = listOf(CoffeeBrown, CoffeeDark)
                 ),
-                shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)
+                shape = RoundedCornerShape(bottomStart = 60.dp, bottomEnd = 60.dp)
             )
-            .padding(horizontal = 24.dp, vertical = 24.dp),
+            .padding(horizontal = 32.dp, vertical = 24.dp),
         contentAlignment = Alignment.BottomStart
     ) {
         if (isSearching) {
@@ -256,7 +315,7 @@ fun HeaderSection(
                     .padding(bottom = 8.dp),
                 placeholder = { 
                     Text(
-                        "Cari tugas atau catatan...", 
+                        "Cari...", 
                         style = MaterialTheme.typography.bodyMedium,
                         color = WhiteSoft.copy(alpha = 0.5f) 
                     ) 
@@ -292,17 +351,21 @@ fun HeaderSection(
                         style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                         color = WhiteSoft
                     )
+                    Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = subtitle,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = WhiteSoft.copy(alpha = 0.7f)
+                        color = WhiteSoft.copy(alpha = 0.8f)
                     )
                 }
                 IconButton(
                     onClick = { onSearchToggle(true) },
-                    modifier = Modifier.background(WhiteSoft.copy(alpha = 0.1f), CircleShape)
+                    modifier = Modifier
+                        .padding(bottom = 4.dp)
+                        .background(WhiteSoft.copy(alpha = 0.1f), CircleShape)
+                        .size(40.dp)
                 ) {
-                    Icon(Icons.Default.Search, contentDescription = "Search", tint = WhiteSoft)
+                    Icon(Icons.Default.Search, contentDescription = "Search", tint = WhiteSoft, modifier = Modifier.size(24.dp))
                 }
             }
         }
@@ -313,9 +376,10 @@ fun HeaderSection(
 fun CatatanItem(
     item: TugasEntity,
     onDelete: () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth()) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -375,20 +439,7 @@ fun CatatanItem(
                 
                 if (item.deadline != null) {
                     Spacer(modifier = Modifier.height(16.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.CalendarToday,
-                            contentDescription = null,
-                            tint = ImageGold.copy(alpha = 0.8f),
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = DateTimeUtils.formatDeadline(item.deadline).substringBefore(","),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = TextSoftSecondary
-                        )
-                    }
+                    DateDisplay(date = item.deadline)
                 }
             }
         }

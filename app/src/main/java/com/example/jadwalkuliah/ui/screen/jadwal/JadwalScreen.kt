@@ -1,5 +1,7 @@
 package com.example.jadwalkuliah.ui.screen.jadwal
 
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,6 +21,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.jadwalkuliah.data.local.entity.JadwalEntity
+import com.example.jadwalkuliah.ui.component.*
 import com.example.jadwalkuliah.ui.theme.*
 
 @Composable
@@ -29,15 +32,23 @@ fun JadwalScreen(
     val allJadwal by viewModel.allJadwal.collectAsState()
     val hariList = listOf("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu")
 
+    val scrollState = rememberLazyListState()
+
+    // Reset scroll to top when screen is created/re-entered
+    LaunchedEffect(Unit) {
+        scrollState.scrollToItem(0)
+    }
+
     var showDeleteDialog by remember { mutableStateOf<JadwalEntity?>(null) }
 
     Scaffold(
         topBar = {
             HeaderSection(title = "Jadwal Kuliah")
         },
-        containerColor = DarkBackground
+        containerColor = Color.Transparent
     ) { innerPadding ->
         LazyColumn(
+            state = scrollState,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -55,10 +66,15 @@ fun JadwalScreen(
                         EmptyJadwalItem()
                     }
                 } else {
-                    items(jadwalHariIni) { jadwal ->
-                        JadwalItem(
+                    items(jadwalHariIni, key = { it.id }) { jadwal ->
+                        JadwalCard(
                             jadwal = jadwal,
-                            onClick = { onNavigateToDetail(jadwal.id) }
+                            onClick = { onNavigateToDetail(jadwal.id) },
+                            modifier = Modifier.animateItem(
+                                fadeInSpec = tween(150),
+                                fadeOutSpec = tween(150),
+                                placementSpec = tween(150)
+                            )
                         )
                     }
                 }
@@ -75,96 +91,28 @@ fun HeaderSection(title: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(140.dp)
+            .height(150.dp)
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(
-                        DarkPrimary,
-                        DarkTertiary
-                    )
+                    colors = listOf(CoffeeBrown, CoffeeDark)
                 ),
-                shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
+                shape = RoundedCornerShape(bottomStart = 60.dp, bottomEnd = 60.dp)
             )
-            .padding(24.dp),
+            .padding(horizontal = 32.dp, vertical = 24.dp),
         contentAlignment = Alignment.BottomStart
     ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-            color = WhiteSoft
-        )
-    }
-}
-
-@Composable
-fun JadwalItem(
-    jadwal: JadwalEntity,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() },
-        shape = RoundedCornerShape(28.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        colors = CardDefaults.cardColors(containerColor = DarkSurface)
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Bagian Kiri (Waktu)
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(DarkSurfaceVariant)
-                    .padding(horizontal = 12.dp, vertical = 10.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
-                        imageVector = Icons.Default.AccessTime,
-                        contentDescription = null,
-                        tint = DarkTertiary,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = jadwal.waktuMulai,
-                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                        color = DarkTertiary
-                    )
-                    Text(
-                        text = jadwal.waktuSelesai,
-                        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                        color = DarkTertiary
-                    )
-                }
-            }
-            
-            Spacer(modifier = Modifier.width(16.dp))
-            
-            // Bagian Kanan (Info)
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = jadwal.namaMatkul,
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    color = WhiteSoft
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = jadwal.dosen,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = TextSoftSecondary
-                )
-                Text(
-                    text = jadwal.ruangan,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = TextSoftSecondary
-                )
-            }
+        Column {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                color = WhiteSoft
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Kelola jadwal kuliah kamu!",
+                style = MaterialTheme.typography.bodyMedium,
+                color = WhiteSoft.copy(alpha = 0.8f)
+            )
         }
     }
 }

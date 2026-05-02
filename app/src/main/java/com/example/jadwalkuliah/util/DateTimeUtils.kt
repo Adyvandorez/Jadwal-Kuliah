@@ -10,10 +10,16 @@ import java.util.concurrent.TimeUnit
 object DateTimeUtils {
     private val localeId = Locale("id", "ID")
     private val deadlineFormatter = SimpleDateFormat("dd MMM yyyy, HH:mm", localeId)
+    private val dateFormatter = SimpleDateFormat("dd MMM yyyy", localeId)
 
     fun formatDeadline(timestamp: Long?): String {
         if (timestamp == null) return "Tanpa Deadline"
         return deadlineFormatter.format(Date(timestamp))
+    }
+
+    fun formatDateOnly(timestamp: Long?): String {
+        if (timestamp == null) return "-"
+        return dateFormatter.format(Date(timestamp))
     }
 
     fun getCountdown(deadline: Long?): String {

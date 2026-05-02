@@ -8,6 +8,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -27,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.example.jadwalkuliah.R
 import androidx.navigation.NavController
 import com.example.jadwalkuliah.ui.component.AppSwitch
 import com.example.jadwalkuliah.data.local.entity.PengingatEntity
@@ -47,6 +50,12 @@ fun PengingatScreen(
     var pengingatToEdit by remember { mutableStateOf<PengingatEntity?>(null) }
     var pengingatToDelete by remember { mutableStateOf<PengingatEntity?>(null) }
     
+    val lazyListState = rememberLazyListState()
+
+    LaunchedEffect(Unit) {
+        lazyListState.scrollToItem(0)
+    }
+    
     // Listen to FAB clicks from NavGraph
     val fabClicked by navController.currentBackStackEntry
         ?.savedStateHandle
@@ -60,31 +69,17 @@ fun PengingatScreen(
         }
     }
 
-    var searchQuery by remember { mutableStateOf("") }
-    var isSearching by remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
-            HeaderSection(
+            PengingatHeader(
                 title = "Pengingat Rutin",
-                subtitle = "Kelola pengingat harian Anda",
-                searchQuery = searchQuery,
-                onSearchQueryChange = { searchQuery = it },
-                isSearching = isSearching,
-                onSearchToggle = { 
-                    isSearching = it
-                    if (!it) searchQuery = ""
-                }
+                onBack = onBackClick
             )
         },
-        containerColor = DarkBackground
+        containerColor = Color.Transparent
     ) { padding ->
-        val filteredList = remember(pengingatList, searchQuery) {
-            if (searchQuery.isEmpty()) pengingatList
-            else pengingatList.filter { it.judul.contains(searchQuery, ignoreCase = true) }
-        }
-
         LazyColumn(
+            state = lazyListState,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
@@ -92,12 +87,17 @@ fun PengingatScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(top = 16.dp, bottom = 100.dp)
         ) {
-            items(filteredList, key = { it.id }) { pengingat ->
+            items(pengingatList, key = { it.id }) { pengingat ->
                 PengingatItem(
                     pengingat = pengingat,
                     onToggle = { viewModel.togglePengingat(pengingat) },
                     onDelete = { pengingatToDelete = pengingat },
-                    onClick = { onNavigateToDetail(pengingat.id) }
+                    onClick = { onNavigateToDetail(pengingat.id) },
+                    modifier = Modifier.animateItem(
+                        fadeInSpec = tween(150),
+                        fadeOutSpec = tween(150),
+                        placementSpec = tween(150)
+                    )
                 )
             }
         }
@@ -169,14 +169,56 @@ fun PengingatScreen(
 }
 
 @Composable
+fun PengingatHeader(title: String, onBack: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(150.dp)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(CoffeeBrown, CoffeeDark)
+                ),
+                shape = RoundedCornerShape(bottomStart = 60.dp, bottomEnd = 60.dp)
+            )
+            .padding(horizontal = 24.dp, vertical = 24.dp),
+        contentAlignment = Alignment.BottomStart
+    ) {
+        Column {
+            IconButton(
+                onClick = onBack,
+                modifier = Modifier.offset(x = (-12).dp, y = (-20).dp)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = WhiteSoft,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                color = WhiteSoft
+            )
+            Text(
+                text = "Atur pengingat rutin harian kamu!",
+                style = MaterialTheme.typography.bodyMedium,
+                color = WhiteSoft.copy(alpha = 0.7f)
+            )
+        }
+    }
+}
+
+@Composable
 fun PengingatItem(
     pengingat: PengingatEntity,
     onToggle: () -> Unit,
     onDelete: () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() },
         shape = RoundedCornerShape(28.dp),
@@ -308,6 +350,7 @@ fun AddEditPengingatDialog(
                     onClick = {
                         TimePickerDialog(
                             context,
+                            R.style.CustomPickerDialogTheme,
                             { _, h, m -> waktu = String.format(Locale.getDefault(), "%02d:%02d", h, m) },
                             calendar.get(Calendar.HOUR_OF_DAY),
                             calendar.get(Calendar.MINUTE),

@@ -60,7 +60,7 @@ fun EditProfilScreen(
 
     Scaffold(
         topBar = {
-            HeaderSectionWithBack(title = "Edit Profil", onBack = onNavigateBack)
+            EditProfilHeader(title = "Edit Profil", onBack = onNavigateBack)
         },
         containerColor = DarkBackground
     ) { innerPadding ->
@@ -155,34 +155,41 @@ fun EditProfilScreen(
 }
 
 @Composable
-fun HeaderSectionWithBack(title: String, onBack: () -> Unit) {
+fun EditProfilHeader(title: String, onBack: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(140.dp)
+            .height(180.dp)
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(CoffeeBrown, CoffeeDark)
                 ),
-                shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)
+                shape = RoundedCornerShape(bottomStart = 60.dp, bottomEnd = 60.dp)
             )
-            .padding(top = 16.dp, start = 8.dp, end = 24.dp, bottom = 24.dp),
+            .padding(horizontal = 24.dp, vertical = 24.dp),
         contentAlignment = Alignment.BottomStart
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            IconButton(onClick = onBack) {
+        Column {
+            IconButton(
+                onClick = onBack,
+                modifier = Modifier.offset(x = (-12).dp, y = (-40).dp)
+            ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = WhiteSoft
+                    tint = WhiteSoft,
+                    modifier = Modifier.size(28.dp)
                 )
             }
-            Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = title,
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                color = WhiteSoft,
-                modifier = Modifier.padding(start = 16.dp)
+                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                color = WhiteSoft
+            )
+            Text(
+                text = "Perbarui informasi profil kamu!",
+                style = MaterialTheme.typography.bodyMedium,
+                color = WhiteSoft.copy(alpha = 0.7f)
             )
         }
     }

@@ -1,5 +1,8 @@
 package com.example.jadwalkuliah.ui.screen.tugas
 
+import android.content.Context
+import android.content.Intent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -14,11 +17,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.content.FileProvider
 import com.example.jadwalkuliah.data.local.entity.TugasEntity
 import com.example.jadwalkuliah.ui.component.*
 import com.example.jadwalkuliah.ui.theme.*
+import com.example.jadwalkuliah.util.DateTimeUtils
+import java.io.File
 
 @Composable
 fun DetailTugasScreen(
@@ -29,6 +37,7 @@ fun DetailTugasScreen(
 ) {
     var tugas by remember { mutableStateOf<TugasEntity?>(null) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     
     LaunchedEffect(tugasId) {
         tugas = viewModel.getTugasById(tugasId)
@@ -36,36 +45,134 @@ fun DetailTugasScreen(
 
     Scaffold(
         topBar = {
-            HeaderSectionWithBack(
-                title = "Detail Tugas",
-                onBack = onNavigateBack,
-                actions = {
-                    IconButton(onClick = { onNavigateToEdit(tugasId) }) {
-                        Icon(Icons.Default.Edit, contentDescription = "Edit", tint = WhiteSoft)
+            DetailTugasHeader(
+                title = if (tugas?.kategori == "Catatan") "Detail Catatan" else "Detail Tugas",
+                onBack = onNavigateBack
+            )
+        },
+        bottomBar = {
+            tugas?.let { data ->
+                Surface(
+                    color = DarkBackground,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp, vertical = 16.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Button(
+                            onClick = { onNavigateToEdit(data.id) },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(60.dp),
+                            shape = RoundedCornerShape(24.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = DarkSurface),
+                            border = BorderStroke(1.dp, GoldSoft.copy(alpha = 0.5f))
+                        ) {
+                            Icon(Icons.Default.Edit, contentDescription = null, tint = GoldSoft, modifier = Modifier.size(20.dp))
+                            Spacer(Modifier.width(10.dp))
+                            Text("Edit", fontWeight = FontWeight.Bold, color = GoldSoft, fontSize = 16.sp)
+                        }
+
+                        Button(
+                            onClick = { showDeleteDialog = true },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(60.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = DeleteRed),
+                            shape = RoundedCornerShape(24.dp),
+                            elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
+                        ) {
+                            Icon(Icons.Default.Delete, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+                            Spacer(Modifier.width(10.dp))
+                            Text("Hapus", fontWeight = FontWeight.Bold, color = Color.White, fontSize = 16.sp)
+                        }
                     }
                 }
-            )
+            }
         },
         containerColor = DarkBackground
     ) { innerPadding ->
         tugas?.let { data ->
             Column(
                 modifier = Modifier
-                    .padding(innerPadding)
                     .fillMaxSize()
+                    .padding(innerPadding)
                     .verticalScroll(rememberScrollState())
-                    .padding(24.dp)
+                    .padding(horizontal = 24.dp, vertical = 24.dp)
             ) {
-                TugasCard(
-                    tugas = data,
-                    onClick = {},
-                    onToggleCompletion = {
-                        val updated = data.copy(isCompleted = !data.isCompleted)
-                        viewModel.updateTugas(updated)
-                        tugas = updated
-                    },
-                    onDelete = { showDeleteDialog = true }
-                )
+                val isTugas = data.kategori != "Catatan"
+                // ... rest of content ...
+
+                InfoColumn(label = "Judul", value = data.judul, isTitle = true)
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        InfoColumn(label = "Kategori", value = data.kategori.ifEmpty { "Tugas" }, isAccent = true)
+                    }
+                    if (isTugas) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            val status = if (data.isCompleted) "Selesai" else "Belum Selesai"
+                            val statusColor = if (data.isCompleted) SuccessGreen else DeleteRed
+                            InfoColumn(label = "Status", value = status, valueColor = statusColor)
+                        }
+                    }
+                }
+
+                if (isTugas && data.deadline != null) {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            InfoColumn(label = "Deadline", value = DateTimeUtils.formatDeadline(data.deadline))
+                        }
+                        val countdown = DateTimeUtils.getCountdown(data.deadline)
+                        if (countdown.isNotEmpty()) {
+                            val isOverdue = DateTimeUtils.isOverdue(data.deadline)
+                            Column(modifier = Modifier.weight(1f)) {
+                                InfoColumn(
+                                    label = "Countdown",
+                                    value = countdown,
+                                    valueColor = if (isOverdue) DeleteRed else GoldSoft
+                                )
+                            }
+                        }
+                    }
+                }
+
+                if (data.deskripsi.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    InfoColumn(label = "Deskripsi", value = data.deskripsi)
+                }
+
+                // Lampiran Section
+                if (data.lampiran.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(32.dp))
+                    Text(
+                        text = "Lampiran",
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        color = GoldSoft
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    data.lampiran.forEach { path ->
+                        DetailAttachmentCard(
+                            path = path,
+                            onOpen = { openFile(context, path) },
+                            onShare = { shareFile(context, path) },
+                            onDelete = {
+                                val updatedLampiran = data.lampiran.filter { it != path }
+                                viewModel.updateTugas(data.copy(lampiran = updatedLampiran))
+                                tugas = data.copy(lampiran = updatedLampiran)
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                }
+                
+                Spacer(modifier = Modifier.height(24.dp))
             }
         }
     }
@@ -74,7 +181,7 @@ fun DetailTugasScreen(
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
             title = { Text("Konfirmasi Hapus", fontWeight = FontWeight.Bold) },
-            text = { Text("Apakah Anda yakin ingin menghapus tugas ini?") },
+            text = { Text("Apakah kamu yakin ingin menghapus ini?") },
             confirmButton = {
                 Button(
                     onClick = {
@@ -90,7 +197,7 @@ fun DetailTugasScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Batal", color = DarkTertiary)
+                    Text("Batal", color = GoldSoft)
                 }
             },
             shape = RoundedCornerShape(32.dp),
@@ -101,43 +208,103 @@ fun DetailTugasScreen(
     }
 }
 
+private fun shareFile(context: Context, path: String) {
+    val file = File(path)
+    if (!file.exists()) return
+    
+    val uri = FileProvider.getUriForFile(
+        context,
+        "${context.packageName}.provider",
+        file
+    )
+    
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = context.contentResolver.getType(uri) ?: "*/*"
+        putExtra(Intent.EXTRA_STREAM, uri)
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    context.startActivity(Intent.createChooser(intent, "Bagikan via"))
+}
+
+private fun openFile(context: Context, path: String) {
+    val file = File(path)
+    if (!file.exists()) return
+    
+    val uri = FileProvider.getUriForFile(
+        context,
+        "${context.packageName}.provider",
+        file
+    )
+    
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        setDataAndType(uri, context.contentResolver.getType(uri) ?: "*/*")
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    context.startActivity(Intent.createChooser(intent, "Buka dengan"))
+}
+
 @Composable
-fun HeaderSectionWithBack(title: String, onBack: () -> Unit, actions: @Composable () -> Unit = {}) {
+fun DetailTugasHeader(title: String, onBack: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(140.dp)
+            .height(180.dp)
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(DarkPrimary, DarkTertiary)
+                    colors = listOf(CoffeeBrown, CoffeeDark)
                 ),
-                shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)
+                shape = RoundedCornerShape(bottomStart = 60.dp, bottomEnd = 60.dp)
             )
-            .padding(top = 16.dp, start = 8.dp, end = 16.dp, bottom = 24.dp),
+            .padding(horizontal = 24.dp, vertical = 24.dp),
         contentAlignment = Alignment.BottomStart
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+        Column {
+            IconButton(
+                onClick = onBack,
+                modifier = Modifier.offset(x = (-12).dp, y = (-40).dp)
             ) {
-                IconButton(onClick = onBack) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = WhiteSoft
-                    )
-                }
-                actions()
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = WhiteSoft,
+                    modifier = Modifier.size(28.dp)
+                )
             }
-            Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = title,
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                color = WhiteSoft,
-                modifier = Modifier.padding(start = 16.dp)
+                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                color = WhiteSoft
+            )
+            Text(
+                text = "Lihat detail informasi lengkap kamu!",
+                style = MaterialTheme.typography.bodyMedium,
+                color = WhiteSoft.copy(alpha = 0.7f)
             )
         }
+    }
+}
+
+@Composable
+fun InfoColumn(
+    label: String,
+    value: String,
+    isTitle: Boolean = false,
+    isAccent: Boolean = false,
+    valueColor: Color? = null
+) {
+    Column {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            color = TextSoftSecondary
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = value,
+            style = if (isTitle) MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+            else MaterialTheme.typography.titleMedium,
+            color = valueColor ?: if (isAccent) GoldSoft else WhiteSoft,
+            lineHeight = 24.sp
+        )
     }
 }

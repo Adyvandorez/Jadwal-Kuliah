@@ -29,7 +29,7 @@ val LightTextSecondary = Color(0xFF5D4037)
 val LightOutline = Color(0xFFD2B48C)
 
 // Dark Mode (Premium Brown Coffee Theme)
-val DarkBackground = Color(0xFF000000)
+val DarkBackground = Color(0xFF0F0E0C)
 val DarkSurface = Color(0xFF1E1A17)
 val DarkSurfaceVariant = Color(0xFF2A231D)
 val DarkPrimary = Color(0xFF6F4E37)

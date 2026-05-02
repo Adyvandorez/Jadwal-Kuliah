@@ -1,6 +1,7 @@
 package com.example.jadwalkuliah.ui.screen.jadwal
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,9 +16,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import android.app.TimePickerDialog
+import com.example.jadwalkuliah.R
 import com.example.jadwalkuliah.data.local.entity.JadwalEntity
 import com.example.jadwalkuliah.ui.theme.*
 import com.example.jadwalkuliah.util.AlarmScheduler
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -114,7 +118,7 @@ fun AddEditJadwalScreen(
                     readOnly = true,
                     label = { Text("Hari") },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                    modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
+                    modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true).fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = GoldSoft,
@@ -143,36 +147,79 @@ fun AddEditJadwalScreen(
             }
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                OutlinedTextField(
-                    value = waktuMulai,
-                    onValueChange = { waktuMulai = it },
-                    label = { Text("Mulai (HH:mm)") },
-                    modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = GoldSoft,
-                        unfocusedBorderColor = DarkOutline,
-                        focusedLabelColor = GoldSoft,
-                        unfocusedLabelColor = TextSoftSecondary,
-                        focusedTextColor = WhiteSoft,
-                        unfocusedTextColor = WhiteSoft
+                // Waktu Mulai
+                Box(modifier = Modifier.weight(1f)) {
+                    OutlinedTextField(
+                        value = waktuMulai,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Mulai") },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(20.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = GoldSoft,
+                            unfocusedBorderColor = DarkOutline,
+                            focusedLabelColor = GoldSoft,
+                            unfocusedLabelColor = TextSoftSecondary,
+                            focusedTextColor = WhiteSoft,
+                            unfocusedTextColor = WhiteSoft
+                        )
                     )
-                )
-                OutlinedTextField(
-                    value = waktuSelesai,
-                    onValueChange = { waktuSelesai = it },
-                    label = { Text("Selesai (HH:mm)") },
-                    modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = GoldSoft,
-                        unfocusedBorderColor = DarkOutline,
-                        focusedLabelColor = GoldSoft,
-                        unfocusedLabelColor = TextSoftSecondary,
-                        focusedTextColor = WhiteSoft,
-                        unfocusedTextColor = WhiteSoft
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .clickable {
+                                val timeParts = waktuMulai.split(":")
+                                val h = if (timeParts.size == 2) timeParts[0].toIntOrNull() ?: 8 else 8
+                                val m = if (timeParts.size == 2) timeParts[1].toIntOrNull() ?: 0 else 0
+                                TimePickerDialog(
+                                    context,
+                                    R.style.CustomPickerDialogTheme,
+                                    { _, hour, minute ->
+                                        waktuMulai = String.format(Locale.getDefault(), "%02d:%02d", hour, minute)
+                                    },
+                                    h, m, true
+                                ).show()
+                            }
                     )
-                )
+                }
+
+                // Waktu Selesai
+                Box(modifier = Modifier.weight(1f)) {
+                    OutlinedTextField(
+                        value = waktuSelesai,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Selesai") },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(20.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = GoldSoft,
+                            unfocusedBorderColor = DarkOutline,
+                            focusedLabelColor = GoldSoft,
+                            unfocusedLabelColor = TextSoftSecondary,
+                            focusedTextColor = WhiteSoft,
+                            unfocusedTextColor = WhiteSoft
+                        )
+                    )
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .clickable {
+                                val timeParts = waktuSelesai.split(":")
+                                val h = if (timeParts.size == 2) timeParts[0].toIntOrNull() ?: 10 else 10
+                                val m = if (timeParts.size == 2) timeParts[1].toIntOrNull() ?: 0 else 0
+                                TimePickerDialog(
+                                    context,
+                                    R.style.CustomPickerDialogTheme,
+                                    { _, hour, minute ->
+                                        waktuSelesai = String.format(Locale.getDefault(), "%02d:%02d", hour, minute)
+                                    },
+                                    h, m, true
+                                ).show()
+                            }
+                    )
+                }
             }
 
             OutlinedTextField(
@@ -238,14 +285,14 @@ fun HeaderSectionAddEdit(title: String, onBack: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(140.dp)
+            .height(180.dp)
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(CoffeeBrown, CoffeeDark)
                 ),
-                shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)
+                shape = RoundedCornerShape(bottomStart = 60.dp, bottomEnd = 60.dp)
             )
-            .padding(top = 16.dp, start = 8.dp, end = 24.dp, bottom = 24.dp),
+            .padding(top = 16.dp, start = 16.dp, end = 32.dp, bottom = 24.dp),
         contentAlignment = Alignment.BottomStart
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -257,12 +304,19 @@ fun HeaderSectionAddEdit(title: String, onBack: () -> Unit) {
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = title,
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                color = WhiteSoft,
-                modifier = Modifier.padding(start = 16.dp)
-            )
+            Column(modifier = Modifier.padding(start = 16.dp)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                    color = WhiteSoft
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Isi detail informasi dengan benar!",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = WhiteSoft.copy(alpha = 0.8f)
+                )
+            }
         }
     }
 }

@@ -1,37 +1,29 @@
 package com.example.jadwalkuliah.ui.navigation
 
+import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.*
 import com.example.jadwalkuliah.data.local.AppDatabase
@@ -44,24 +36,29 @@ import com.example.jadwalkuliah.data.repository.UserProfileRepository
 import com.example.jadwalkuliah.ui.screen.beranda.*
 import com.example.jadwalkuliah.ui.screen.jadwal.*
 import com.example.jadwalkuliah.ui.screen.tugas.*
+import com.example.jadwalkuliah.data.local.AlarmPreferences
 import com.example.jadwalkuliah.ui.screen.pengaturan.*
 import com.example.jadwalkuliah.ui.screen.pengingat.*
 import com.example.jadwalkuliah.ui.theme.*
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import kotlinx.coroutines.launch
+import androidx.compose.ui.graphics.Canvas
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.jadwalkuliah.ui.theme.JadwalKuliahTheme
+import androidx.compose.foundation.Canvas
 
 @Composable
 fun MainScreen(themePreferences: ThemePreferences) {
 
     val navController = rememberNavController()
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
 
     val database = remember { AppDatabase.getDatabase(context) }
     val userProfilePreferences = remember { UserProfilePreferences(context) }
+    val alarmPreferences = remember { AlarmPreferences(context) }
     
     val jadwalRepository = remember { JadwalRepository(database.jadwalDao()) }
     val tugasRepository = remember { TugasRepository(database.tugasDao()) }
@@ -80,36 +77,31 @@ fun MainScreen(themePreferences: ThemePreferences) {
 
     Scaffold(
         bottomBar = {
-            val isDark = isSystemInDarkTheme() || true // Force Dark for Premium Coffee theme
             val isMainScreen = screens.any { it.route == currentRoute } || currentRoute == null || currentRoute == Screen.Pengingat.route
+            val isFabVisible = isMainScreen && currentRoute != Screen.Pengaturan.route
 
-            if (true) { // Premium Coffee Navigation Bar
+            if (isMainScreen) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(100.dp),
+                        .height(105.dp),
                     contentAlignment = Alignment.BottomCenter
                 ) {
-                    val currentIndex = screens.indexOfFirst { it.route == currentRoute }.coerceAtLeast(0)
-                    
-                    // Animation for cutout progress (0f when at Pengaturan or sub-screens, 1f otherwise)
                     val cutoutProgress by animateFloatAsState(
-                        targetValue = if (isMainScreen && currentIndex != 3) 1f else 0f,
-                        animationSpec = tween(durationMillis = 500),
+                        targetValue = if (isFabVisible) 1f else 0f,
+                        animationSpec = tween(durationMillis = 300),
                         label = "cutoutProgress"
                     )
 
-                    // Custom Background with Dynamic Cutout
-                    val backgroundColor = DarkSurface
-                    val borderColor = DarkOutline
-                    
                     Canvas(modifier = Modifier.fillMaxSize()) {
                         val width = size.width
                         val height = size.height
-                        val cutoutRadius = 45.dp.toPx() * cutoutProgress
-                        val cornerRadius = 28.dp.toPx()
                         val navHeight = 80.dp.toPx()
                         val topY = height - navHeight
+                        val cornerRadius = 35.dp.toPx()
+                        
+                        val cutoutRadius = 46.dp.toPx() * cutoutProgress
+                        val curveWidth = 90.dp.toPx() * cutoutProgress
 
                         val path = Path().apply {
                             moveTo(0f, height)
@@ -122,16 +114,18 @@ fun MainScreen(themePreferences: ThemePreferences) {
                             )
                             
                             if (cutoutProgress > 0.01f) {
-                                lineTo(width / 2 - cutoutRadius * 1.5f, topY)
+                                val centerX = width / 2
+                                lineTo(centerX - curveWidth, topY)
+                                
                                 cubicTo(
-                                    x1 = width / 2 - cutoutRadius * 0.8f, y1 = topY,
-                                    x2 = width / 2 - cutoutRadius * 0.9f, y2 = topY + cutoutRadius,
-                                    x3 = width / 2, y3 = topY + cutoutRadius
+                                    x1 = centerX - cutoutRadius * 0.7f, y1 = topY,
+                                    x2 = centerX - cutoutRadius * 0.8f, y2 = topY + cutoutRadius * 0.8f,
+                                    x3 = centerX, y3 = topY + cutoutRadius * 0.8f
                                 )
                                 cubicTo(
-                                    x1 = width / 2 + cutoutRadius * 0.9f, y1 = topY + cutoutRadius,
-                                    x2 = width / 2 + cutoutRadius * 0.8f, y2 = topY,
-                                    x3 = width / 2 + cutoutRadius * 1.5f, topY
+                                    x1 = centerX + cutoutRadius * 0.8f, y1 = topY + cutoutRadius * 0.8f,
+                                    x2 = centerX + cutoutRadius * 0.7f, y2 = topY,
+                                    x3 = centerX + curveWidth, topY
                                 )
                             }
                             
@@ -146,11 +140,47 @@ fun MainScreen(themePreferences: ThemePreferences) {
                             close()
                         }
 
-                        drawPath(path = path, color = backgroundColor)
+                        drawPath(path = path, color = DarkSurface)
+
+                        // Top Outline following the curve
+                        val outlinePath = Path().apply {
+                            moveTo(0f, topY + cornerRadius)
+                            arcTo(
+                                rect = Rect(0f, topY, cornerRadius * 2, topY + cornerRadius * 2),
+                                startAngleDegrees = 180f,
+                                sweepAngleDegrees = 90f,
+                                forceMoveTo = false
+                            )
+                            
+                            if (cutoutProgress > 0.01f) {
+                                val centerX = width / 2
+                                lineTo(centerX - curveWidth, topY)
+                                
+                                cubicTo(
+                                    x1 = centerX - cutoutRadius * 0.7f, y1 = topY,
+                                    x2 = centerX - cutoutRadius * 0.8f, y2 = topY + cutoutRadius * 0.8f,
+                                    x3 = centerX, y3 = topY + cutoutRadius * 0.8f
+                                )
+                                cubicTo(
+                                    x1 = centerX + cutoutRadius * 0.8f, y1 = topY + cutoutRadius * 0.8f,
+                                    x2 = centerX + cutoutRadius * 0.7f, y2 = topY,
+                                    x3 = centerX + curveWidth, topY
+                                )
+                            }
+                            
+                            lineTo(width - cornerRadius, topY)
+                            arcTo(
+                                rect = Rect(width - cornerRadius * 2, topY, width, topY + cornerRadius * 2),
+                                startAngleDegrees = 270f,
+                                sweepAngleDegrees = 90f,
+                                forceMoveTo = false
+                            )
+                        }
+
                         drawPath(
-                            path = path,
-                            color = borderColor,
-                            style = Stroke(width = 1.dp.toPx())
+                            path = outlinePath,
+                            color = DarkOutline,
+                            style = Stroke(width = 2.dp.toPx())
                         )
                     }
 
@@ -163,35 +193,35 @@ fun MainScreen(themePreferences: ThemePreferences) {
                         windowInsets = WindowInsets(0)
                     ) {
                         screens.forEachIndexed { index, screen ->
-                            if (index == 2 && cutoutProgress > 0.5f) {
-                                Spacer(modifier = Modifier.weight(1f))
+                            if (index == 2) {
+                                Spacer(modifier = Modifier.weight(0.5f))
                             }
                             
-                            val isSelected = currentRoute == screen.route
+                            val isSelected = currentRoute == screen.route || (currentRoute == null && index == 0)
                             NavigationBarItem(
                                 icon = {
                                     Icon(
                                         imageVector = screen.icon,
                                         contentDescription = null,
-                                        modifier = Modifier.size(24.dp)
+                                        modifier = Modifier.size(26.dp)
                                     )
                                 },
                                 label = {
                                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                         Text(
                                             text = screen.title,
-                                            style = MaterialTheme.typography.labelSmall
+                                            style = MaterialTheme.typography.labelSmall.copy(
+                                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                                fontSize = 11.sp
+                                            )
                                         )
                                         if (isSelected) {
-                                            Spacer(modifier = Modifier.height(4.dp))
                                             Box(
                                                 modifier = Modifier
-                                                    .width(12.dp)
+                                                    .padding(top = 4.dp)
+                                                    .width(14.dp)
                                                     .height(3.dp)
-                                                    .background(
-                                                        color = DarkTertiary,
-                                                        shape = RoundedCornerShape(2.dp)
-                                                    )
+                                                    .background(Color(0xFFB8A899), RoundedCornerShape(1.5.dp))
                                             )
                                         }
                                     }
@@ -201,128 +231,77 @@ fun MainScreen(themePreferences: ThemePreferences) {
                                     if (currentRoute != screen.route) {
                                         navController.navigate(screen.route) {
                                             popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
+                                                saveState = false // Reset state when switching between main tabs
                                             }
                                             launchSingleTop = true
-                                            restoreState = true
+                                            restoreState = false // Do not restore previous scroll/state
                                         }
                                     }
                                 },
                                 colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = DarkTertiary,
-                                    selectedTextColor = DarkTertiary,
-                                    indicatorColor = Color.Transparent,
-                                    unselectedIconColor = TextSoftSecondary,
-                                    unselectedTextColor = TextSoftSecondary.copy(alpha = 0.7f)
+                                    selectedIconColor = Color(0xFFB8A899),
+                                    unselectedIconColor = GoldSoft,
+                                    selectedTextColor = Color(0xFFB8A899),
+                                    unselectedTextColor = GoldSoft,
+                                    indicatorColor = Color.Transparent
                                 )
                             )
                         }
-                    }
-                }
-            } else {
-                NavigationBar(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    tonalElevation = 3.dp
-                ) {
-                    screens.forEach { screen ->
-                        NavigationBarItem(
-                            icon = { Icon(screen.icon, contentDescription = null) },
-                            label = { Text(screen.title) },
-                            selected = currentRoute == screen.route,
-                            onClick = {
-                                if (currentRoute != screen.route) {
-                                    navController.navigate(screen.route) {
-                                        popUpTo(navController.graph.findStartDestination().id) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
-                            },
-                            colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = MaterialTheme.colorScheme.primary,
-                                selectedTextColor = MaterialTheme.colorScheme.primary,
-                                indicatorColor = Color.Transparent,
-                                unselectedIconColor = MaterialTheme.colorScheme.onSurface,
-                                unselectedTextColor = MaterialTheme.colorScheme.onSurface
-                            )
-                        )
                     }
                 }
             }
         },
         floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
-            val isDark = isSystemInDarkTheme()
             val isMainScreen = screens.any { it.route == currentRoute } || currentRoute == null || currentRoute == Screen.Pengingat.route
-            val currentIndex = screens.indexOfFirst { it.route == currentRoute }.coerceAtLeast(0)
+            val isFabVisible = isMainScreen && currentRoute != Screen.Pengaturan.route
 
-            // FAB shown on Beranda, Jadwal, Tugas, and Pengingat
-            if (isMainScreen && (currentIndex < 3 || currentRoute == Screen.Pengingat.route)) {
-                val onFabClickAction = {
-                    try {
-                        when {
-                            currentRoute == Screen.Beranda.route || currentRoute == Screen.Jadwal.route -> 
-                                navController.navigate("add_jadwal")
-                            currentRoute == Screen.Tugas.route -> 
-                                navController.navigate("add_tugas")
-                            currentRoute == Screen.Pengingat.route -> 
-                                navController.navigate("add_pengingat")
-                        }
-                    } catch (e: Exception) {}
-                }
-
-                if (true) {
-                    Box(
-                        modifier = Modifier
-                            .graphicsLayer {
-                                translationY = 70f.dp.toPx() // Geser lebih bawah lagi agar tidak menutupi menu
-                            }
-                            .size(64.dp)
-                            .shadow(
-                                elevation = 12.dp,
-                                shape = CircleShape,
-                                spotColor = DarkTertiary.copy(alpha = 0.6f)
-                            )
-                            .clip(CircleShape) // Pastikan klik hanya di area lingkaran
-                            .background(
-                                brush = Brush.radialGradient(
-                                    colors = listOf(
-                                        DarkTertiary,
-                                        GoldAccent
-                                    )
+            AnimatedVisibility(
+                visible = isFabVisible,
+                enter = fadeIn(animationSpec = tween(150)),
+                exit = fadeOut(animationSpec = tween(150))
+            ) {
+                Box(
+                    modifier = Modifier
+                        .offset(y = 64.dp)
+                        .size(64.dp)
+                        .shadow(
+                            elevation = 16.dp,
+                            shape = CircleShape,
+                            spotColor = Color.Black
+                        )
+                        .clip(CircleShape)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color(0xFF966C4B),
+                                    Color(0xFF4B3425)
                                 )
                             )
-                            .clickable { onFabClickAction() },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            Icons.Default.Add,
-                            contentDescription = "Tambah",
-                            tint = DarkBackground,
-                            modifier = Modifier.size(32.dp)
                         )
-                    }
-                } else {
-                    FloatingActionButton(
-                        onClick = { onFabClickAction() },
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                        shape = CircleShape,
-                        modifier = Modifier.graphicsLayer {
-                            translationY = 70f.dp.toPx()
-                        }
-                    ) {
-                        Icon(Icons.Default.Add, contentDescription = "Tambah")
-                    }
+                        .clickable { 
+                            when {
+                                currentRoute == Screen.Beranda.route || currentRoute == Screen.Jadwal.route || currentRoute == null -> 
+                                    navController.navigate("add_jadwal")
+                                currentRoute == Screen.Tugas.route -> 
+                                    navController.navigate("add_tugas")
+                                currentRoute == Screen.Pengingat.route -> 
+                                    navController.navigate("add_pengingat")
+                            }
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = "Tambah",
+                        tint = Color.White,
+                        modifier = Modifier.size(36.dp)
+                    )
                 }
             }
         }
     ) { innerPadding ->
-        val isMainScreen = screens.any { it.route == currentRoute } || currentRoute == null || currentRoute == "placeholder"
-
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize().background(DarkBackground)) {
             NavHost(
                 navController = navController,
                 startDestination = Screen.Beranda.route,
@@ -337,11 +316,7 @@ fun MainScreen(themePreferences: ThemePreferences) {
                     BerandaScreen(
                         viewModel = viewModel,
                         onNavigateToPengingat = { 
-                            try {
-                                navController.navigate(Screen.Pengingat.route)
-                            } catch (e: Exception) {
-                                // Handle cases where graph is not yet set
-                            }
+                            navController.navigate(Screen.Pengingat.route)
                         },
                         onNavigateToDetailJadwal = { id ->
                             navController.navigate("detail_jadwal/$id")
@@ -378,7 +353,26 @@ fun MainScreen(themePreferences: ThemePreferences) {
                         themePreferences = themePreferences,
                         onNavigateToEditProfil = {
                             navController.navigate("edit_profil")
+                        },
+                        onNavigateToNadaDering = {
+                            navController.navigate(Screen.NadaDering.route)
+                        },
+                        onNavigateToAbout = {
+                            navController.navigate(Screen.About.route)
                         }
+                    )
+                }
+
+                composable(Screen.About.route) {
+                    AboutScreen(
+                        onNavigateBack = { navController.popBackStack() }
+                    )
+                }
+
+                composable(Screen.NadaDering.route) {
+                    NadaDeringScreen(
+                        alarmPreferences = alarmPreferences,
+                        onNavigateBack = { navController.popBackStack() }
                     )
                 }
 
@@ -533,5 +527,14 @@ fun MainScreen(themePreferences: ThemePreferences) {
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFF0F0E0C)
+@Composable
+fun MainScreenPreview() {
+    JadwalKuliahTheme(darkTheme = true) {
+        val context = LocalContext.current
+        MainScreen(themePreferences = ThemePreferences(context))
     }
 }

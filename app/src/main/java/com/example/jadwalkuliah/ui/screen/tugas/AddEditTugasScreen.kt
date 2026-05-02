@@ -25,7 +25,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.example.jadwalkuliah.R
 import com.example.jadwalkuliah.data.local.entity.TugasEntity
 import com.example.jadwalkuliah.ui.theme.*
 import com.example.jadwalkuliah.util.AlarmScheduler
@@ -48,17 +50,16 @@ fun AddEditTugasScreen(
     var isCompleted by remember { mutableStateOf(false) }
     var lampiran by remember { mutableStateOf<List<String>>(emptyList()) }
 
-    val kategoriList = listOf("Tugas", "Catatan", "Proyek", "Lainnya")
     var expanded by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
     val localeId = remember { Locale.getAvailableLocales().find { it.language == "id" && it.country == "ID" } ?: Locale("id", "ID") }
     val sdf = remember { SimpleDateFormat("dd/MM/yyyy HH:mm", localeId) }
-    var deadlineText by remember { 
-        mutableStateOf(deadline?.let { sdf.format(Date(it)) } ?: "") 
-    }
-    
-    val context = LocalContext.current
+    val sdfDate = remember { SimpleDateFormat("dd/MM/yyyy", localeId) }
+    val sdfTime = remember { SimpleDateFormat("HH:mm", localeId) }
+
     val alarmScheduler = remember { AlarmScheduler(context) }
+    val calendar = remember { Calendar.getInstance() }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument(),
@@ -80,7 +81,6 @@ fun AddEditTugasScreen(
                 deskripsi = tugas.deskripsi
                 kategori = tugas.kategori
                 deadline = tugas.deadline
-                deadlineText = deadline?.let { sdf.format(Date(it)) } ?: ""
                 isCompleted = tugas.isCompleted
                 lampiran = tugas.lampiran
             }
@@ -109,7 +109,8 @@ fun AddEditTugasScreen(
             OutlinedTextField(
                 value = judul,
                 onValueChange = { judul = it },
-                label = { Text("Judul Tugas") },
+                label = { Text(if (kategori == "Catatan") "Judul Catatan" else "Judul Tugas") },
+                placeholder = { Text(if (kategori == "Catatan") "Contoh: Materi Kuliah" else "Contoh: Laporan Akhir") },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -126,6 +127,7 @@ fun AddEditTugasScreen(
                 value = deskripsi,
                 onValueChange = { deskripsi = it },
                 label = { Text("Deskripsi") },
+                placeholder = { Text("Tambahkan detail di sini...") },
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 4,
                 shape = RoundedCornerShape(20.dp),
@@ -149,7 +151,7 @@ fun AddEditTugasScreen(
                     readOnly = true,
                     label = { Text("Kategori") },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                    modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
+                    modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true).fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = GoldSoft,
@@ -165,7 +167,7 @@ fun AddEditTugasScreen(
                     onDismissRequest = { expanded = false },
                     modifier = Modifier.background(DarkSurface)
                 ) {
-                    kategoriList.forEach { selectionOption ->
+                    listOf("Tugas", "Catatan").forEach { selectionOption ->
                         DropdownMenuItem(
                             text = { Text(selectionOption, color = WhiteSoft) },
                             onClick = {
@@ -177,40 +179,111 @@ fun AddEditTugasScreen(
                 }
             }
 
-            OutlinedTextField(
-                value = deadlineText,
-                onValueChange = { 
-                    deadlineText = it
-                    try {
-                        deadline = if (it.isBlank()) null else sdf.parse(it)?.time
-                    } catch (e: Exception) { }
-                },
-                label = { Text("Deadline (tgl/bln/thn jam:menit)") },
-                placeholder = { Text("01/01/2024 23:59") },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = GoldSoft,
-                    unfocusedBorderColor = DarkOutline,
-                    focusedLabelColor = GoldSoft,
-                    unfocusedLabelColor = TextSoftSecondary,
-                    focusedTextColor = WhiteSoft,
-                    unfocusedTextColor = WhiteSoft
-                ),
-                trailingIcon = {
-                    if (deadlineText.isNotEmpty()) {
-                        IconButton(onClick = { 
-                            deadlineText = ""
-                            deadline = null
-                        }) {
-                            Icon(Icons.Default.Close, contentDescription = "Clear", tint = TextSoftSecondary)
+            // Deadline / Date Selection
+            val currentDeadline = deadline ?: System.currentTimeMillis()
+            calendar.timeInMillis = currentDeadline
+
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(
+                    if (kategori == "Catatan") "Tanggal Catatan" else "Batas Waktu (Deadline)",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = TextSoftSecondary
+                )
+                
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    // Date Picker Button
+                    Button(
+                        onClick = {
+                            val datePickerDialog = android.app.DatePickerDialog(
+                                context,
+                                R.style.CustomPickerDialogTheme,
+                                { _, year, month, dayOfMonth ->
+                                    calendar.set(Calendar.YEAR, year)
+                                    calendar.set(Calendar.MONTH, month)
+                                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                                    deadline = calendar.timeInMillis
+                                },
+                                calendar.get(Calendar.YEAR),
+                                calendar.get(Calendar.MONTH),
+                                calendar.get(Calendar.DAY_OF_MONTH)
+                            )
+                            datePickerDialog.show()
+                        },
+                        modifier = Modifier.weight(1f).height(56.dp),
+                        shape = RoundedCornerShape(20.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = DarkSurface)
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.Today, contentDescription = null, tint = GoldSoft, modifier = Modifier.size(20.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = sdfDate.format(Date(currentDeadline)),
+                                color = GoldSoft,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+
+                    // Time Picker Button
+                    Button(
+                        onClick = {
+                            val timePickerDialog = android.app.TimePickerDialog(
+                                context,
+                                R.style.CustomPickerDialogTheme,
+                                { _, hourOfDay, minute ->
+                                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                                    calendar.set(Calendar.MINUTE, minute)
+                                    deadline = calendar.timeInMillis
+                                },
+                                calendar.get(Calendar.HOUR_OF_DAY),
+                                calendar.get(Calendar.MINUTE),
+                                true
+                            )
+                            timePickerDialog.show()
+                        },
+                        modifier = Modifier.weight(0.8f).height(56.dp),
+                        shape = RoundedCornerShape(20.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = DarkSurface)
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.AccessTime, contentDescription = null, tint = GoldSoft, modifier = Modifier.size(20.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = sdfTime.format(Date(currentDeadline)),
+                                color = GoldSoft,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 14.sp
+                            )
                         }
                     }
                 }
-            )
+            }
+
+            if (kategori == "Tugas") {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(DarkSurface)
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Checkbox(
+                        checked = isCompleted,
+                        onCheckedChange = { isCompleted = it },
+                        colors = CheckboxDefaults.colors(
+                            checkedColor = GoldSoft,
+                            uncheckedColor = DarkOutline,
+                            checkmarkColor = DarkBackground
+                        )
+                    )
+                    Text("Tandai sebagai Selesai", color = WhiteSoft, style = MaterialTheme.typography.bodyMedium)
+                }
+            }
 
             // Lampiran Section
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
                     "Lampiran",
                     style = MaterialTheme.typography.titleMedium.copy(
@@ -233,15 +306,16 @@ fun AddEditTugasScreen(
                     },
                     modifier = Modifier.fillMaxWidth().height(56.dp),
                     shape = RoundedCornerShape(20.dp),
-                    border = BorderStroke(1.dp, DarkOutline),
+                    border = BorderStroke(1.dp, GoldSoft.copy(alpha = 0.3f)),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = GoldSoft)
                 ) {
-                    Icon(Icons.Default.AttachFile, contentDescription = null)
+                    Icon(Icons.Default.AttachFile, contentDescription = null, modifier = Modifier.size(20.dp))
                     Spacer(Modifier.width(8.dp))
                     Text("Tambah Lampiran", fontWeight = FontWeight.Bold)
                 }
             }
 
+            Spacer(modifier = Modifier.weight(1f))
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
@@ -256,7 +330,11 @@ fun AddEditTugasScreen(
                         isCompleted = isCompleted,
                         lampiran = lampiran
                     )
-                    viewModel.insertTugas(tugas)
+                    if (tugasId == null) {
+                        viewModel.insertTugas(tugas)
+                    } else {
+                        viewModel.updateTugas(tugas)
+                    }
                     alarmScheduler.scheduleTugasAlarm(tugas)
                     onNavigateBack()
                 },
@@ -269,7 +347,10 @@ fun AddEditTugasScreen(
                     contentColor = DarkBackground
                 )
             ) {
-                Text("Simpan Tugas", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+                Text(
+                    text = if (tugasId == null) (if (kategori == "Catatan") "Simpan Catatan" else "Simpan Tugas") else "Simpan Perubahan",
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                )
             }
             
             Spacer(modifier = Modifier.height(32.dp))
@@ -282,30 +363,37 @@ fun HeaderSectionAddEdit(title: String, onBack: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(140.dp)
+            .height(180.dp)
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(CoffeeBrown, CoffeeDark)
                 ),
-                shape = RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)
+                shape = RoundedCornerShape(bottomStart = 60.dp, bottomEnd = 60.dp)
             )
-            .padding(top = 16.dp, start = 8.dp, end = 24.dp, bottom = 24.dp),
+            .padding(horizontal = 24.dp, vertical = 24.dp),
         contentAlignment = Alignment.BottomStart
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            IconButton(onClick = onBack) {
+        Column {
+            IconButton(
+                onClick = onBack,
+                modifier = Modifier.offset(x = (-12).dp, y = (-40).dp)
+            ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = WhiteSoft
+                    tint = WhiteSoft,
+                    modifier = Modifier.size(28.dp)
                 )
             }
-            Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = title,
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                color = WhiteSoft,
-                modifier = Modifier.padding(start = 16.dp)
+                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                color = WhiteSoft
+            )
+            Text(
+                text = "Isi detail informasi dengan benar!",
+                style = MaterialTheme.typography.bodyMedium,
+                color = WhiteSoft.copy(alpha = 0.7f)
             )
         }
     }

@@ -1,4 +1,25 @@
 <resources>
+    <style name="Theme.JadwalKuliah" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/gold_primary</item>
+        <item name="colorOnPrimary">@color/beige_soft</item>
+        <item name="android:statusBarColor">@color/brown_dark</item>
+    </style>
 
-    <style name="Theme.JadwalKuliah" parent="Theme.MaterialComponents.Light" />
+    <style name="CustomPickerDialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="colorPrimary">@color/gold_primary</item>
+        <item name="colorOnPrimary">@color/beige_soft</item>
+        <item name="colorAccent">@color/gold_primary</item>
+        <item name="colorSurface">@color/brown_dark</item>
+        <item name="colorOnSurface">@color/beige_soft</item>
+        <item name="android:textColorPrimary">@color/beige_soft</item>
+        <item name="android:textColorSecondary">@color/beige_soft</item>
+        <item name="android:windowBackground">@color/coffee_darker</item>
+
+        <!-- TimePicker Colors -->
+        <item name="android:headerBackground">@color/brown_dark</item>
+        <item name="android:numbersTextColor">@color/beige_soft</item>
+        <item name="android:numbersBackgroundColor">@color/coffee_darker</item>
+        <item name="android:numbersSelectorColor">@color/gold_primary</item>
+        <item name="android:amPmTextColor">@color/beige_soft</item>
+    </style>
 </resources>

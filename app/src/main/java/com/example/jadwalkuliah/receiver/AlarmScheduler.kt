@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import com.example.jadwalkuliah.data.local.entity.PengingatEntity
 import java.util.*
 
@@ -42,6 +43,7 @@ class AlarmScheduler(private val context: Context) {
                     set(Calendar.HOUR_OF_DAY, timeParts[0].toInt())
                     set(Calendar.MINUTE, timeParts[1].toInt())
                     set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
                 }
                 
                 if (timeInMillis <= System.currentTimeMillis()) {
@@ -49,28 +51,16 @@ class AlarmScheduler(private val context: Context) {
                 }
             }
 
-            when (pengingat.tipeUlang) {
-                "Daily" -> {
-                    alarmManager.setRepeating(
-                        AlarmManager.RTC_WAKEUP,
-                        calendar.timeInMillis,
-                        AlarmManager.INTERVAL_DAY,
-                        pendingIntent
-                    )
-                }
-                "Sekali" -> {
-                    alarmManager.setExactAndAllowWhileIdle(
-                        AlarmManager.RTC_WAKEUP,
-                        calendar.timeInMillis,
-                        pendingIntent
-                    )
-                }
-                "Custom" -> {
-                    scheduleNextCustom(pengingat, pendingIntent)
-                }
-            }
+            Log.d("AlarmScheduler", "Menjadwalkan alarm: ${pengingat.judul} pada ${calendar.time} (ID: ${pengingat.id})")
+
+            // Menggunakan setExactAndAllowWhileIdle sesuai permintaan untuk akurasi maksimal
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                pendingIntent
+            )
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("AlarmScheduler", "Gagal menjadwalkan alarm", e)
         }
     }
 

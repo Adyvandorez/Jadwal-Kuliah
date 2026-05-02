@@ -17,4 +17,6 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
     object EditPengingat : Screen("edit_pengingat/{pengingatId}", "Edit Pengingat", Icons.Default.Notifications) {
         fun createRoute(pengingatId: Int) = "edit_pengingat/$pengingatId"
     }
+    object NadaDering : Screen("nada_dering", "Nada Dering", Icons.Default.MusicNote)
+    object About : Screen("about", "Tentang Aplikasi", Icons.Default.Info)
 }

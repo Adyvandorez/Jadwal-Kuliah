@@ -6,6 +6,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -52,6 +54,13 @@ fun BerandaScreen(
     val photoPath by viewModel.photoPath.collectAsState()
     val todayJadwal by viewModel.todayJadwal.collectAsState()
     val pendingTugas by viewModel.pendingTugas.collectAsState()
+    
+    val scrollState = rememberLazyListState()
+
+    // Reset scroll to top when screen is created/re-entered
+    LaunchedEffect(Unit) {
+        scrollState.scrollToItem(0)
+    }
 
     Scaffold(
         topBar = {
@@ -60,9 +69,10 @@ fun BerandaScreen(
                 photoPath = photoPath
             )
         },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = Color.Transparent
     ) { innerPadding ->
         LazyColumn(
+            state = scrollState,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -93,10 +103,15 @@ fun BerandaScreen(
                     EmptyStateCard(message = "Tidak ada jadwal untuk hari ini.")
                 }
             } else {
-                items(todayJadwal) { jadwal ->
+                items(todayJadwal, key = { it.id }) { jadwal ->
                     JadwalCard(
                         jadwal = jadwal,
-                        onClick = { onNavigateToDetailJadwal(jadwal.id) }
+                        onClick = { onNavigateToDetailJadwal(jadwal.id) },
+                        modifier = Modifier.animateItem(
+                            fadeInSpec = tween(150),
+                            fadeOutSpec = tween(150),
+                            placementSpec = tween(150)
+                        )
                     )
                 }
             }
@@ -110,11 +125,16 @@ fun BerandaScreen(
                     EmptyStateCard(message = "Semua tugas sudah selesai! 🎉")
                 }
             } else {
-                items(pendingTugas) { tugas ->
+                items(pendingTugas, key = { it.id }) { tugas ->
                     TugasCard(
                         tugas = tugas,
                         onClick = { onNavigateToDetailTugas(tugas.id) },
-                        isReadOnly = true
+                        isReadOnly = true,
+                        modifier = Modifier.animateItem(
+                            fadeInSpec = tween(150),
+                            fadeOutSpec = tween(150),
+                            placementSpec = tween(150)
+                        )
                     )
                 }
             }
@@ -139,10 +159,10 @@ fun TopAppBarCustom(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Aplikasi Jadwal Kuliah",
+            text = "Jadwal Kuliah",
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.SemiBold,
-                color = if (isSystemInDarkTheme()) DarkTextSecondary else MaterialTheme.colorScheme.onBackground
+                color = WhiteSoft
             )
         )
         
@@ -180,7 +200,7 @@ fun WelcomeCard(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    brush = Brush.linearGradient(
+                    brush = Brush.verticalGradient(
                         colors = listOf(Color(0xFF6F4E37), Color(0xFF4B3425)) // Original CoffeeBrown, CoffeeDark
                     )
                 )
@@ -196,7 +216,7 @@ fun WelcomeCard(
                         .size(64.dp)
                         .clip(CircleShape)
                         .background(if (isSystemInDarkTheme()) DarkSurfaceVariant else Color(0xFF8A8A8A))
-                        .border(2.5.dp, Color.White, CircleShape),
+                        .border(2.5.dp, Color(0xFFB8A899), CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     photoPath?.let { path ->
@@ -323,79 +343,31 @@ fun AlarmPengingatSection(
 
 @Composable
 fun SectionHeader(title: String) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-        color = WhiteSoft,
-        modifier = Modifier.padding(top = 8.dp)
-    )
-}
-
-@Composable
-fun JadwalCard(jadwal: JadwalEntity, onClick: () -> Unit = {}) {
-    Card(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
-        shape = RoundedCornerShape(28.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = DarkSurface
-        )
+            .padding(top = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
+        Box(
             modifier = Modifier
-                .padding(20.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .width(110.dp)
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(DarkSurfaceVariant.copy(alpha = 0.4f))
-                    .padding(vertical = 16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
-                        imageVector = Icons.Default.AccessTime,
-                        contentDescription = null,
-                        tint = ImageGold.copy(alpha = 0.6f),
-                        modifier = Modifier.size(22.dp)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "${jadwal.waktuMulai} - ${jadwal.waktuSelesai}",
-                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-                        color = ImageGold.copy(alpha = 0.6f)
-                    )
-                }
-            }
-            
-            Spacer(modifier = Modifier.width(20.dp))
-            
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = jadwal.namaMatkul,
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp),
-                    color = WhiteSoft,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    text = jadwal.dosen,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = TextSoftSecondary.copy(alpha = 0.7f)
-                )
-                Text(
-                    text = jadwal.ruangan,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = TextSoftSecondary.copy(alpha = 0.7f)
-                )
-            }
-        }
+                .weight(1f)
+                .height(0.5.dp)
+                .background(TextSoftSecondary.copy(alpha = 0.2f))
+        )
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            color = WhiteSoft,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(0.5.dp)
+                .background(TextSoftSecondary.copy(alpha = 0.2f))
+        )
     }
 }
 
