@@ -105,13 +105,7 @@ fun MainScreen(themePreferences: ThemePreferences) {
 
                         val path = Path().apply {
                             moveTo(0f, height)
-                            lineTo(0f, topY + cornerRadius)
-                            arcTo(
-                                rect = Rect(0f, topY, cornerRadius * 2, topY + cornerRadius * 2),
-                                startAngleDegrees = 180f,
-                                sweepAngleDegrees = 90f,
-                                forceMoveTo = false
-                            )
+                            lineTo(0f, topY)
                             
                             if (cutoutProgress > 0.01f) {
                                 val centerX = width / 2
@@ -129,13 +123,7 @@ fun MainScreen(themePreferences: ThemePreferences) {
                                 )
                             }
                             
-                            lineTo(width - cornerRadius, topY)
-                            arcTo(
-                                rect = Rect(width - cornerRadius * 2, topY, width, topY + cornerRadius * 2),
-                                startAngleDegrees = 270f,
-                                sweepAngleDegrees = 90f,
-                                forceMoveTo = false
-                            )
+                            lineTo(width, topY)
                             lineTo(width, height)
                             close()
                         }
@@ -144,13 +132,7 @@ fun MainScreen(themePreferences: ThemePreferences) {
 
                         // Top Outline following the curve
                         val outlinePath = Path().apply {
-                            moveTo(0f, topY + cornerRadius)
-                            arcTo(
-                                rect = Rect(0f, topY, cornerRadius * 2, topY + cornerRadius * 2),
-                                startAngleDegrees = 180f,
-                                sweepAngleDegrees = 90f,
-                                forceMoveTo = false
-                            )
+                            moveTo(0f, topY)
                             
                             if (cutoutProgress > 0.01f) {
                                 val centerX = width / 2
@@ -168,13 +150,7 @@ fun MainScreen(themePreferences: ThemePreferences) {
                                 )
                             }
                             
-                            lineTo(width - cornerRadius, topY)
-                            arcTo(
-                                rect = Rect(width - cornerRadius * 2, topY, width, topY + cornerRadius * 2),
-                                startAngleDegrees = 270f,
-                                sweepAngleDegrees = 90f,
-                                forceMoveTo = false
-                            )
+                            lineTo(width, topY)
                         }
 
                         drawPath(
