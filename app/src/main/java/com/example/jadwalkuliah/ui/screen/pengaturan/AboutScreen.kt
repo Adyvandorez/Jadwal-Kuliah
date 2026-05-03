@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jadwalkuliah.R
+import com.example.jadwalkuliah.ui.component.SimpleHeader
 import com.example.jadwalkuliah.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,7 +44,7 @@ fun AboutScreen(
 
     Scaffold(
         topBar = {
-            AboutHeader(onBack = onNavigateBack)
+            SimpleHeader(title = "Tentang Aplikasi", onBack = onNavigateBack)
         },
         containerColor = Color.Transparent
     ) { innerPadding ->
@@ -285,47 +286,6 @@ fun SocialIcon(
             style = MaterialTheme.typography.labelSmall,
             color = TextSoftSecondary
         )
-    }
-}
-
-@Composable
-fun AboutHeader(onBack: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(180.dp)
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(CoffeeBrown, CoffeeDark)
-                ),
-                shape = RoundedCornerShape(bottomStart = 60.dp, bottomEnd = 60.dp)
-            )
-            .padding(horizontal = 24.dp, vertical = 24.dp),
-        contentAlignment = Alignment.BottomStart
-    ) {
-        Column {
-            IconButton(
-                onClick = onBack,
-                modifier = Modifier.offset(x = (-12).dp, y = (-40).dp)
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Kembali",
-                    tint = WhiteSoft,
-                    modifier = Modifier.size(28.dp)
-                )
-            }
-            Text(
-                text = "Tentang Aplikasi",
-                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                color = WhiteSoft
-            )
-            Text(
-                text = "Informasi mengenai pengembang",
-                style = MaterialTheme.typography.bodyMedium,
-                color = WhiteSoft.copy(alpha = 0.7f)
-            )
-        }
     }
 }
 

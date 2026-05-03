@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.jadwalkuliah.R
 import com.example.jadwalkuliah.data.local.entity.TugasEntity
+import com.example.jadwalkuliah.ui.component.SimpleHeader
 import com.example.jadwalkuliah.ui.theme.*
 import com.example.jadwalkuliah.util.AlarmScheduler
 import com.example.jadwalkuliah.util.FileUtils
@@ -89,7 +90,7 @@ fun AddEditTugasScreen(
 
     Scaffold(
         topBar = {
-            HeaderSectionAddEdit(
+            SimpleHeader(
                 title = if (tugasId == null) "Tambah Tugas" else "Edit Tugas",
                 onBack = onNavigateBack
             )
@@ -354,47 +355,6 @@ fun AddEditTugasScreen(
             }
             
             Spacer(modifier = Modifier.height(32.dp))
-        }
-    }
-}
-
-@Composable
-fun HeaderSectionAddEdit(title: String, onBack: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(180.dp)
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(CoffeeBrown, CoffeeDark)
-                ),
-                shape = RoundedCornerShape(bottomStart = 60.dp, bottomEnd = 60.dp)
-            )
-            .padding(horizontal = 24.dp, vertical = 24.dp),
-        contentAlignment = Alignment.BottomStart
-    ) {
-        Column {
-            IconButton(
-                onClick = onBack,
-                modifier = Modifier.offset(x = (-12).dp, y = (-40).dp)
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    tint = WhiteSoft,
-                    modifier = Modifier.size(28.dp)
-                )
-            }
-            Text(
-                text = title,
-                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                color = WhiteSoft
-            )
-            Text(
-                text = "Isi detail informasi dengan benar!",
-                style = MaterialTheme.typography.bodyMedium,
-                color = WhiteSoft.copy(alpha = 0.7f)
-            )
         }
     }
 }

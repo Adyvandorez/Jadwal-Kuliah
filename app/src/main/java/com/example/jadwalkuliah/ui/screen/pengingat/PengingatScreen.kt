@@ -178,7 +178,7 @@ fun PengingatHeader(title: String, onBack: () -> Unit) {
                 brush = Brush.verticalGradient(
                     colors = listOf(CoffeeBrown, CoffeeDark)
                 ),
-                shape = RoundedCornerShape(bottomStart = 60.dp, bottomEnd = 60.dp)
+                shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp)
             )
             .padding(horizontal = 24.dp, vertical = 24.dp),
         contentAlignment = Alignment.BottomStart

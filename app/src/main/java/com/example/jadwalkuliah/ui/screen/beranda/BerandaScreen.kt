@@ -230,7 +230,7 @@ fun WelcomeCard(
                         Text(
                             text = if (userName.isNotEmpty()) userName.take(1).uppercase() else "A",
                             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                            color = Color.White
+                            color = Color(0xFFB8A899)
                         )
                     }
                 }
@@ -265,77 +265,56 @@ fun WelcomeCard(
 fun AlarmPengingatSection(
     onPengingatClick: () -> Unit
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(28.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        color = Color(0xFF1E1A17)
     ) {
-        Box(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(
-                    brush = Brush.linearGradient(
-                        colors = listOf(DarkSurfaceVariant, DarkSurface)
+                .padding(horizontal = 10.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFF2A231D)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.NotificationsActive,
+                        contentDescription = null,
+                        tint = Color(0xFFB38922),
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.width(14.dp))
+                Text(
+                    text = "Alarm Pengingat",
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        color = WhiteSoft,
+                        fontWeight = FontWeight.Normal
                     )
                 )
-                .padding(horizontal = 16.dp, vertical = 14.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+            }
+            
+            Surface(
+                onClick = onPengingatClick,
+                shape = RoundedCornerShape(12.dp),
+                color = Color(0xFF8B5E3C)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(38.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(DarkSurfaceVariant),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.NotificationsActive,
-                            contentDescription = null,
-                            tint = ImageGold,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = "Alarm Pengingat",
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            fontWeight = FontWeight.SemiBold,
-                            color = WhiteSoft
-                        )
+                Text(
+                    text = "+ Tambah Alarm",
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Normal,
+                        color = WhiteSoft
                     )
-                }
-                
-                Surface(
-                    onClick = onPengingatClick,
-                    shape = CircleShape,
-                    color = Color.Transparent,
-                    modifier = Modifier.clip(CircleShape)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                brush = Brush.linearGradient(
-                                    colors = listOf(DarkPrimary, DarkTertiary)
-                                )
-                            )
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "+ Tambah Alarm",
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = WhiteSoft
-                            )
-                        )
-                    }
-                }
+                )
             }
         }
     }

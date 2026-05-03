@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jadwalkuliah.data.local.entity.JadwalEntity
+import com.example.jadwalkuliah.ui.component.SimpleHeader
 import com.example.jadwalkuliah.ui.theme.*
 
 @Composable
@@ -38,7 +39,7 @@ fun DetailJadwalScreen(
 
     Scaffold(
         topBar = {
-            DetailJadwalHeader(
+            SimpleHeader(
                 title = "Detail Jadwal",
                 onBack = onNavigateBack
             )
@@ -73,9 +74,9 @@ fun DetailJadwalScreen(
                             colors = ButtonDefaults.buttonColors(containerColor = DeleteRed),
                             shape = RoundedCornerShape(20.dp)
                         ) {
-                            Icon(Icons.Default.Delete, contentDescription = null)
+                            Icon(Icons.Default.Delete, contentDescription = null, tint = Color(0xFFB8A899))
                             Spacer(Modifier.width(8.dp))
-                            Text("Hapus", fontWeight = FontWeight.Bold, color = Color.White)
+                            Text("Hapus", fontWeight = FontWeight.Bold, color = Color(0xFFB8A899))
                         }
                     }
                 }
@@ -129,7 +130,7 @@ fun DetailJadwalScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = DeleteRed),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Hapus", color = Color.White, fontWeight = FontWeight.Bold)
+                    Text("Hapus", color = Color(0xFFB8A899), fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
@@ -142,47 +143,6 @@ fun DetailJadwalScreen(
             titleContentColor = WhiteSoft,
             textContentColor = TextSoftSecondary
         )
-    }
-}
-
-@Composable
-fun DetailJadwalHeader(title: String, onBack: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(180.dp)
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(CoffeeBrown, CoffeeDark)
-                ),
-                shape = RoundedCornerShape(bottomStart = 60.dp, bottomEnd = 60.dp)
-            )
-            .padding(horizontal = 24.dp, vertical = 24.dp),
-        contentAlignment = Alignment.BottomStart
-    ) {
-        Column {
-            IconButton(
-                onClick = onBack,
-                modifier = Modifier.offset(x = (-12).dp, y = (-40).dp)
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    tint = WhiteSoft,
-                    modifier = Modifier.size(28.dp)
-                )
-            }
-            Text(
-                text = title,
-                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                color = WhiteSoft
-            )
-            Text(
-                text = "Lihat detail jadwal lengkap kamu!",
-                style = MaterialTheme.typography.bodyMedium,
-                color = WhiteSoft.copy(alpha = 0.7f)
-            )
-        }
     }
 }
 

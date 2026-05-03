@@ -13,7 +13,7 @@ val ImageGold = Color(0xFFB38922) // Icon image
 val CoffeeBrown = Color(0xFF6F4E37)
 val CoffeeDark = Color(0xFF4B3425)
 val GoldSoft = Color(0xFF8B5E3C) // Use Accent
-val WhiteSoft = Color(0xFFEDE0D4)
+val WhiteSoft = Color(0xFFB8A899)
 val TextSoftSecondary = Color(0xFFB7A89A)
 val IconBgCoffee = Color(0xFF2A231D)
 
@@ -41,11 +41,11 @@ val DarkOutline = Color(0xFF2A231D)
 
 // M3 Mapping
 val md_theme_light_primary = LightPrimary
-val md_theme_light_onPrimary = Color.White
+val md_theme_light_onPrimary = Color(0xFFB8A899)
 val md_theme_light_secondary = LightSecondary
-val md_theme_light_onSecondary = Color.White
+val md_theme_light_onSecondary = Color(0xFFB8A899)
 val md_theme_light_tertiary = LightTertiary
-val md_theme_light_onTertiary = Color.White
+val md_theme_light_onTertiary = Color(0xFFB8A899)
 val md_theme_light_background = LightBackground
 val md_theme_light_onBackground = LightTextPrimary
 val md_theme_light_surface = LightSurface

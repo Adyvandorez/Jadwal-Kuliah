@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.jadwalkuliah.data.repository.UserProfileRepository
+import com.example.jadwalkuliah.ui.component.SimpleHeader
 import com.example.jadwalkuliah.ui.theme.*
 import com.example.jadwalkuliah.util.FileUtils
 import kotlinx.coroutines.launch
@@ -60,7 +61,7 @@ fun EditProfilScreen(
 
     Scaffold(
         topBar = {
-            EditProfilHeader(title = "Edit Profil", onBack = onNavigateBack)
+            SimpleHeader(title = "Edit Profil", onBack = onNavigateBack)
         },
         containerColor = DarkBackground
     ) { innerPadding ->
@@ -111,7 +112,7 @@ fun EditProfilScreen(
                     Icon(
                         Icons.Default.CameraAlt,
                         contentDescription = null,
-                        tint = Color.White,
+                        tint = Color(0xFFB8A899),
                         modifier = Modifier.padding(bottom = 8.dp).size(20.dp)
                     )
                 }
@@ -150,47 +151,6 @@ fun EditProfilScreen(
             ) {
                 Text("Simpan Perubahan", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), color = DarkBackground)
             }
-        }
-    }
-}
-
-@Composable
-fun EditProfilHeader(title: String, onBack: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(180.dp)
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(CoffeeBrown, CoffeeDark)
-                ),
-                shape = RoundedCornerShape(bottomStart = 60.dp, bottomEnd = 60.dp)
-            )
-            .padding(horizontal = 24.dp, vertical = 24.dp),
-        contentAlignment = Alignment.BottomStart
-    ) {
-        Column {
-            IconButton(
-                onClick = onBack,
-                modifier = Modifier.offset(x = (-12).dp, y = (-40).dp)
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    tint = WhiteSoft,
-                    modifier = Modifier.size(28.dp)
-                )
-            }
-            Text(
-                text = title,
-                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                color = WhiteSoft
-            )
-            Text(
-                text = "Perbarui informasi profil kamu!",
-                style = MaterialTheme.typography.bodyMedium,
-                color = WhiteSoft.copy(alpha = 0.7f)
-            )
         }
     }
 }

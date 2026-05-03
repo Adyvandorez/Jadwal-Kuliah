@@ -301,7 +301,7 @@ fun HeaderSection(
                 brush = Brush.verticalGradient(
                     colors = listOf(CoffeeBrown, CoffeeDark)
                 ),
-                shape = RoundedCornerShape(bottomStart = 60.dp, bottomEnd = 60.dp)
+                shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp)
             )
             .padding(horizontal = 32.dp, vertical = 24.dp),
         contentAlignment = Alignment.BottomStart
@@ -385,7 +385,7 @@ fun CatatanItem(
                 .fillMaxWidth()
                 .clickable { onClick() },
             shape = RoundedCornerShape(28.dp),
-            colors = CardDefaults.cardColors(containerColor = DarkSurface)
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1A17))
         ) {
             Column(modifier = Modifier.padding(20.dp)) {
                 Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(12.dp)) {

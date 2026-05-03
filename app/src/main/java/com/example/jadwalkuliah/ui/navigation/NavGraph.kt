@@ -84,7 +84,7 @@ fun MainScreen(themePreferences: ThemePreferences) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(105.dp),
+                        .height(80.dp),
                     contentAlignment = Alignment.BottomCenter
                 ) {
                     val cutoutProgress by animateFloatAsState(
@@ -97,7 +97,7 @@ fun MainScreen(themePreferences: ThemePreferences) {
                         val width = size.width
                         val height = size.height
                         val navHeight = 80.dp.toPx()
-                        val topY = height - navHeight
+                        val topY = 0f // Menghilangkan gap pembatas dengan merapatkan ke atas
                         val cornerRadius = 35.dp.toPx()
                         
                         val cutoutRadius = 46.dp.toPx() * cutoutProgress
@@ -294,7 +294,7 @@ fun MainScreen(themePreferences: ThemePreferences) {
                     Icon(
                         Icons.Default.Add,
                         contentDescription = "Tambah",
-                        tint = Color.White,
+                        tint = Color(0xFFB8A899),
                         modifier = Modifier.size(36.dp)
                     )
                 }

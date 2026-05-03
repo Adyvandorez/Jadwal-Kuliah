@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
 import com.example.jadwalkuliah.R
 import com.example.jadwalkuliah.data.local.AlarmPreferences
+import com.example.jadwalkuliah.ui.component.SimpleHeader
 import com.example.jadwalkuliah.ui.theme.*
 import kotlinx.coroutines.launch
 
@@ -70,7 +71,7 @@ fun NadaDeringScreen(
 
     Scaffold(
         topBar = {
-            NadaDeringHeader(onBack = onNavigateBack)
+            SimpleHeader(title = "Nada Dering Alarm", onBack = onNavigateBack)
         },
         containerColor = Color.Transparent
     ) { innerPadding ->
@@ -139,44 +140,3 @@ fun NadaDeringScreen(
 }
 
 data class RingtoneItem(val name: String, val resId: Int)
-
-@Composable
-private fun NadaDeringHeader(onBack: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(180.dp)
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(CoffeeBrown, CoffeeDark)
-                ),
-                shape = RoundedCornerShape(bottomStart = 60.dp, bottomEnd = 60.dp)
-            )
-            .padding(horizontal = 24.dp, vertical = 24.dp),
-        contentAlignment = Alignment.BottomStart
-    ) {
-        Column {
-            IconButton(
-                onClick = onBack,
-                modifier = Modifier.offset(x = (-12).dp, y = (-40).dp)
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    tint = WhiteSoft,
-                    modifier = Modifier.size(28.dp)
-                )
-            }
-            Text(
-                text = "Nada Dering Alarm",
-                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                color = WhiteSoft
-            )
-            Text(
-                text = "Pilih nada dering favorit untuk alarm kamu!",
-                style = MaterialTheme.typography.bodyMedium,
-                color = WhiteSoft.copy(alpha = 0.7f)
-            )
-        }
-    }
-}

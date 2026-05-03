@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import android.app.TimePickerDialog
 import com.example.jadwalkuliah.R
 import com.example.jadwalkuliah.data.local.entity.JadwalEntity
+import com.example.jadwalkuliah.ui.component.SimpleHeader
 import com.example.jadwalkuliah.ui.theme.*
 import com.example.jadwalkuliah.util.AlarmScheduler
 import java.util.*
@@ -59,7 +60,7 @@ fun AddEditJadwalScreen(
 
     Scaffold(
         topBar = {
-            HeaderSectionAddEdit(
+            SimpleHeader(
                 title = if (jadwalId == null) "Tambah Jadwal" else "Edit Jadwal",
                 onBack = onNavigateBack
             )
@@ -278,45 +279,4 @@ fun AddEditJadwalScreen(
         }
     }
 
-}
-
-@Composable
-fun HeaderSectionAddEdit(title: String, onBack: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(180.dp)
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(CoffeeBrown, CoffeeDark)
-                ),
-                shape = RoundedCornerShape(bottomStart = 60.dp, bottomEnd = 60.dp)
-            )
-            .padding(top = 16.dp, start = 16.dp, end = 32.dp, bottom = 24.dp),
-        contentAlignment = Alignment.BottomStart
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    tint = WhiteSoft
-                )
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            Column(modifier = Modifier.padding(start = 16.dp)) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                    color = WhiteSoft
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Isi detail informasi dengan benar!",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = WhiteSoft.copy(alpha = 0.8f)
-                )
-            }
-        }
-    }
 }
