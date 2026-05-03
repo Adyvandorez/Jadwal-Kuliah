@@ -67,3 +67,19 @@ val md_theme_dark_onSurface = DarkTextPrimary
 val md_theme_dark_surfaceVariant = DarkSurfaceVariant
 val md_theme_dark_onSurfaceVariant = DarkTextSecondary
 val md_theme_dark_outline = DarkOutline
+
+// Purple Theme (Deep Purple Premium)
+val PurplePrimary = Color(0xFFD0BCFF)
+val PurpleSecondary = Color(0xFFCCC2DC)
+val PurpleTertiary = Color(0xFFEFB8C8)
+val PurpleBackground = Color(0xFF1C1B1F)
+val PurpleSurface = Color(0xFF25232A)
+val PurpleText = Color(0xFFE6E1E5)
+
+// Pink Theme (Elegant Rose Premium)
+val PinkPrimary = Color(0xFFFFB1C1)
+val PinkSecondary = Color(0xFFE5BDC6)
+val PinkTertiary = Color(0xFFFFB0C8)
+val PinkBackground = Color(0xFF1F1A1B)
+val PinkSurface = Color(0xFF2B2123)
+val PinkText = Color(0xFFEDE0E1)

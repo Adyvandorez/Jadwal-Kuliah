@@ -1,6 +1,5 @@
 package com.example.jadwalkuliah.ui.screen.jadwal
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -69,12 +68,7 @@ fun JadwalScreen(
                     items(jadwalHariIni, key = { it.id }) { jadwal ->
                         JadwalCard(
                             jadwal = jadwal,
-                            onClick = { onNavigateToDetail(jadwal.id) },
-                            modifier = Modifier.animateItem(
-                                fadeInSpec = tween(150),
-                                fadeOutSpec = tween(150),
-                                placementSpec = tween(150)
-                            )
+                            onClick = { onNavigateToDetail(jadwal.id) }
                         )
                     }
                 }

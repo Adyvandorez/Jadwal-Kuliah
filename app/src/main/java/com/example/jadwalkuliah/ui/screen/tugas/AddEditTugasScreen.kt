@@ -63,10 +63,10 @@ fun AddEditTugasScreen(
     val calendar = remember { Calendar.getInstance() }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument(),
-        onResult = { uri ->
-            uri?.let {
-                val savedPath = FileUtils.saveFileToInternalStorage(context, it, "tugas_files")
+        contract = ActivityResultContracts.OpenMultipleDocuments(),
+        onResult = { uris ->
+            uris.forEach { uri ->
+                val savedPath = FileUtils.saveFileToInternalStorage(context, uri, "tugas_files")
                 if (savedPath != null && !lampiran.contains(savedPath)) {
                     lampiran = lampiran + savedPath
                 }

@@ -35,7 +35,6 @@ fun PengaturanScreen(
     onNavigateToAbout: () -> Unit
 ) {
     var notificationsEnabled by remember { mutableStateOf(true) }
-    val isDarkTheme by themePreferences.isDarkTheme.collectAsState(initial = false)
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
 
@@ -117,47 +116,89 @@ fun PengaturanScreen(
                 modifier = Modifier.padding(top = 8.dp)
             )
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(28.dp),
-                colors = CardDefaults.cardColors(containerColor = DarkSurface),
-                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-            ) {
-                Row(
+            var themeMenuExpanded by remember { mutableStateOf(false) }
+            val themeMode by themePreferences.themeMode.collectAsState(initial = "Dark")
+            val arrowRotation = if (themeMenuExpanded) 90f else 0f
+
+            Column {
+                Card(
                     modifier = Modifier
-                        .padding(12.dp)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .fillMaxWidth()
+                        .clickable { themeMenuExpanded = !themeMenuExpanded },
+                    shape = RoundedCornerShape(28.dp),
+                    colors = CardDefaults.cardColors(containerColor = DarkSurface),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(56.dp)
-                                .clip(RoundedCornerShape(20.dp))
-                                .background(DarkSurfaceVariant),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Palette,
-                                contentDescription = null,
-                                tint = DarkTertiary
+                    Row(
+                        modifier = Modifier
+                            .padding(12.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                modifier = Modifier
+                                    .size(56.dp)
+                                    .clip(RoundedCornerShape(20.dp))
+                                    .background(DarkSurfaceVariant),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Palette,
+                                    contentDescription = null,
+                                    tint = DarkTertiary
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text(
+                                text = "Tampilan Tema",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = WhiteSoft,
+                                fontWeight = FontWeight.Bold
                             )
                         }
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Text(
-                            text = "Mode Gelap",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = WhiteSoft,
-                            fontWeight = FontWeight.Bold
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = null,
+                            tint = TextSoftSecondary,
+                            modifier = Modifier.graphicsLayer { rotationZ = arrowRotation }
                         )
                     }
-                    AppSwitch(
-                        checked = isDarkTheme,
-                        onCheckedChange = { 
-                            scope.launch { themePreferences.setDarkTheme(it) }
+                }
+
+                if (themeMenuExpanded) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(20.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1A17)),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                    ) {
+                        Column {
+                            val themes = listOf("Dark", "Yellow", "Purple", "Pink")
+                            val themeDisplayNames = listOf("Dark Mode", "Yellow Theme", "Purple Theme", "Pink Theme")
+                            
+                            themes.forEachIndexed { index, theme ->
+                                val isSelected = themeMode == theme
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(if (isSelected) Color(0xFF6F4E37) else Color.Transparent)
+                                        .clickable { 
+                                            scope.launch { themePreferences.setThemeMode(theme) }
+                                        }
+                                        .padding(horizontal = 24.dp, vertical = 16.dp)
+                                ) {
+                                    Text(
+                                        text = themeDisplayNames[index],
+                                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                                        color = WhiteSoft
+                                    )
+                                }
+                            }
                         }
-                    )
+                    }
                 }
             }
 

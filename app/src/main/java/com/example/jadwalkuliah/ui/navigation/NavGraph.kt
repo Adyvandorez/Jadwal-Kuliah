@@ -1,7 +1,6 @@
 package com.example.jadwalkuliah.ui.navigation
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -87,11 +86,7 @@ fun MainScreen(themePreferences: ThemePreferences) {
                         .height(80.dp),
                     contentAlignment = Alignment.BottomCenter
                 ) {
-                    val cutoutProgress by animateFloatAsState(
-                        targetValue = if (isFabVisible) 1f else 0f,
-                        animationSpec = tween(durationMillis = 300),
-                        label = "cutoutProgress"
-                    )
+                    val cutoutProgress = if (isFabVisible) 1f else 0f
 
                     Canvas(modifier = Modifier.fillMaxSize()) {
                         val width = size.width
@@ -232,11 +227,7 @@ fun MainScreen(themePreferences: ThemePreferences) {
             val isMainScreen = screens.any { it.route == currentRoute } || currentRoute == null || currentRoute == Screen.Pengingat.route
             val isFabVisible = isMainScreen && currentRoute != Screen.Pengaturan.route
 
-            AnimatedVisibility(
-                visible = isFabVisible,
-                enter = fadeIn(animationSpec = tween(150)),
-                exit = fadeOut(animationSpec = tween(150))
-            ) {
+            if (isFabVisible) {
                 Box(
                     modifier = Modifier
                         .offset(y = 64.dp)
@@ -283,7 +274,11 @@ fun MainScreen(themePreferences: ThemePreferences) {
                 startDestination = Screen.Beranda.route,
                 modifier = Modifier
                     .padding(innerPadding)
-                    .fillMaxSize()
+                    .fillMaxSize(),
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None },
+                popEnterTransition = { EnterTransition.None },
+                popExitTransition = { ExitTransition.None }
             ) {
                 composable(Screen.Beranda.route) {
                     val viewModel: BerandaViewModel = viewModel(

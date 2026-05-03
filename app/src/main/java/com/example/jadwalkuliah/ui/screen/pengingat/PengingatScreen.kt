@@ -8,7 +8,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -92,12 +91,7 @@ fun PengingatScreen(
                     pengingat = pengingat,
                     onToggle = { viewModel.togglePengingat(pengingat) },
                     onDelete = { pengingatToDelete = pengingat },
-                    onClick = { onNavigateToDetail(pengingat.id) },
-                    modifier = Modifier.animateItem(
-                        fadeInSpec = tween(150),
-                        fadeOutSpec = tween(150),
-                        placementSpec = tween(150)
-                    )
+                    onClick = { onNavigateToDetail(pengingat.id) }
                 )
             }
         }

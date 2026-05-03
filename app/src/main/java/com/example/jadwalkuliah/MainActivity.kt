@@ -34,8 +34,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             val context = LocalContext.current
             val themePreferences = remember { ThemePreferences(context) }
+            val themeMode by themePreferences.themeMode.collectAsState(initial = "Dark")
 
-            JadwalKuliahTheme(darkTheme = true) {
+            JadwalKuliahTheme(themeMode = themeMode) {
                 MainScreen(themePreferences = themePreferences)
             }
         }

@@ -6,7 +6,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.lazy.LazyColumn
@@ -106,12 +105,7 @@ fun BerandaScreen(
                 items(todayJadwal, key = { it.id }) { jadwal ->
                     JadwalCard(
                         jadwal = jadwal,
-                        onClick = { onNavigateToDetailJadwal(jadwal.id) },
-                        modifier = Modifier.animateItem(
-                            fadeInSpec = tween(150),
-                            fadeOutSpec = tween(150),
-                            placementSpec = tween(150)
-                        )
+                        onClick = { onNavigateToDetailJadwal(jadwal.id) }
                     )
                 }
             }
@@ -129,12 +123,7 @@ fun BerandaScreen(
                     TugasCard(
                         tugas = tugas,
                         onClick = { onNavigateToDetailTugas(tugas.id) },
-                        isReadOnly = true,
-                        modifier = Modifier.animateItem(
-                            fadeInSpec = tween(150),
-                            fadeOutSpec = tween(150),
-                            placementSpec = tween(150)
-                        )
+                        isReadOnly = true
                     )
                 }
             }

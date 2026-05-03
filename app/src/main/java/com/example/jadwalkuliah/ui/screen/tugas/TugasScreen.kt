@@ -1,6 +1,5 @@
 package com.example.jadwalkuliah.ui.screen.tugas
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -166,12 +165,7 @@ fun TugasScreen(
                                         tugas = tugas,
                                         onToggleCompletion = { viewModel.toggleTugasCompletion(tugas) },
                                         onDelete = { showDeleteDialog = tugas },
-                                        onClick = { onNavigateToDetail(tugas.id) },
-                                        modifier = Modifier.animateItem(
-                                            fadeInSpec = tween(150),
-                                            fadeOutSpec = tween(150),
-                                            placementSpec = tween(150)
-                                        )
+                                        onClick = { onNavigateToDetail(tugas.id) }
                                     )
                                 }
                             }
@@ -184,12 +178,7 @@ fun TugasScreen(
                                     CatatanItem(
                                         item = item,
                                         onDelete = { showDeleteDialog = item },
-                                        onClick = { onNavigateToDetail(item.id) },
-                                        modifier = Modifier.animateItem(
-                                            fadeInSpec = tween(150),
-                                            fadeOutSpec = tween(150),
-                                            placementSpec = tween(150)
-                                        )
+                                        onClick = { onNavigateToDetail(item.id) }
                                     )
                                 }
                             }
@@ -199,12 +188,7 @@ fun TugasScreen(
                                     tugas = tugas,
                                     onToggleCompletion = { viewModel.toggleTugasCompletion(tugas) },
                                     onDelete = { showDeleteDialog = tugas },
-                                    onClick = { onNavigateToDetail(tugas.id) },
-                                    modifier = Modifier.animateItem(
-                                        fadeInSpec = tween(150),
-                                        fadeOutSpec = tween(150),
-                                        placementSpec = tween(150)
-                                    )
+                                    onClick = { onNavigateToDetail(tugas.id) }
                                 )
                             }
                         } else {
@@ -212,12 +196,7 @@ fun TugasScreen(
                                 CatatanItem(
                                     item = item,
                                     onDelete = { showDeleteDialog = item },
-                                    onClick = { onNavigateToDetail(item.id) },
-                                    modifier = Modifier.animateItem(
-                                        fadeInSpec = tween(150),
-                                        fadeOutSpec = tween(150),
-                                        placementSpec = tween(150)
-                                    )
+                                    onClick = { onNavigateToDetail(item.id) }
                                 )
                             }
                         }

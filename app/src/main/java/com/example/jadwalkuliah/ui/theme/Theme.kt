@@ -45,19 +45,56 @@ private val LightColorScheme = lightColorScheme(
     outline = md_theme_light_outline
 )
 
+private val PurpleColorScheme = darkColorScheme(
+    primary = PurplePrimary,
+    secondary = PurpleSecondary,
+    tertiary = PurpleTertiary,
+    background = PurpleBackground,
+    surface = PurpleSurface,
+    onPrimary = Color(0xFF381E72),
+    onSecondary = Color(0xFF332D41),
+    onTertiary = Color(0xFF492532),
+    onBackground = PurpleText,
+    onSurface = PurpleText,
+    outline = Color(0xFF938F99)
+)
+
+private val PinkColorScheme = darkColorScheme(
+    primary = PinkPrimary,
+    secondary = PinkSecondary,
+    tertiary = PinkTertiary,
+    background = PinkBackground,
+    surface = PinkSurface,
+    onPrimary = Color(0xFF5E1129),
+    onSecondary = Color(0xFF422930),
+    onTertiary = Color(0xFF5E1231),
+    onBackground = PinkText,
+    onSurface = PinkText,
+    outline = Color(0xFF9F8C8F)
+)
+
 @Composable
 fun JadwalKuliahTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = true,
+    themeMode: String = "Dark",
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    // Prioritaskan themeMode, gunakan darkTheme sebagai fallback jika themeMode default ("Dark")
+    val effectiveTheme = if (themeMode == "Dark" && !darkTheme) "Yellow" else themeMode
+    
+    val colorScheme = when (effectiveTheme) {
+        "Yellow" -> LightColorScheme
+        "Purple" -> PurpleColorScheme
+        "Pink" -> PinkColorScheme
+        else -> DarkColorScheme
+    }
     
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.background.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = themeMode == "Yellow"
         }
     }
 
