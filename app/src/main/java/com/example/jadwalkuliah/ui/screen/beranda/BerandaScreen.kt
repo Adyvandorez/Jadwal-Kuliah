@@ -151,21 +151,29 @@ fun TopAppBarCustom(
             text = "Jadwal Kuliah",
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.SemiBold,
-                color = WhiteSoft
+                color = MaterialTheme.colorScheme.primary
             )
         )
+        
+        val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
         
         Box(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(if (isSystemInDarkTheme()) DarkSurfaceVariant else MaterialTheme.colorScheme.surfaceVariant),
+                .background(
+                    if (isYellowTheme) MaterialTheme.colorScheme.primaryContainer 
+                    else if (isSystemInDarkTheme()) DarkSurfaceVariant 
+                    else MaterialTheme.colorScheme.surfaceVariant
+                ),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = if (userName.isNotEmpty()) userName.take(1).uppercase() else "A",
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                color = if (isSystemInDarkTheme()) DarkTextPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                color = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer 
+                        else if (isSystemInDarkTheme()) DarkTextPrimary 
+                        else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.wrapContentSize(Alignment.Center)
             )
         }
@@ -190,7 +198,10 @@ fun WelcomeCard(
                 .fillMaxSize()
                 .background(
                     brush = Brush.verticalGradient(
-                        colors = listOf(Color(0xFF6F4E37), Color(0xFF4B3425)) // Original CoffeeBrown, CoffeeDark
+                        colors = listOf(
+                            MaterialTheme.colorScheme.primaryContainer,
+                            MaterialTheme.colorScheme.primary
+                        )
                     )
                 )
                 .padding(20.dp),
@@ -204,8 +215,8 @@ fun WelcomeCard(
                     modifier = Modifier
                         .size(64.dp)
                         .clip(CircleShape)
-                        .background(if (isSystemInDarkTheme()) DarkSurfaceVariant else Color(0xFF8A8A8A))
-                        .border(2.5.dp, Color(0xFFB8A899), CircleShape),
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .border(2.5.dp, MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f), CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     photoPath?.let { path ->
@@ -219,7 +230,7 @@ fun WelcomeCard(
                         Text(
                             text = if (userName.isNotEmpty()) userName.take(1).uppercase() else "A",
                             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                            color = Color(0xFFB8A899)
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 }
@@ -229,10 +240,10 @@ fun WelcomeCard(
                 Column {
                     Text(
                         text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = DarkTextPrimary)) {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimary)) {
                                 append("Halo, Selamat Datang! ")
                             }
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold, color = Color(0xFFC89B3C))) {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f))) {
                                 append(userName)
                             }
                         },
@@ -242,7 +253,7 @@ fun WelcomeCard(
                     Text(
                         text = date,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color(0xFFC89B3C).copy(alpha = 0.8f)
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
                     )
                 }
             }
@@ -254,10 +265,11 @@ fun WelcomeCard(
 fun AlarmPengingatSection(
     onPengingatClick: () -> Unit
 ) {
+    val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        color = Color(0xFF1E1A17)
+        color = MaterialTheme.colorScheme.surface
     ) {
         Row(
             modifier = Modifier
@@ -271,13 +283,17 @@ fun AlarmPengingatSection(
                     modifier = Modifier
                         .size(44.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xFF2A231D)),
+                        .background(
+                            if (isYellowTheme) MaterialTheme.colorScheme.primaryContainer 
+                            else MaterialTheme.colorScheme.surfaceVariant
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.NotificationsActive,
                         contentDescription = null,
-                        tint = Color(0xFFB38922),
+                        tint = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer 
+                               else MaterialTheme.colorScheme.tertiary,
                         modifier = Modifier.size(22.dp)
                     )
                 }
@@ -285,7 +301,7 @@ fun AlarmPengingatSection(
                 Text(
                     text = "Alarm Pengingat",
                     style = MaterialTheme.typography.bodyLarge.copy(
-                        color = WhiteSoft,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Normal
                     )
                 )
@@ -294,14 +310,14 @@ fun AlarmPengingatSection(
             Surface(
                 onClick = onPengingatClick,
                 shape = RoundedCornerShape(12.dp),
-                color = Color(0xFF8B5E3C)
+                color = MaterialTheme.colorScheme.primary
             ) {
                 Text(
                     text = "+ Tambah Alarm",
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.Normal,
-                        color = WhiteSoft
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 )
             }
@@ -321,12 +337,12 @@ fun SectionHeader(title: String) {
             modifier = Modifier
                 .weight(1f)
                 .height(0.5.dp)
-                .background(TextSoftSecondary.copy(alpha = 0.2f))
+                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f))
         )
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            color = WhiteSoft,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
@@ -334,7 +350,7 @@ fun SectionHeader(title: String) {
             modifier = Modifier
                 .weight(1f)
                 .height(0.5.dp)
-                .background(TextSoftSecondary.copy(alpha = 0.2f))
+                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f))
         )
     }
 }
@@ -345,7 +361,7 @@ fun EmptyStateCard(message: String) {
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(28.dp),
         colors = CardDefaults.cardColors(
-            containerColor = DarkSurface
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
@@ -358,7 +374,7 @@ fun EmptyStateCard(message: String) {
             Text(
                 text = message,
                 style = MaterialTheme.typography.bodyMedium,
-                color = TextSoftSecondary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

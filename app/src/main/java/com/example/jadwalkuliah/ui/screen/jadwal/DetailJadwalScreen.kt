@@ -37,6 +37,8 @@ fun DetailJadwalScreen(
         jadwal = viewModel.getJadwalById(jadwalId)
     }
 
+    val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
+
     Scaffold(
         topBar = {
             SimpleHeader(
@@ -47,7 +49,7 @@ fun DetailJadwalScreen(
         bottomBar = {
             jadwal?.let { data ->
                 Surface(
-                    color = DarkBackground,
+                    color = MaterialTheme.colorScheme.background,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -60,8 +62,11 @@ fun DetailJadwalScreen(
                             onClick = { onEditNavigate(data.id) },
                             modifier = Modifier.weight(1f).height(56.dp),
                             shape = RoundedCornerShape(20.dp),
-                            border = BorderStroke(1.dp, DarkOutline),
-                            colors = ButtonDefaults.outlinedButtonColors(contentColor = GoldSoft)
+                            border = BorderStroke(1.dp, if (isYellowTheme) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = if (isYellowTheme) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary,
+                                containerColor = if (isYellowTheme) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f) else Color.Transparent
+                            )
                         ) {
                             Icon(Icons.Default.Edit, contentDescription = null)
                             Spacer(Modifier.width(8.dp))
@@ -74,15 +79,15 @@ fun DetailJadwalScreen(
                             colors = ButtonDefaults.buttonColors(containerColor = DeleteRed),
                             shape = RoundedCornerShape(20.dp)
                         ) {
-                            Icon(Icons.Default.Delete, contentDescription = null, tint = Color(0xFFB8A899))
+                            Icon(Icons.Default.Delete, contentDescription = null, tint = Color.White)
                             Spacer(Modifier.width(8.dp))
-                            Text("Hapus", fontWeight = FontWeight.Bold, color = Color(0xFFB8A899))
+                            Text("Hapus", fontWeight = FontWeight.Bold, color = Color.White)
                         }
                     }
                 }
             }
         },
-        containerColor = DarkBackground
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         jadwal?.let { data ->
             Column(
@@ -130,18 +135,18 @@ fun DetailJadwalScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = DeleteRed),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Hapus", color = Color(0xFFB8A899), fontWeight = FontWeight.Bold)
+                    Text("Hapus", color = Color.White, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Batal", color = GoldSoft)
+                    Text("Batal", color = if (isYellowTheme) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.primary)
                 }
             },
             shape = RoundedCornerShape(32.dp),
-            containerColor = DarkSurface,
-            titleContentColor = WhiteSoft,
-            textContentColor = TextSoftSecondary
+            containerColor = if (isYellowTheme) LightBackground else MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -154,18 +159,22 @@ fun InfoColumn(
     isAccent: Boolean = false,
     valueColor: Color? = null
 ) {
+    val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
     Column {
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
-            color = TextSoftSecondary
+            color = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) 
+                    else MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = value,
             style = if (isTitle) MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
                     else MaterialTheme.typography.titleMedium,
-            color = valueColor ?: if (isAccent) GoldSoft else WhiteSoft,
+            color = valueColor ?: if (isAccent) MaterialTheme.colorScheme.primary 
+                    else if (isYellowTheme) MaterialTheme.colorScheme.onSurface 
+                    else MaterialTheme.colorScheme.onSurface,
             lineHeight = 24.sp
         )
     }

@@ -88,6 +88,8 @@ fun AddEditTugasScreen(
         }
     }
 
+    val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
+
     Scaffold(
         topBar = {
             SimpleHeader(
@@ -95,7 +97,7 @@ fun AddEditTugasScreen(
                 onBack = onNavigateBack
             )
         },
-        containerColor = DarkBackground
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -115,12 +117,12 @@ fun AddEditTugasScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = GoldSoft,
-                    unfocusedBorderColor = DarkOutline,
-                    focusedLabelColor = GoldSoft,
-                    unfocusedLabelColor = TextSoftSecondary,
-                    focusedTextColor = WhiteSoft,
-                    unfocusedTextColor = WhiteSoft
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 )
             )
 
@@ -133,12 +135,12 @@ fun AddEditTugasScreen(
                 minLines = 4,
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = GoldSoft,
-                    unfocusedBorderColor = DarkOutline,
-                    focusedLabelColor = GoldSoft,
-                    unfocusedLabelColor = TextSoftSecondary,
-                    focusedTextColor = WhiteSoft,
-                    unfocusedTextColor = WhiteSoft
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 )
             )
 
@@ -155,22 +157,22 @@ fun AddEditTugasScreen(
                     modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, true).fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = GoldSoft,
-                        unfocusedBorderColor = DarkOutline,
-                        focusedLabelColor = GoldSoft,
-                        unfocusedLabelColor = TextSoftSecondary,
-                        focusedTextColor = WhiteSoft,
-                        unfocusedTextColor = WhiteSoft
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
+                        focusedLabelColor = MaterialTheme.colorScheme.primary,
+                        unfocusedLabelColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                     )
                 )
                 ExposedDropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
-                    modifier = Modifier.background(DarkSurface)
+                    modifier = Modifier.background(if (isYellowTheme) LightBackground else MaterialTheme.colorScheme.surface)
                 ) {
                     listOf("Tugas", "Catatan").forEach { selectionOption ->
                         DropdownMenuItem(
-                            text = { Text(selectionOption, color = WhiteSoft) },
+                            text = { Text(selectionOption, color = MaterialTheme.colorScheme.onSurface) },
                             onClick = {
                                 kategori = selectionOption
                                 expanded = false
@@ -184,11 +186,13 @@ fun AddEditTugasScreen(
             val currentDeadline = deadline ?: System.currentTimeMillis()
             calendar.timeInMillis = currentDeadline
 
+            val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
+
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
                     if (kategori == "Catatan") "Tanggal Catatan" else "Batas Waktu (Deadline)",
                     style = MaterialTheme.typography.labelLarge,
-                    color = TextSoftSecondary
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -212,14 +216,21 @@ fun AddEditTugasScreen(
                         },
                         modifier = Modifier.weight(1f).height(56.dp),
                         shape = RoundedCornerShape(20.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = DarkSurface)
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (isYellowTheme) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
+                        )
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.Today, contentDescription = null, tint = GoldSoft, modifier = Modifier.size(20.dp))
+                            Icon(
+                                Icons.Default.Today, 
+                                contentDescription = null, 
+                                tint = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary, 
+                                modifier = Modifier.size(20.dp)
+                            )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = sdfDate.format(Date(currentDeadline)),
-                                color = GoldSoft,
+                                color = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 14.sp
                             )
@@ -245,14 +256,21 @@ fun AddEditTugasScreen(
                         },
                         modifier = Modifier.weight(0.8f).height(56.dp),
                         shape = RoundedCornerShape(20.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = DarkSurface)
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (isYellowTheme) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
+                        )
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.AccessTime, contentDescription = null, tint = GoldSoft, modifier = Modifier.size(20.dp))
+                            Icon(
+                                Icons.Default.AccessTime, 
+                                contentDescription = null, 
+                                tint = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary, 
+                                modifier = Modifier.size(20.dp)
+                            )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = sdfTime.format(Date(currentDeadline)),
-                                color = GoldSoft,
+                                color = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 14.sp
                             )
@@ -267,19 +285,19 @@ fun AddEditTugasScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(DarkSurface)
+                        .background(MaterialTheme.colorScheme.surface)
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Checkbox(
                         checked = isCompleted,
                         onCheckedChange = { isCompleted = it },
                         colors = CheckboxDefaults.colors(
-                            checkedColor = GoldSoft,
-                            uncheckedColor = DarkOutline,
-                            checkmarkColor = DarkBackground
+                            checkedColor = MaterialTheme.colorScheme.primary,
+                            uncheckedColor = MaterialTheme.colorScheme.outline,
+                            checkmarkColor = MaterialTheme.colorScheme.onPrimary
                         )
                     )
-                    Text("Tandai sebagai Selesai", color = WhiteSoft, style = MaterialTheme.typography.bodyMedium)
+                    Text("Tandai sebagai Selesai", color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.bodyMedium)
                 }
             }
 
@@ -289,7 +307,7 @@ fun AddEditTugasScreen(
                     "Lampiran",
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        color = GoldSoft
+                        color = MaterialTheme.colorScheme.primary
                     )
                 )
                 
@@ -307,8 +325,8 @@ fun AddEditTugasScreen(
                     },
                     modifier = Modifier.fillMaxWidth().height(56.dp),
                     shape = RoundedCornerShape(20.dp),
-                    border = BorderStroke(1.dp, GoldSoft.copy(alpha = 0.3f)),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = GoldSoft)
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Icon(Icons.Default.AttachFile, contentDescription = null, modifier = Modifier.size(20.dp))
                     Spacer(Modifier.width(8.dp))
@@ -344,8 +362,8 @@ fun AddEditTugasScreen(
                     .height(60.dp),
                 shape = RoundedCornerShape(30.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = GoldSoft,
-                    contentColor = DarkBackground
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
                 Text(
@@ -369,8 +387,8 @@ fun AttachmentItem(context: android.content.Context, uri: String, onDelete: () -
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = DarkSurface,
-        border = BorderStroke(1.dp, DarkOutline)
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
     ) {
         Row(
             modifier = Modifier.padding(12.dp),
@@ -396,13 +414,13 @@ fun AttachmentItem(context: android.content.Context, uri: String, onDelete: () -
                     Box(
                         modifier = Modifier
                             .size(40.dp)
-                            .background(IconBgCoffee, RoundedCornerShape(8.dp)),
+                            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             icon,
                             contentDescription = null,
-                            tint = GoldSoft,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -411,7 +429,7 @@ fun AttachmentItem(context: android.content.Context, uri: String, onDelete: () -
                 Text(
                     text = fileName,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = WhiteSoft,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

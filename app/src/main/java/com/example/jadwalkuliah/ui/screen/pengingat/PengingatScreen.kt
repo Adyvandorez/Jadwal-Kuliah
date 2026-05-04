@@ -150,13 +150,13 @@ fun PengingatScreen(
                 },
                 dismissButton = {
                     TextButton(onClick = { pengingatToDelete = null }) {
-                        Text("Batal", color = GoldSoft)
+                        Text("Batal", color = MaterialTheme.colorScheme.tertiary)
                     }
                 },
                 shape = RoundedCornerShape(24.dp),
-                containerColor = DarkSurface,
-                titleContentColor = WhiteSoft,
-                textContentColor = TextSoftSecondary
+                containerColor = MaterialTheme.colorScheme.surface,
+                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -170,7 +170,10 @@ fun PengingatHeader(title: String, onBack: () -> Unit) {
             .height(150.dp)
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(CoffeeBrown, CoffeeDark)
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primaryContainer,
+                        MaterialTheme.colorScheme.primary
+                    )
                 ),
                 shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp)
             )
@@ -185,19 +188,19 @@ fun PengingatHeader(title: String, onBack: () -> Unit) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = WhiteSoft,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(28.dp)
                 )
             }
             Text(
                 text = title,
                 style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                color = WhiteSoft
+                color = MaterialTheme.colorScheme.onPrimary
             )
             Text(
                 text = "Atur pengingat rutin harian kamu!",
                 style = MaterialTheme.typography.bodyMedium,
-                color = WhiteSoft.copy(alpha = 0.7f)
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
             )
         }
     }
@@ -217,7 +220,7 @@ fun PengingatItem(
             .clickable { onClick() },
         shape = RoundedCornerShape(28.dp),
         colors = CardDefaults.cardColors(
-            containerColor = DarkSurface
+            containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
         Row(
@@ -231,13 +234,13 @@ fun PengingatItem(
                 modifier = Modifier
                     .size(52.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(CoffeeBrown.copy(alpha = 0.1f)),
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = if (pengingat.judul.lowercase().contains("makan")) Icons.Default.Restaurant else Icons.Default.Notifications,
                     contentDescription = null,
-                    tint = GoldSoft,
+                    tint = MaterialTheme.colorScheme.tertiary,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -248,18 +251,18 @@ fun PengingatItem(
                 Text(
                     text = pengingat.judul,
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    color = WhiteSoft
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = pengingat.waktu,
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                        color = GoldSoft
+                        color = MaterialTheme.colorScheme.tertiary
                     )
                     Text(
                         text = " • ${if (pengingat.tipeUlang == "Daily") "Harian" else if (pengingat.tipeUlang == "Sekali") "Sekali" else "Kustom"}",
                         style = MaterialTheme.typography.bodySmall,
-                        color = TextSoftSecondary
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -308,7 +311,7 @@ fun AddEditPengingatDialog(
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = RoundedCornerShape(32.dp),
-            color = DarkSurface,
+            color = MaterialTheme.colorScheme.surface,
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(
@@ -320,7 +323,7 @@ fun AddEditPengingatDialog(
                 Text(
                     text = if (pengingat == null) "Tambah Pengingat" else "Edit Pengingat",
                     style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                    color = WhiteSoft
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 OutlinedTextField(
@@ -331,12 +334,12 @@ fun AddEditPengingatDialog(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = GoldSoft,
-                        unfocusedBorderColor = DarkOutline,
-                        focusedLabelColor = GoldSoft,
-                        unfocusedLabelColor = TextSoftSecondary,
-                        focusedTextColor = WhiteSoft,
-                        unfocusedTextColor = WhiteSoft
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                        focusedLabelColor = MaterialTheme.colorScheme.primary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                     )
                 )
 
@@ -353,16 +356,16 @@ fun AddEditPengingatDialog(
                     },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = CoffeeBrown.copy(alpha = 0.1f))
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.AccessTime, contentDescription = null, tint = GoldSoft)
+                        Icon(Icons.Default.AccessTime, contentDescription = null, tint = MaterialTheme.colorScheme.tertiary)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Waktu: $waktu", color = GoldSoft)
+                        Text("Waktu: $waktu", color = MaterialTheme.colorScheme.tertiary)
                     }
                 }
 
-                Text("Ulangi", style = MaterialTheme.typography.labelLarge, color = TextSoftSecondary)
+                Text("Ulangi", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     TipeUlangChip("Harian", tipeUlang == "Daily") { tipeUlang = "Daily" }
@@ -384,9 +387,9 @@ fun AddEditPengingatDialog(
                                 onClick = { if (isSelected) selectedDays.remove(day) else selectedDays.add(day) },
                                 label = { Text(day, fontSize = 12.sp) },
                                 colors = FilterChipDefaults.filterChipColors(
-                                    selectedContainerColor = GoldSoft,
-                                    selectedLabelColor = DarkBackground,
-                                    labelColor = TextSoftSecondary
+                                    selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                                    labelColor = MaterialTheme.colorScheme.onSurfaceVariant
                                 ),
                                 shape = RoundedCornerShape(12.dp)
                             )
@@ -400,15 +403,15 @@ fun AddEditPengingatDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TextButton(onClick = onDismiss) {
-                        Text("Batal", color = GoldSoft)
+                        Text("Batal", color = MaterialTheme.colorScheme.tertiary)
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
                         onClick = { if (judul.isNotBlank()) onConfirm(judul, waktu, tipeUlang, selectedDays.toList()) },
-                        colors = ButtonDefaults.buttonColors(containerColor = GoldSoft),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                         shape = RoundedCornerShape(16.dp)
                     ) {
-                        Text("Simpan", color = DarkBackground, fontWeight = FontWeight.Bold)
+                        Text("Simpan", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -422,8 +425,8 @@ fun TipeUlangChip(label: String, selected: Boolean, onClick: () -> Unit) {
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
             .clickable { onClick() },
-        color = if (selected) GoldSoft else CoffeeBrown.copy(alpha = 0.1f),
-        border = if (selected) null else BorderStroke(1.dp, DarkOutline)
+        color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
+        border = if (selected) null else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
@@ -433,14 +436,14 @@ fun TipeUlangChip(label: String, selected: Boolean, onClick: () -> Unit) {
                 selected = selected,
                 onClick = null,
                 colors = RadioButtonDefaults.colors(
-                    selectedColor = DarkBackground,
-                    unselectedColor = TextSoftSecondary
+                    selectedColor = MaterialTheme.colorScheme.onPrimary,
+                    unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = label,
-                color = if (selected) DarkBackground else TextSoftSecondary,
+                color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
             )
         }

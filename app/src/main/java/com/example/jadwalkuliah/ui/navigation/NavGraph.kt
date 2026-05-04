@@ -1,7 +1,11 @@
 package com.example.jadwalkuliah.ui.navigation
 
-import androidx.compose.animation.*
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -88,6 +92,9 @@ fun MainScreen(themePreferences: ThemePreferences) {
                 ) {
                     val cutoutProgress = if (isFabVisible) 1f else 0f
 
+                    val navColor = MaterialTheme.colorScheme.primary
+                    val outlineColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.1f)
+
                     Canvas(modifier = Modifier.fillMaxSize()) {
                         val width = size.width
                         val height = size.height
@@ -123,7 +130,7 @@ fun MainScreen(themePreferences: ThemePreferences) {
                             close()
                         }
 
-                        drawPath(path = path, color = DarkSurface)
+                        drawPath(path = path, color = navColor)
 
                         // Top Outline following the curve
                         val outlinePath = Path().apply {
@@ -150,8 +157,8 @@ fun MainScreen(themePreferences: ThemePreferences) {
 
                         drawPath(
                             path = outlinePath,
-                            color = DarkOutline,
-                            style = Stroke(width = 2.dp.toPx())
+                            color = outlineColor,
+                            style = Stroke(width = 1.dp.toPx())
                         )
                     }
 
@@ -192,7 +199,7 @@ fun MainScreen(themePreferences: ThemePreferences) {
                                                     .padding(top = 4.dp)
                                                     .width(14.dp)
                                                     .height(3.dp)
-                                                    .background(Color(0xFFB8A899), RoundedCornerShape(1.5.dp))
+                                                    .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(1.5.dp))
                                             )
                                         }
                                     }
@@ -210,10 +217,10 @@ fun MainScreen(themePreferences: ThemePreferences) {
                                     }
                                 },
                                 colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = Color(0xFFB8A899),
-                                    unselectedIconColor = GoldSoft,
-                                    selectedTextColor = Color(0xFFB8A899),
-                                    unselectedTextColor = GoldSoft,
+                                    selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                                    unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                                    selectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                                    unselectedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
                                     indicatorColor = Color.Transparent
                                 )
                             )
@@ -241,8 +248,8 @@ fun MainScreen(themePreferences: ThemePreferences) {
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
-                                    Color(0xFF966C4B),
-                                    Color(0xFF4B3425)
+                                    MaterialTheme.colorScheme.primaryContainer,
+                                    MaterialTheme.colorScheme.primary
                                 )
                             )
                         )
@@ -261,24 +268,44 @@ fun MainScreen(themePreferences: ThemePreferences) {
                     Icon(
                         Icons.Default.Add,
                         contentDescription = "Tambah",
-                        tint = Color(0xFFB8A899),
+                        tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(36.dp)
                     )
                 }
             }
         }
     ) { innerPadding ->
-        Box(modifier = Modifier.fillMaxSize().background(DarkBackground)) {
+        Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
             NavHost(
                 navController = navController,
                 startDestination = Screen.Beranda.route,
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize(),
-                enterTransition = { EnterTransition.None },
-                exitTransition = { ExitTransition.None },
-                popEnterTransition = { EnterTransition.None },
-                popExitTransition = { ExitTransition.None }
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(300, easing = FastOutSlowInEasing)
+                    )
+                },
+                exitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { -it },
+                        animationSpec = tween(300, easing = FastOutSlowInEasing)
+                    )
+                },
+                popEnterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { -it },
+                        animationSpec = tween(300, easing = FastOutSlowInEasing)
+                    )
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { it },
+                        animationSpec = tween(300, easing = FastOutSlowInEasing)
+                    )
+                }
             ) {
                 composable(Screen.Beranda.route) {
                     val viewModel: BerandaViewModel = viewModel(

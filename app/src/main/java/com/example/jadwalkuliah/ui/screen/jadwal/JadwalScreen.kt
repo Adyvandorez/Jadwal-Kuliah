@@ -88,7 +88,10 @@ fun HeaderSection(title: String) {
             .height(150.dp)
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(CoffeeBrown, CoffeeDark)
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primaryContainer,
+                        MaterialTheme.colorScheme.primary
+                    )
                 ),
                 shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp)
             )
@@ -99,13 +102,13 @@ fun HeaderSection(title: String) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                color = WhiteSoft
+                color = MaterialTheme.colorScheme.onPrimary
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "Kelola jadwal kuliah kamu!",
                 style = MaterialTheme.typography.bodyMedium,
-                color = WhiteSoft.copy(alpha = 0.8f)
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
             )
         }
     }
@@ -123,12 +126,12 @@ fun DayHeader(hari: String) {
             modifier = Modifier
                 .weight(1f)
                 .height(0.5.dp)
-                .background(TextSoftSecondary.copy(alpha = 0.2f))
+                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f))
         )
         Text(
             text = hari,
             style = MaterialTheme.typography.titleMedium,
-            color = WhiteSoft,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
@@ -136,7 +139,7 @@ fun DayHeader(hari: String) {
             modifier = Modifier
                 .weight(1f)
                 .height(0.5.dp)
-                .background(TextSoftSecondary.copy(alpha = 0.2f))
+                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f))
         )
     }
 }
@@ -148,7 +151,7 @@ fun EmptyJadwalItem() {
             .fillMaxWidth(),
         shape = RoundedCornerShape(28.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        colors = CardDefaults.cardColors(containerColor = DarkSurface)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Box(
             modifier = Modifier
@@ -159,7 +162,7 @@ fun EmptyJadwalItem() {
             Text(
                 text = "Tidak ada jadwal",
                 style = MaterialTheme.typography.bodyMedium,
-                color = TextSoftSecondary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

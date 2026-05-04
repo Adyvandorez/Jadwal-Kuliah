@@ -95,7 +95,7 @@ fun TugasScreen(
                     val isSelected = pagerState.currentPage == index
                     Surface(
                         onClick = { scope.launch { pagerState.scrollToPage(index) } },
-                        color = if (isSelected) DarkTertiary else DarkSurfaceVariant,
+                        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
                         shape = RoundedCornerShape(20.dp),
                         modifier = Modifier.height(36.dp)
                     ) {
@@ -106,7 +106,7 @@ fun TugasScreen(
                             Text(
                                 text = title,
                                 style = MaterialTheme.typography.labelLarge,
-                                color = if (isSelected) DarkBackground else TextSoftSecondary,
+                                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                             )
                         }
@@ -139,7 +139,7 @@ fun TugasScreen(
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(
                             text = if (searchQuery.isEmpty()) "Belum ada ${tabs[pageIndex].lowercase()}" else "Tidak ada hasil pencarian",
-                            color = TextSoftSecondary
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 } else {
@@ -224,11 +224,11 @@ fun TugasScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = null }) {
-                    Text("Batal", color = DarkTertiary)
+                    Text("Batal", color = MaterialTheme.colorScheme.tertiary)
                 }
             },
             shape = RoundedCornerShape(24.dp),
-            containerColor = DarkSurface
+            containerColor = MaterialTheme.colorScheme.surface
         )
     }
 }
@@ -245,12 +245,12 @@ fun SectionHeader(title: String) {
             modifier = Modifier
                 .weight(1f)
                 .height(0.5.dp)
-                .background(TextSoftSecondary.copy(alpha = 0.2f))
+                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f))
         )
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            color = WhiteSoft,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
@@ -258,7 +258,7 @@ fun SectionHeader(title: String) {
             modifier = Modifier
                 .weight(1f)
                 .height(0.5.dp)
-                .background(TextSoftSecondary.copy(alpha = 0.2f))
+                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f))
         )
     }
 }
@@ -278,7 +278,10 @@ fun HeaderSection(
             .height(150.dp)
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(CoffeeBrown, CoffeeDark)
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primaryContainer,
+                        MaterialTheme.colorScheme.primary
+                    )
                 ),
                 shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp)
             )
@@ -296,21 +299,21 @@ fun HeaderSection(
                     Text(
                         "Cari...", 
                         style = MaterialTheme.typography.bodyMedium,
-                        color = WhiteSoft.copy(alpha = 0.5f) 
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f) 
                     ) 
                 },
-                leadingIcon = { Icon(Icons.Default.Search, null, tint = WhiteSoft) },
+                leadingIcon = { Icon(Icons.Default.Search, null, tint = MaterialTheme.colorScheme.onPrimary) },
                 trailingIcon = {
                     IconButton(onClick = { onSearchToggle(false) }) {
-                        Icon(Icons.Default.Close, null, tint = WhiteSoft)
+                        Icon(Icons.Default.Close, null, tint = MaterialTheme.colorScheme.onPrimary)
                     }
                 },
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = WhiteSoft.copy(alpha = 0.1f),
-                    unfocusedContainerColor = WhiteSoft.copy(alpha = 0.1f),
-                    focusedTextColor = WhiteSoft,
-                    unfocusedTextColor = WhiteSoft,
-                    cursorColor = DarkTertiary,
+                    focusedContainerColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.1f),
+                    unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.1f),
+                    focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    cursorColor = MaterialTheme.colorScheme.onPrimary,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
                 ),
@@ -328,23 +331,23 @@ fun HeaderSection(
                     Text(
                         text = title,
                         style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                        color = WhiteSoft
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = subtitle,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = WhiteSoft.copy(alpha = 0.8f)
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
                     )
                 }
                 IconButton(
                     onClick = { onSearchToggle(true) },
                     modifier = Modifier
                         .padding(bottom = 4.dp)
-                        .background(WhiteSoft.copy(alpha = 0.1f), CircleShape)
+                        .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.1f), CircleShape)
                         .size(40.dp)
                 ) {
-                    Icon(Icons.Default.Search, contentDescription = "Search", tint = WhiteSoft, modifier = Modifier.size(24.dp))
+                    Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(24.dp))
                 }
             }
         }
@@ -364,7 +367,7 @@ fun CatatanItem(
                 .fillMaxWidth()
                 .clickable { onClick() },
             shape = RoundedCornerShape(28.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1A17))
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
             Column(modifier = Modifier.padding(20.dp)) {
                 Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -372,15 +375,15 @@ fun CatatanItem(
                         Text(
                             text = item.judul,
                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                            color = WhiteSoft
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         
                         Spacer(modifier = Modifier.height(6.dp))
                         
                         CategoryBadge(
                             text = "Catatan",
-                            containerColor = DarkPrimary.copy(alpha = 0.2f),
-                            contentColor = DarkTertiary
+                            containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                            contentColor = MaterialTheme.colorScheme.tertiary
                         )
                     }
 
@@ -402,7 +405,7 @@ fun CatatanItem(
                     Text(
                         text = item.deskripsi,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = TextSoftSecondary,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis
                     )

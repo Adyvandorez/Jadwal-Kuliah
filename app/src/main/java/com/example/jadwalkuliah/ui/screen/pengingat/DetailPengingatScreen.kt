@@ -46,7 +46,7 @@ fun DetailPengingatScreen(
         bottomBar = {
             pengingat?.let { data ->
                 Surface(
-                    color = DarkBackground,
+                    color = MaterialTheme.colorScheme.background,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -59,11 +59,11 @@ fun DetailPengingatScreen(
                             onClick = { onEditNavigate(data.id) },
                             modifier = Modifier.weight(1f).height(56.dp),
                             shape = RoundedCornerShape(20.dp),
-                            border = BorderStroke(1.dp, GoldSoft.copy(alpha = 0.5f))
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
                         ) {
-                            Icon(Icons.Default.Edit, contentDescription = null, tint = GoldSoft)
+                            Icon(Icons.Default.Edit, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                             Spacer(Modifier.width(8.dp))
-                            Text("Edit", fontWeight = FontWeight.Bold, color = GoldSoft)
+                            Text("Edit", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                         }
 
                         Button(
@@ -72,15 +72,15 @@ fun DetailPengingatScreen(
                             colors = ButtonDefaults.buttonColors(containerColor = DeleteRed),
                             shape = RoundedCornerShape(20.dp)
                         ) {
-                            Icon(Icons.Default.Delete, contentDescription = null, tint = Color(0xFFB8A899))
+                            Icon(Icons.Default.Delete, contentDescription = null, tint = Color.White)
                             Spacer(Modifier.width(8.dp))
-                            Text("Hapus", fontWeight = FontWeight.Bold, color = Color(0xFFB8A899))
+                            Text("Hapus", fontWeight = FontWeight.Bold, color = Color.White)
                         }
                     }
                 }
             }
         },
-        containerColor = DarkBackground
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         pengingat?.let { data ->
             Column(
@@ -138,13 +138,13 @@ fun DetailPengingatScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Batal", color = GoldSoft)
+                    Text("Batal", color = MaterialTheme.colorScheme.tertiary)
                 }
             },
             shape = RoundedCornerShape(24.dp),
-            containerColor = DarkSurface,
-            titleContentColor = WhiteSoft,
-            textContentColor = TextSoftSecondary
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -160,14 +160,14 @@ fun InfoItem(
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
-            color = TextSoftSecondary
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = value,
             style = if (isTitle) MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
                     else MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-            color = if (isAccent) GoldSoft else WhiteSoft
+            color = if (isAccent) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurface
         )
     }
 }

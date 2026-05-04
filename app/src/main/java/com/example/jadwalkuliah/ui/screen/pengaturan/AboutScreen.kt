@@ -77,7 +77,7 @@ fun AboutScreen(
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.placeholder),
-                            contentDescription = "Muhammad Adi",
+                            contentDescription = "Ady_vandorez",
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
                         )
@@ -86,14 +86,17 @@ fun AboutScreen(
                     Spacer(modifier = Modifier.height(20.dp))
                     
                     Text(
-                        text = "Muhammad Adi",
+                        text = "Ady_vandorez",
                         style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold),
                         color = WhiteSoft
                     )
                     Text(
-                        text = "(Ady Vandorez)",
+                        text = "@adyvandorez,com",
                         style = MaterialTheme.typography.titleMedium,
-                        color = GoldAccent
+                        color = GoldAccent,
+                        modifier = Modifier.clickable { 
+                            openUrl(context, "https://id.linkedin.com/in/ady-vandorez-7a9549322")
+                        }
                     )
                     
                     Spacer(modifier = Modifier.height(12.dp))
@@ -103,7 +106,7 @@ fun AboutScreen(
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Text(
-                            text = "Designer & Programmer",
+                            text = "Vektor Portrait Artis",
                             style = MaterialTheme.typography.labelLarge,
                             color = TextSoftSecondary,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
@@ -225,9 +228,9 @@ fun AboutScreen(
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         SocialIcon(
-                            name = "Instagram",
+                            name = "Blogger",
                             icon = Icons.Default.Language,
-                            onClick = { openUrl(context, "https://instagram.com/ady.vandorez") }
+                            onClick = { openUrl(context, "https://adyvandorez.blogspot.com") }
                         )
                         SocialIcon(
                             name = "GitHub",

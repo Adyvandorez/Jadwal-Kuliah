@@ -69,11 +69,13 @@ fun NadaDeringScreen(
         }
     }
 
+    val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
+
     Scaffold(
         topBar = {
             SimpleHeader(title = "Nada Dering Alarm", onBack = onNavigateBack)
         },
-        containerColor = Color.Transparent
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -86,7 +88,9 @@ fun NadaDeringScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = DarkSurface),
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (isYellowTheme) MaterialTheme.colorScheme.surface else DarkSurface
+                    ),
                     onClick = {
                         scope.launch { alarmPreferences.saveAlarmRingtone(item.resId) }
                     }
@@ -105,15 +109,15 @@ fun NadaDeringScreen(
                                     scope.launch { alarmPreferences.saveAlarmRingtone(item.resId) }
                                 },
                                 colors = RadioButtonDefaults.colors(
-                                    selectedColor = GoldSoft,
-                                    unselectedColor = TextSoftSecondary
+                                    selectedColor = if (isYellowTheme) MaterialTheme.colorScheme.primary else GoldSoft,
+                                    unselectedColor = if (isYellowTheme) MaterialTheme.colorScheme.onSurfaceVariant else TextSoftSecondary
                                 )
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = item.name,
                                 style = MaterialTheme.typography.titleMedium,
-                                color = WhiteSoft,
+                                color = if (isYellowTheme) MaterialTheme.colorScheme.onSurface else WhiteSoft,
                                 fontWeight = if (selectedRingtone == item.resId) FontWeight.Bold else FontWeight.Normal
                             )
                         }
@@ -122,14 +126,14 @@ fun NadaDeringScreen(
                             onClick = { playAudio(item.resId) },
                             modifier = Modifier
                                 .background(
-                                    if (playingResId == item.resId) GoldSoft else DarkSurfaceVariant,
+                                    if (playingResId == item.resId) (if (isYellowTheme) MaterialTheme.colorScheme.primary else GoldSoft) else (if (isYellowTheme) MaterialTheme.colorScheme.surfaceVariant else DarkSurfaceVariant),
                                     CircleShape
                                 )
                         ) {
                             Icon(
                                 imageVector = if (playingResId == item.resId) Icons.Default.Stop else Icons.Default.PlayArrow,
                                 contentDescription = null,
-                                tint = if (playingResId == item.resId) CoffeeDark else GoldSoft
+                                tint = if (playingResId == item.resId) (if (isYellowTheme) MaterialTheme.colorScheme.onPrimary else CoffeeDark) else (if (isYellowTheme) MaterialTheme.colorScheme.primary else GoldSoft)
                             )
                         }
                     }

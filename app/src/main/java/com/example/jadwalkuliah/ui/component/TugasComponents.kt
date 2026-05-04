@@ -48,7 +48,7 @@ fun TugasCard(
             .clickable { onClick() },
         shape = RoundedCornerShape(24.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1A17))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Box(
             modifier = Modifier
@@ -68,7 +68,7 @@ fun TugasCard(
                             Icon(
                                 imageVector = if (tugas.isCompleted) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
                                 contentDescription = "Status",
-                                tint = if (tugas.isCompleted) SuccessGreen else TextSoftSecondary,
+                                tint = if (tugas.isCompleted) SuccessGreen else MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.size(24.dp)
                             )
                         }
@@ -81,7 +81,7 @@ fun TugasCard(
                             fontWeight = FontWeight.Bold,
                             textDecoration = if (tugas.isCompleted && !isReadOnly) TextDecoration.LineThrough else TextDecoration.None
                         ),
-                        color = WhiteSoft,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.weight(1f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -110,8 +110,10 @@ fun TugasCard(
 
                 CategoryBadge(
                     text = if (tugas.kategori.isNotEmpty()) tugas.kategori else "Tugas",
-                    containerColor = DarkPrimary.copy(alpha = 0.2f),
-                    contentColor = DarkTertiary
+                    containerColor = if (MaterialTheme.colorScheme.background == LightBackground) 
+                        MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                    contentColor = if (MaterialTheme.colorScheme.background == LightBackground) 
+                        MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.tertiary
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -119,7 +121,7 @@ fun TugasCard(
                     Text(
                         text = tugas.deskripsi,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = TextSoftSecondary,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -145,7 +147,7 @@ fun TugasCard(
                         Text(
                             text = countdown,
                             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                            color = if (isOverdue) DeleteRed else TextSoftSecondary
+                            color = if (isOverdue) DeleteRed else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -164,7 +166,7 @@ fun TugasCard(
                         Text(
                             text = "Selesai",
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                            color = WhiteSoft
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -217,16 +219,16 @@ fun AttachmentPill(
     val (icon, iconColor) = when (extension) {
         "pdf" -> Icons.Outlined.Description to PdfRed
         "png", "jpg", "jpeg" -> Icons.Outlined.Image to ImageGold
-        else -> Icons.AutoMirrored.Filled.InsertDriveFile to TextSoftSecondary
+        else -> Icons.AutoMirrored.Filled.InsertDriveFile to MaterialTheme.colorScheme.onSurfaceVariant
     }
 
     val surfaceModifier = if (onClick != null) modifier.clickable { onClick() } else modifier
 
     Surface(
         modifier = surfaceModifier,
-        color = DarkSurfaceVariant.copy(alpha = 0.6f),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
         shape = CircleShape,
-        border = BorderStroke(1.dp, WhiteSoft.copy(alpha = 0.05f))
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f))
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
@@ -242,7 +244,7 @@ fun AttachmentPill(
             Text(
                 text = fileName,
                 style = MaterialTheme.typography.labelSmall,
-                color = WhiteSoft.copy(alpha = 0.9f),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f, fill = false)
@@ -274,8 +276,8 @@ fun DetailAttachmentCard(
             .height(130.dp)
             .clickable { onOpen() },
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = DarkSurface),
-        border = BorderStroke(1.dp, WhiteSoft.copy(alpha = 0.05f))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f))
     ) {
         Column {
             Box(
@@ -293,17 +295,17 @@ fun DetailAttachmentCard(
                         Icon(
                             imageVector = Icons.Default.MoreVert,
                             contentDescription = "Menu",
-                            tint = WhiteSoft.copy(alpha = 0.7f),
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                             modifier = Modifier.size(16.dp)
                         )
                     }
                     DropdownMenu(
                         expanded = showMenu,
                         onDismissRequest = { showMenu = false },
-                        modifier = Modifier.background(DarkSurfaceVariant)
+                        modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Share", color = WhiteSoft) },
+                            text = { Text("Share", color = MaterialTheme.colorScheme.onSurface) },
                             onClick = { showMenu = false; onShare() }
                         )
                         DropdownMenuItem(
@@ -325,7 +327,7 @@ fun DetailAttachmentCard(
                         val color = when(extension) {
                             "pdf" -> PdfRed
                             "jpg", "jpeg", "png" -> ImageGold
-                            else -> TextSoftSecondary
+                            else -> MaterialTheme.colorScheme.onSurfaceVariant
                         }
                         
                         Box(
@@ -354,7 +356,7 @@ fun DetailAttachmentCard(
                         Text(
                             text = "${extension.uppercase()}.$fileSize",
                             style = MaterialTheme.typography.labelSmall,
-                            color = TextSoftSecondary,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             maxLines = 1,
                             fontSize = 11.sp
                         )
@@ -367,7 +369,7 @@ fun DetailAttachmentCard(
                             .fillMaxHeight()
                             .padding(vertical = 4.dp, horizontal = 8.dp)
                             .clip(RoundedCornerShape(16.dp))
-                            .background(DarkSurfaceVariant)
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
                     ) {
                         AsyncImage(
                             model = file,
@@ -402,7 +404,7 @@ fun DetailAttachmentCard(
                 Text(
                     text = fileName,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = WhiteSoft.copy(alpha = 0.9f),
+                    color = Color.White.copy(alpha = 0.9f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -439,8 +441,11 @@ fun DateDisplay(
 ) {
     if (date == null) return
     
+    val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
+    
     Surface(
-        color = DarkSurfaceVariant.copy(alpha = 0.5f),
+        color = if (isYellowTheme) MaterialTheme.colorScheme.primaryContainer 
+                else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
         shape = RoundedCornerShape(12.dp),
         modifier = modifier
     ) {
@@ -452,13 +457,15 @@ fun DateDisplay(
             Icon(
                 imageVector = Icons.Default.CalendarToday,
                 contentDescription = null,
-                tint = GoldSoft,
+                tint = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer 
+                       else MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(18.dp)
             )
             Text(
                 text = DateTimeUtils.formatDateOnly(date),
                 style = MaterialTheme.typography.labelSmall,
-                color = WhiteSoft.copy(alpha = 0.8f)
+                color = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer 
+                        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
             )
         }
     }

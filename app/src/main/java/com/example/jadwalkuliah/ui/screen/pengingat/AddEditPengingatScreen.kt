@@ -65,7 +65,7 @@ fun AddEditPengingatScreen(
                 onBack = onNavigateBack
             )
         },
-        containerColor = DarkBackground
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -75,6 +75,7 @@ fun AddEditPengingatScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
+            val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
@@ -85,12 +86,12 @@ fun AddEditPengingatScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = GoldSoft,
-                    unfocusedBorderColor = DarkOutline,
-                    focusedLabelColor = GoldSoft,
-                    unfocusedLabelColor = TextSoftSecondary,
-                    focusedTextColor = WhiteSoft,
-                    unfocusedTextColor = WhiteSoft
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 )
             )
 
@@ -110,16 +111,26 @@ fun AddEditPengingatScreen(
                 },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(20.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = DarkSurface)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (isYellowTheme) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
+                )
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.AccessTime, contentDescription = null, tint = GoldSoft)
+                    Icon(
+                        Icons.Default.AccessTime, 
+                        contentDescription = null, 
+                        tint = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Waktu: $waktu", color = GoldSoft, fontWeight = FontWeight.Medium)
+                    Text(
+                        "Waktu: $waktu", 
+                        color = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary, 
+                        fontWeight = FontWeight.Medium
+                    )
                 }
             }
 
-            Text("Ulangi", style = MaterialTheme.typography.labelLarge, color = TextSoftSecondary)
+            Text("Ulangi", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 TipeUlangChipS( "Harian", tipeUlang == "Daily", Modifier.weight(1f)) { tipeUlang = "Daily" }
@@ -139,16 +150,16 @@ fun AddEditPengingatScreen(
                         FilterChip(
                             selected = isSelected,
                             onClick = { if (isSelected) selectedDays.remove(day) else selectedDays.add(day) },
-                            label = { Text(day, fontSize = 12.sp, color = if(isSelected) DarkBackground else WhiteSoft) },
+                            label = { Text(day, fontSize = 12.sp, color = if(isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface) },
                             colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = GoldSoft,
-                                containerColor = DarkSurface
+                                selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                containerColor = MaterialTheme.colorScheme.surface
                             ),
                             border = FilterChipDefaults.filterChipBorder(
                                 enabled = true,
                                 selected = isSelected,
-                                borderColor = DarkOutline,
-                                selectedBorderColor = GoldSoft
+                                borderColor = MaterialTheme.colorScheme.outline,
+                                selectedBorderColor = MaterialTheme.colorScheme.primary
                             )
                         )
                     }
@@ -179,12 +190,12 @@ fun AddEditPengingatScreen(
                 },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(28.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = GoldSoft)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
                 Text(
                     if (pengingatId == null) "Simpan Pengingat" else "Simpan Perubahan",
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    color = DarkBackground
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
             }
 
@@ -199,8 +210,8 @@ fun TipeUlangChipS(label: String, selected: Boolean, modifier: Modifier = Modifi
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .clickable { onClick() },
-        color = if (selected) GoldSoft else DarkSurface,
-        border = if (selected) null else BorderStroke(1.dp, DarkOutline)
+        color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+        border = if (selected) null else BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp),
@@ -211,14 +222,14 @@ fun TipeUlangChipS(label: String, selected: Boolean, modifier: Modifier = Modifi
                 selected = selected,
                 onClick = null,
                 colors = RadioButtonDefaults.colors(
-                    selectedColor = DarkBackground,
-                    unselectedColor = TextSoftSecondary
+                    selectedColor = MaterialTheme.colorScheme.onPrimary,
+                    unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             )
             Spacer(modifier = Modifier.width(2.dp))
             Text(
                 text = label,
-                color = if (selected) DarkBackground else WhiteSoft,
+                color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

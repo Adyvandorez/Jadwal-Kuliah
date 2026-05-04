@@ -24,13 +24,15 @@ fun JadwalCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
+    
     Card(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() },
         shape = RoundedCornerShape(28.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        colors = CardDefaults.cardColors(containerColor = DarkSurface)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Row(
             modifier = Modifier
@@ -43,7 +45,10 @@ fun JadwalCard(
                 modifier = Modifier
                     .width(90.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(DarkSurfaceVariant)
+                    .background(
+                        if (isYellowTheme) MaterialTheme.colorScheme.primaryContainer 
+                        else MaterialTheme.colorScheme.surfaceVariant
+                    )
                     .padding(vertical = 10.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -51,19 +56,22 @@ fun JadwalCard(
                     Icon(
                         imageVector = Icons.Default.AccessTime,
                         contentDescription = null,
-                        tint = DarkTertiary,
+                        tint = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer 
+                               else MaterialTheme.colorScheme.tertiary,
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = jadwal.waktuMulai,
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                        color = DarkTertiary
+                        color = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer 
+                                else MaterialTheme.colorScheme.tertiary
                     )
                     Text(
                         text = jadwal.waktuSelesai,
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                        color = DarkTertiary
+                        color = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer 
+                                else MaterialTheme.colorScheme.tertiary
                     )
                 }
             }
@@ -78,7 +86,7 @@ fun JadwalCard(
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp
                     ),
-                    color = WhiteSoft,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -86,14 +94,14 @@ fun JadwalCard(
                 Text(
                     text = jadwal.dosen,
                     style = MaterialTheme.typography.bodySmall,
-                    color = TextSoftSecondary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = jadwal.ruangan,
                     style = MaterialTheme.typography.bodySmall,
-                    color = TextSoftSecondary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

@@ -30,7 +30,7 @@ fun SimpleHeader(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Kembali",
-                tint = WhiteSoft
+                tint = MaterialTheme.colorScheme.primary
             )
         }
         
@@ -42,7 +42,7 @@ fun SimpleHeader(
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             ),
-            color = WhiteSoft
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }
