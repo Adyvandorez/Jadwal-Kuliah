@@ -75,7 +75,8 @@ fun AddEditPengingatScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
+            val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+            val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
@@ -87,9 +88,9 @@ fun AddEditPengingatScreen(
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
+                    unfocusedBorderColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
                     focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    unfocusedLabelColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedLabelColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
                     focusedTextColor = MaterialTheme.colorScheme.onSurface,
                     unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 )
@@ -100,9 +101,14 @@ fun AddEditPengingatScreen(
                     val timeParts = waktu.split(":")
                     val h = timeParts[0].toInt()
                     val m = timeParts[1].toInt()
+                    val dialogTheme = when {
+                        isPurpleTheme -> R.style.CustomPickerDialogThemePurple
+                        isYellowTheme -> R.style.CustomPickerDialogTheme
+                        else -> R.style.CustomPickerDialogThemeDark
+                    }
                     android.app.TimePickerDialog(
                         context,
-                        R.style.CustomPickerDialogTheme,
+                        dialogTheme,
                         { _, hour, minute -> 
                             waktu = String.format(localeId, "%02d:%02d", hour, minute) 
                         },
@@ -112,19 +118,19 @@ fun AddEditPengingatScreen(
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(20.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isYellowTheme) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
+                    containerColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
                 )
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         Icons.Default.AccessTime, 
                         contentDescription = null, 
-                        tint = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary
+                        tint = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         "Waktu: $waktu", 
-                        color = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary, 
+                        color = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Medium
                     )
                 }

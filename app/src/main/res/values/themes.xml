@@ -6,6 +6,44 @@
     </style>
 
     <style name="CustomPickerDialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="colorPrimary">#B38A21</item> <!-- Gold solid -->
+        <item name="colorOnPrimary">#FFF9E1</item> <!-- Putih kekuningan -->
+        <item name="colorAccent">#B38A21</item> <!-- Selector & Highlighting -->
+        <item name="colorSurface">#FDF3D8</item> <!-- Krem terang (Background utama) -->
+        <item name="colorOnSurface">#5D4037</item> <!-- Coklat gelap soft -->
+        <item name="android:textColorPrimary">#5D4037</item> <!-- Tanggal biasa & Button text -->
+        <item name="android:textColorSecondary">#5D4037</item>
+        <item name="android:textColorPrimaryInverse">#FFF9E1</item>
+        <item name="android:colorControlNormal">#5D4037</item> <!-- Panah navigasi & Icon keyboard -->
+        <item name="android:windowBackground">#FDF3D8</item>
+
+        <!-- TimePicker Colors -->
+        <item name="android:headerBackground">#B38A21</item> <!-- Gold solid -->
+        <item name="android:numbersTextColor">#5D4037</item> <!-- Angka di dalam dial -->
+        <item name="android:numbersBackgroundColor">#F9E7C3</item> <!-- Dial background (krem sedikit gelap) -->
+        <item name="android:numbersSelectorColor">#B38A21</item> <!-- Jarum/Lingkaran selector -->
+        <item name="android:amPmTextColor">#5D4037</item>
+    </style>
+
+    <style name="CustomPickerDialogThemePurple" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="colorPrimary">#8B7391</item> <!-- PurplePrimary -->
+        <item name="colorOnPrimary">#FFF7E0</item> <!-- PurpleIconActive -->
+        <item name="colorAccent">#8B7391</item>
+        <item name="colorSurface">#E5D9E6</item> <!-- PurpleCard -->
+        <item name="colorOnSurface">#534355</item> <!-- PurpleTextPrimary -->
+        <item name="android:textColorPrimary">#534355</item>
+        <item name="android:textColorSecondary">#8E7A91</item> <!-- PurpleTextSecondary -->
+        <item name="android:windowBackground">#FDF3D8</item> <!-- PurpleBackground -->
+
+        <!-- TimePicker Colors -->
+        <item name="android:headerBackground">#9E86A6</item> <!-- PurpleHeader -->
+        <item name="android:numbersTextColor">#534355</item>
+        <item name="android:numbersBackgroundColor">#FDF3D8</item>
+        <item name="android:numbersSelectorColor">#8B7391</item>
+        <item name="android:amPmTextColor">#534355</item>
+    </style>
+
+    <style name="CustomPickerDialogThemeDark" parent="Theme.MaterialComponents.DayNight.Dialog">
         <item name="colorPrimary">@color/gold_primary</item>
         <item name="colorOnPrimary">@color/beige_soft</item>
         <item name="colorAccent">@color/gold_primary</item>

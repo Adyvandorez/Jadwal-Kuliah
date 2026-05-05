@@ -92,8 +92,40 @@ fun MainScreen(themePreferences: ThemePreferences) {
                 ) {
                     val cutoutProgress = if (isFabVisible) 1f else 0f
 
-                    val navColor = MaterialTheme.colorScheme.primary
-                    val outlineColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.1f)
+                    val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+                    val isDarkTheme = MaterialTheme.colorScheme.primary == DarkPrimary
+                    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+                    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
+
+                    val navColor = when {
+                        isYellowTheme -> LightPrimary
+                        isPurpleTheme -> PurpleBottomNav
+                        isPinkTheme -> Color(0xFF2B2123)
+                        isDarkTheme -> Color(0xFF1A1614)
+                        else -> MaterialTheme.colorScheme.primary
+                    }
+                    val outlineColor = when {
+                        isYellowTheme -> MaterialTheme.colorScheme.outline.copy(alpha = 0.1f)
+                        isPurpleTheme -> PurpleOutline
+                        isPinkTheme -> PinkOutline
+                        isDarkTheme -> Color(0xFF2A231D)
+                        else -> MaterialTheme.colorScheme.outline.copy(alpha = 0.1f)
+                    }
+
+                    val activeColor = when {
+                        isYellowTheme -> Color(0xFFFFF4D6)
+                        isPurpleTheme -> PurpleIconActive
+                        isPinkTheme -> PinkPrimary
+                        isDarkTheme -> Color(0xFF8B5F3C)
+                        else -> MaterialTheme.colorScheme.onPrimary
+                    }
+                    val inactiveColor = when {
+                        isYellowTheme -> Color(0xFF474443)
+                        isPurpleTheme -> PurpleIconInactive
+                        isPinkTheme -> PinkSecondary.copy(alpha = 0.6f)
+                        isDarkTheme -> Color(0xFFB8A899)
+                        else -> MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f)
+                    }
 
                     Canvas(modifier = Modifier.fillMaxSize()) {
                         val width = size.width
@@ -107,7 +139,17 @@ fun MainScreen(themePreferences: ThemePreferences) {
 
                         val path = Path().apply {
                             moveTo(0f, height)
-                            lineTo(0f, topY)
+                            if (isPurpleTheme) {
+                                lineTo(0f, topY + cornerRadius)
+                                arcTo(
+                                    rect = Rect(0f, topY, cornerRadius * 2, topY + cornerRadius * 2),
+                                    startAngleDegrees = 180f,
+                                    sweepAngleDegrees = 90f,
+                                    forceMoveTo = false
+                                )
+                            } else {
+                                lineTo(0f, topY)
+                            }
                             
                             if (cutoutProgress > 0.01f) {
                                 val centerX = width / 2
@@ -125,7 +167,17 @@ fun MainScreen(themePreferences: ThemePreferences) {
                                 )
                             }
                             
-                            lineTo(width, topY)
+                            if (isPurpleTheme) {
+                                lineTo(width - cornerRadius, topY)
+                                arcTo(
+                                    rect = Rect(width - cornerRadius * 2, topY, width, topY + cornerRadius * 2),
+                                    startAngleDegrees = 270f,
+                                    sweepAngleDegrees = 90f,
+                                    forceMoveTo = false
+                                )
+                            } else {
+                                lineTo(width, topY)
+                            }
                             lineTo(width, height)
                             close()
                         }
@@ -134,7 +186,17 @@ fun MainScreen(themePreferences: ThemePreferences) {
 
                         // Top Outline following the curve
                         val outlinePath = Path().apply {
-                            moveTo(0f, topY)
+                            if (isPurpleTheme) {
+                                moveTo(0f, topY + cornerRadius)
+                                arcTo(
+                                    rect = Rect(0f, topY, cornerRadius * 2, topY + cornerRadius * 2),
+                                    startAngleDegrees = 180f,
+                                    sweepAngleDegrees = 90f,
+                                    forceMoveTo = false
+                                )
+                            } else {
+                                moveTo(0f, topY)
+                            }
                             
                             if (cutoutProgress > 0.01f) {
                                 val centerX = width / 2
@@ -152,13 +214,23 @@ fun MainScreen(themePreferences: ThemePreferences) {
                                 )
                             }
                             
-                            lineTo(width, topY)
+                            if (isPurpleTheme) {
+                                lineTo(width - cornerRadius, topY)
+                                arcTo(
+                                    rect = Rect(width - cornerRadius * 2, topY, width, topY + cornerRadius * 2),
+                                    startAngleDegrees = 270f,
+                                    sweepAngleDegrees = 90f,
+                                    forceMoveTo = false
+                                )
+                            } else {
+                                lineTo(width, topY)
+                            }
                         }
 
                         drawPath(
                             path = outlinePath,
                             color = outlineColor,
-                            style = Stroke(width = 1.dp.toPx())
+                            style = Stroke(width = if (isPurpleTheme) 1.5.dp.toPx() else 1.dp.toPx())
                         )
                     }
 
@@ -170,6 +242,7 @@ fun MainScreen(themePreferences: ThemePreferences) {
                             .align(Alignment.BottomCenter),
                         windowInsets = WindowInsets(0)
                     ) {
+
                         screens.forEachIndexed { index, screen ->
                             if (index == 2) {
                                 Spacer(modifier = Modifier.weight(0.5f))
@@ -194,13 +267,23 @@ fun MainScreen(themePreferences: ThemePreferences) {
                                             )
                                         )
                                         if (isSelected) {
-                                            Box(
-                                                modifier = Modifier
-                                                    .padding(top = 4.dp)
-                                                    .width(14.dp)
-                                                    .height(3.dp)
-                                                    .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(1.5.dp))
-                                            )
+                                            if (isPurpleTheme) {
+                                                Spacer(modifier = Modifier.height(4.dp))
+                                                Box(
+                                                    modifier = Modifier
+                                                        .width(16.dp)
+                                                        .height(2.5.dp)
+                                                        .background(activeColor, RoundedCornerShape(1.dp))
+                                                )
+                                            } else {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .padding(top = 4.dp)
+                                                        .width(14.dp)
+                                                        .height(2.5.dp)
+                                                        .background(activeColor, RoundedCornerShape(1.dp))
+                                                )
+                                            }
                                         }
                                     }
                                 },
@@ -217,10 +300,10 @@ fun MainScreen(themePreferences: ThemePreferences) {
                                     }
                                 },
                                 colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                                    unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
-                                    selectedTextColor = MaterialTheme.colorScheme.onPrimary,
-                                    unselectedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                                    selectedIconColor = activeColor,
+                                    unselectedIconColor = inactiveColor,
+                                    selectedTextColor = activeColor,
+                                    unselectedTextColor = inactiveColor,
                                     indicatorColor = Color.Transparent
                                 )
                             )
@@ -247,10 +330,14 @@ fun MainScreen(themePreferences: ThemePreferences) {
                         .clip(CircleShape)
                         .background(
                             brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.primaryContainer,
-                                    MaterialTheme.colorScheme.primary
-                                )
+                                colors = if (MaterialTheme.colorScheme.primary == PurplePrimary) {
+                                    listOf(PurpleFabGradientStart, PurpleFabGradientEnd)
+                                } else {
+                                    listOf(
+                                        MaterialTheme.colorScheme.primaryContainer,
+                                        MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             )
                         )
                         .clickable { 

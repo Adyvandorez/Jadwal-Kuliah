@@ -43,6 +43,10 @@ fun DetailTugasScreen(
         tugas = viewModel.getTugasById(tugasId)
     }
 
+    val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
+
     Scaffold(
         topBar = {
             SimpleHeader(
@@ -51,10 +55,9 @@ fun DetailTugasScreen(
             )
         },
         bottomBar = {
-            val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
             tugas?.let { data ->
                 Surface(
-                    color = if (isYellowTheme) MaterialTheme.colorScheme.background else DarkBackground,
+                    color = MaterialTheme.colorScheme.background,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -70,21 +73,37 @@ fun DetailTugasScreen(
                                 .height(60.dp),
                             shape = RoundedCornerShape(24.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (isYellowTheme) MaterialTheme.colorScheme.surface else DarkSurface
+                                containerColor = when {
+                                    isYellowTheme -> MaterialTheme.colorScheme.surface
+                                    isPinkTheme -> PinkSurfaceVariant
+                                    else -> DarkSurface
+                                }
                             ),
-                            border = BorderStroke(1.dp, (if (isYellowTheme) MaterialTheme.colorScheme.primary else GoldSoft).copy(alpha = 0.5f))
+                            border = BorderStroke(1.dp, (when {
+                                isYellowTheme -> MaterialTheme.colorScheme.primary
+                                isPinkTheme -> PinkPrimary
+                                else -> GoldSoft
+                            }).copy(alpha = 0.5f))
                         ) {
                             Icon(
                                 Icons.Default.Edit, 
                                 contentDescription = null, 
-                                tint = if (isYellowTheme) MaterialTheme.colorScheme.primary else GoldSoft, 
+                                tint = when {
+                                    isYellowTheme -> MaterialTheme.colorScheme.primary
+                                    isPinkTheme -> PinkPrimary
+                                    else -> GoldSoft
+                                }, 
                                 modifier = Modifier.size(20.dp)
                             )
                             Spacer(Modifier.width(10.dp))
                             Text(
                                 "Edit", 
                                 fontWeight = FontWeight.Bold, 
-                                color = if (isYellowTheme) MaterialTheme.colorScheme.primary else GoldSoft, 
+                                color = when {
+                                    isYellowTheme -> MaterialTheme.colorScheme.primary
+                                    isPinkTheme -> PinkPrimary
+                                    else -> GoldSoft
+                                }, 
                                 fontSize = 16.sp
                             )
                         }
@@ -98,9 +117,9 @@ fun DetailTugasScreen(
                             shape = RoundedCornerShape(24.dp),
                             elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
                         ) {
-                            Icon(Icons.Default.Delete, contentDescription = null, tint = Color(0xFFB8A899), modifier = Modifier.size(20.dp))
+                            Icon(Icons.Default.Delete, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
                             Spacer(Modifier.width(10.dp))
-                            Text("Hapus", fontWeight = FontWeight.Bold, color = Color(0xFFB8A899), fontSize = 16.sp)
+                            Text("Hapus", fontWeight = FontWeight.Bold, color = Color.White, fontSize = 16.sp)
                         }
                     }
                 }
@@ -109,7 +128,6 @@ fun DetailTugasScreen(
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         tugas?.let { data ->
-            val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -118,7 +136,6 @@ fun DetailTugasScreen(
                     .padding(horizontal = 24.dp, vertical = 24.dp)
             ) {
                 val isTugas = data.kategori != "Catatan"
-                // ... rest of content ...
 
                 InfoColumn(label = "Judul", value = data.judul, isTitle = true)
                 Spacer(modifier = Modifier.height(24.dp))
@@ -142,8 +159,7 @@ fun DetailTugasScreen(
                         Column(modifier = Modifier.weight(1f)) {
                             InfoColumn(
                                 label = "Deadline", 
-                                value = DateTimeUtils.formatDeadline(data.deadline),
-                                isYellowTheme = isYellowTheme
+                                value = DateTimeUtils.formatDeadline(data.deadline)
                             )
                         }
                         val countdown = DateTimeUtils.getCountdown(data.deadline)
@@ -153,8 +169,7 @@ fun DetailTugasScreen(
                                 InfoColumn(
                                     label = "Countdown",
                                     value = countdown,
-                                    valueColor = if (isOverdue) DeleteRed else if (isYellowTheme) MaterialTheme.colorScheme.primary else GoldSoft,
-                                    isYellowTheme = isYellowTheme
+                                    valueColor = if (isOverdue) DeleteRed else if (isYellowTheme) MaterialTheme.colorScheme.primary else if (isPinkTheme) PinkPrimary else GoldSoft
                                 )
                             }
                         }
@@ -163,7 +178,7 @@ fun DetailTugasScreen(
 
                 if (data.deskripsi.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(24.dp))
-                    InfoColumn(label = "Deskripsi", value = data.deskripsi, isYellowTheme = isYellowTheme)
+                    InfoColumn(label = "Deskripsi", value = data.deskripsi)
                 }
 
                 // Lampiran Section
@@ -172,7 +187,11 @@ fun DetailTugasScreen(
                     Text(
                         text = "Lampiran",
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                        color = if (isYellowTheme) MaterialTheme.colorScheme.primary else GoldSoft
+                        color = when {
+                            isYellowTheme -> MaterialTheme.colorScheme.primary
+                            isPinkTheme -> PinkPrimary
+                            else -> GoldSoft
+                        }
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     
@@ -197,7 +216,6 @@ fun DetailTugasScreen(
     }
 
     if (showDeleteDialog) {
-        val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
             title = { Text("Konfirmasi Hapus", fontWeight = FontWeight.Bold) },
@@ -212,18 +230,26 @@ fun DetailTugasScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = DeleteRed),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Hapus", color = Color(0xFFB8A899), fontWeight = FontWeight.Bold)
+                    Text("Hapus", color = Color.White, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Batal", color = if (isYellowTheme) MaterialTheme.colorScheme.primary else GoldSoft)
+                    Text("Batal", color = when {
+                        isYellowTheme -> MaterialTheme.colorScheme.primary
+                        isPinkTheme -> PinkPrimary
+                        else -> GoldSoft
+                    })
                 }
             },
             shape = RoundedCornerShape(32.dp),
-            containerColor = if (isYellowTheme) MaterialTheme.colorScheme.surface else DarkSurface,
-            titleContentColor = if (isYellowTheme) MaterialTheme.colorScheme.onSurface else WhiteSoft,
-            textContentColor = if (isYellowTheme) MaterialTheme.colorScheme.onSurfaceVariant else TextSoftSecondary
+            containerColor = when {
+                isYellowTheme -> MaterialTheme.colorScheme.surface
+                isPinkTheme -> PinkSurface
+                else -> DarkSurface
+            },
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -269,21 +295,39 @@ fun InfoColumn(
     value: String,
     isTitle: Boolean = false,
     isAccent: Boolean = false,
-    valueColor: Color? = null,
-    isYellowTheme: Boolean = false
+    valueColor: Color? = null
 ) {
+    val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
+
     Column {
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
-            color = if (isYellowTheme) MaterialTheme.colorScheme.onSurfaceVariant else TextSoftSecondary
+            color = when {
+                isYellowTheme -> MaterialTheme.colorScheme.onSurfaceVariant
+                isPurpleTheme -> PurpleTextSecondary
+                isPinkTheme -> PinkTextSecondary
+                else -> TextSoftSecondary
+            }
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = value,
             style = if (isTitle) MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
             else MaterialTheme.typography.titleMedium,
-            color = valueColor ?: if (isAccent) (if (isYellowTheme) MaterialTheme.colorScheme.primary else GoldSoft) else (if (isYellowTheme) MaterialTheme.colorScheme.onSurface else WhiteSoft),
+            color = valueColor ?: when {
+                isAccent -> when {
+                    isYellowTheme -> MaterialTheme.colorScheme.primary
+                    isPinkTheme -> PinkPrimary
+                    else -> GoldSoft
+                }
+                isYellowTheme -> MaterialTheme.colorScheme.onSurface
+                isPurpleTheme -> PurpleTextPrimary
+                isPinkTheme -> PinkText
+                else -> WhiteSoft
+            },
             lineHeight = 24.sp
         )
     }

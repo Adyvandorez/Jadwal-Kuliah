@@ -82,16 +82,22 @@ fun JadwalScreen(
 
 @Composable
 fun HeaderSection(title: String) {
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primaryContainer,
-                        MaterialTheme.colorScheme.primary
-                    )
+                    colors = when {
+                        isPurpleTheme -> listOf(PurpleHeader, PurpleHeader)
+                        isPinkTheme -> listOf(PinkPrimaryContainer, PinkPrimaryContainer)
+                        else -> listOf(
+                            MaterialTheme.colorScheme.primaryContainer,
+                            MaterialTheme.colorScheme.primary
+                        )
+                    }
                 ),
                 shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp)
             )
@@ -102,13 +108,21 @@ fun HeaderSection(title: String) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.onPrimary
+                color = when {
+                    isPurpleTheme -> PurpleIconActive
+                    isPinkTheme -> PinkOnPrimaryContainer
+                    else -> MaterialTheme.colorScheme.onPrimary
+                }
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "Kelola jadwal kuliah kamu!",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+                color = (when {
+                    isPurpleTheme -> PurpleIconActive
+                    isPinkTheme -> PinkOnPrimaryContainer
+                    else -> MaterialTheme.colorScheme.onPrimary
+                }).copy(alpha = 0.8f)
             )
         }
     }
@@ -116,6 +130,8 @@ fun HeaderSection(title: String) {
 
 @Composable
 fun DayHeader(hari: String) {
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -131,7 +147,11 @@ fun DayHeader(hari: String) {
         Text(
             text = hari,
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = when {
+                isPurpleTheme -> PurpleTextPrimary
+                isPinkTheme -> PinkPrimary
+                else -> MaterialTheme.colorScheme.onBackground
+            },
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 16.dp)
         )

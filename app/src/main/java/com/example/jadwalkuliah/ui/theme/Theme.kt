@@ -50,32 +50,40 @@ private val LightColorScheme = lightColorScheme(
     outline = md_theme_light_outline
 )
 
-private val PurpleColorScheme = darkColorScheme(
+private val PurpleColorScheme = lightColorScheme(
     primary = PurplePrimary,
+    onPrimary = PurpleIconActive,
+    primaryContainer = PurplePrimaryContainer,
+    onPrimaryContainer = PurpleTextPrimary,
     secondary = PurpleSecondary,
-    tertiary = PurpleTertiary,
+    onSecondary = Color.White,
+    tertiary = PurpleHeader,
+    onTertiary = Color.White,
     background = PurpleBackground,
-    surface = PurpleSurface,
-    onPrimary = Color(0xFF381E72),
-    onSecondary = Color(0xFF332D41),
-    onTertiary = Color(0xFF492532),
-    onBackground = PurpleText,
-    onSurface = PurpleText,
-    outline = Color(0xFF938F99)
+    onBackground = PurpleTextPrimary,
+    surface = PurpleCard,
+    onSurface = PurpleTextPrimary,
+    surfaceVariant = PurpleBubble,
+    onSurfaceVariant = PurpleTextSecondary,
+    outline = PurpleOutline
 )
 
 private val PinkColorScheme = darkColorScheme(
     primary = PinkPrimary,
-    secondary = PinkSecondary,
-    tertiary = PinkTertiary,
-    background = PinkBackground,
-    surface = PinkSurface,
     onPrimary = Color(0xFF5E1129),
+    primaryContainer = PinkPrimaryContainer,
+    onPrimaryContainer = PinkOnPrimaryContainer,
+    secondary = PinkSecondary,
     onSecondary = Color(0xFF422930),
+    tertiary = PinkTertiary,
     onTertiary = Color(0xFF5E1231),
+    background = PinkBackground,
     onBackground = PinkText,
+    surface = PinkSurface,
     onSurface = PinkText,
-    outline = Color(0xFF9F8C8F)
+    surfaceVariant = PinkSurfaceVariant,
+    onSurfaceVariant = PinkTextSecondary,
+    outline = PinkOutline
 )
 
 @Composable

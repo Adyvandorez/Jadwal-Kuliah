@@ -59,7 +59,8 @@ fun EditProfilScreen(
         }
     )
 
-    val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
+    val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
 
     Scaffold(
         topBar = {
@@ -79,8 +80,8 @@ fun EditProfilScreen(
                 modifier = Modifier
                     .size(120.dp)
                     .clip(CircleShape)
-                    .background(if (isYellowTheme) MaterialTheme.colorScheme.surface else DarkSurface)
-                    .border(2.dp, if (isYellowTheme) MaterialTheme.colorScheme.primary else GoldSoft, CircleShape)
+                    .background(if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.surface else DarkSurface)
+                    .border(2.dp, if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary else GoldSoft, CircleShape)
                     .clickable {
                         photoPickerLauncher.launch(
                         androidx.activity.result.PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -102,7 +103,7 @@ fun EditProfilScreen(
                         imageVector = Icons.Default.Person,
                         contentDescription = null,
                         modifier = Modifier.size(64.dp),
-                        tint = (if (isYellowTheme) MaterialTheme.colorScheme.primary else GoldSoft).copy(alpha = 0.5f)
+                        tint = (if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary else GoldSoft).copy(alpha = 0.5f)
                     )
                 }
                 Box(
@@ -114,7 +115,7 @@ fun EditProfilScreen(
                     Icon(
                         Icons.Default.CameraAlt,
                         contentDescription = null,
-                        tint = if (isYellowTheme) Color.White else Color(0xFFB8A899),
+                        tint = if (isYellowTheme || isPurpleTheme) Color.White else Color(0xFFB8A899),
                         modifier = Modifier.padding(bottom = 8.dp).size(20.dp)
                     )
                 }
@@ -128,13 +129,13 @@ fun EditProfilScreen(
                 shape = RoundedCornerShape(20.dp),
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = if (isYellowTheme) MaterialTheme.colorScheme.onSurface else WhiteSoft,
-                    unfocusedTextColor = if (isYellowTheme) MaterialTheme.colorScheme.onSurface else WhiteSoft,
-                    focusedBorderColor = if (isYellowTheme) MaterialTheme.colorScheme.primary else GoldSoft,
-                    unfocusedBorderColor = if (isYellowTheme) MaterialTheme.colorScheme.outline else DarkOutline,
-                    focusedLabelColor = if (isYellowTheme) MaterialTheme.colorScheme.primary else GoldSoft,
-                    unfocusedLabelColor = if (isYellowTheme) MaterialTheme.colorScheme.onSurfaceVariant else TextSoftSecondary,
-                    cursorColor = if (isYellowTheme) MaterialTheme.colorScheme.primary else GoldSoft
+                    focusedTextColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.onSurface else WhiteSoft,
+                    unfocusedTextColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.onSurface else WhiteSoft,
+                    focusedBorderColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary else GoldSoft,
+                    unfocusedBorderColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.outline else DarkOutline,
+                    focusedLabelColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary else GoldSoft,
+                    unfocusedLabelColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.onSurfaceVariant else TextSoftSecondary,
+                    cursorColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary else GoldSoft
                 )
             )
 
@@ -150,13 +151,13 @@ fun EditProfilScreen(
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(20.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isYellowTheme) MaterialTheme.colorScheme.primary else GoldSoft
+                    containerColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary else GoldSoft
                 )
             ) {
                 Text(
                     "Simpan Perubahan", 
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), 
-                    color = if (isYellowTheme) MaterialTheme.colorScheme.onPrimary else DarkBackground
+                    color = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.onPrimary else DarkBackground
                 )
             }
         }

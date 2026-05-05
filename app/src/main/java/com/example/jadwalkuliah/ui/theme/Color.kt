@@ -29,6 +29,9 @@ val LightTextPrimary = Color(0xFF5D4037)
 val LightTextSecondary = Color(0xFF8B5E3C)
 val LightOutline = Color(0xFFEBD8B2)
 
+// Capsule/Pill Background for Yellow Theme
+val YellowCapsuleBg = Color(0xFFECD4A6)
+
 // Dark Mode (Premium Brown Coffee Theme)
 val DarkBackground = Color(0xFF0F0E0C)
 val DarkSurface = Color(0xFF1E1A17)
@@ -73,13 +76,23 @@ val md_theme_dark_surfaceVariant = DarkSurfaceVariant
 val md_theme_dark_onSurfaceVariant = DarkTextSecondary
 val md_theme_dark_outline = DarkOutline
 
-// Purple Theme (Deep Purple Premium)
-val PurplePrimary = Color(0xFFD0BCFF)
-val PurpleSecondary = Color(0xFFCCC2DC)
-val PurpleTertiary = Color(0xFFEFB8C8)
-val PurpleBackground = Color(0xFF1C1B1F)
-val PurpleSurface = Color(0xFF25232A)
-val PurpleText = Color(0xFFE6E1E5)
+// Purple Theme (Elegant Muted Purple) - Referensi Desain
+val PurpleBackground = Color(0xFFF3EAE1) // Beige soft identik referensi
+val PurpleHeader = Color(0xFF9E86A6) // Ungu soft muted untuk header
+val PurpleCard = Color(0xFFE4DAD8) // Background Item (Card / Container Utama)
+val PurpleBubble = Color(0xFFD6C3C7) // Kapsul / Chip / Label
+val PurpleBottomNav = Color(0xFF8B7391) // Ungu lebih solid untuk bottom nav
+val PurplePrimary = Color(0xFF8B7391) // Base primary (ungu solid)
+val PurpleSecondary = Color(0xFFB09DB5) // Icon inactive
+val PurpleTertiary = Color(0xFF9E86A6) // Header
+val PurplePrimaryContainer = Color(0xFFD6C3C7) // Menggunakan warna kapsul untuk primary container (chip/badge)
+val PurpleTextPrimary = Color(0xFF534355) // Ungu gelap / abu-ungu untuk teks utama
+val PurpleTextSecondary = Color(0xFF8E7A91) // Ungu lebih soft untuk teks sekunder
+val PurpleIconInactive = Color(0xFF604558) // Sesuai referensi
+val PurpleIconActive = Color(0xFFE4DAD8) // Sesuai referensi (Identik PurpleCard)
+val PurpleFabGradientStart = Color(0xFF8B7391) // Ungu solid
+val PurpleFabGradientEnd = Color(0xFFFFD54F) // Kuning (gradasi)
+val PurpleOutline = Color(0xFF604558) // Sesuai referensi untuk nav outline
 
 // Pink Theme (Elegant Rose Premium)
 val PinkPrimary = Color(0xFFFFB1C1)
@@ -87,4 +100,9 @@ val PinkSecondary = Color(0xFFE5BDC6)
 val PinkTertiary = Color(0xFFFFB0C8)
 val PinkBackground = Color(0xFF1F1A1B)
 val PinkSurface = Color(0xFF2B2123)
+val PinkSurfaceVariant = Color(0xFF3F3235)
+val PinkPrimaryContainer = Color(0xFF7D2B42)
+val PinkOnPrimaryContainer = Color(0xFFFFD9E1)
 val PinkText = Color(0xFFEDE0E1)
+val PinkTextSecondary = Color(0xFFD4B9BD)
+val PinkOutline = Color(0xFF524346)

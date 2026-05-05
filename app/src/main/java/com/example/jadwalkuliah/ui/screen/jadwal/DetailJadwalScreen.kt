@@ -37,7 +37,9 @@ fun DetailJadwalScreen(
         jadwal = viewModel.getJadwalById(jadwalId)
     }
 
-    val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
+    val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
 
     Scaffold(
         topBar = {
@@ -62,10 +64,21 @@ fun DetailJadwalScreen(
                             onClick = { onEditNavigate(data.id) },
                             modifier = Modifier.weight(1f).height(56.dp),
                             shape = RoundedCornerShape(20.dp),
-                            border = BorderStroke(1.dp, if (isYellowTheme) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline),
+                            border = BorderStroke(1.dp, when {
+                                isYellowTheme -> MaterialTheme.colorScheme.primary
+                                isPinkTheme -> PinkPrimary.copy(alpha = 0.5f)
+                                else -> MaterialTheme.colorScheme.outline
+                            }),
                             colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = if (isYellowTheme) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary,
-                                containerColor = if (isYellowTheme) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f) else Color.Transparent
+                                contentColor = when {
+                                    isPinkTheme -> PinkPrimary
+                                    else -> MaterialTheme.colorScheme.primary
+                                },
+                                containerColor = when {
+                                    isYellowTheme -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f)
+                                    isPinkTheme -> PinkSurfaceVariant
+                                    else -> Color.Transparent
+                                }
                             )
                         ) {
                             Icon(Icons.Default.Edit, contentDescription = null)
@@ -140,11 +153,19 @@ fun DetailJadwalScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Batal", color = if (isYellowTheme) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.primary)
+                    Text("Batal", color = when {
+                        isYellowTheme -> MaterialTheme.colorScheme.onSurface
+                        isPinkTheme -> PinkPrimary
+                        else -> MaterialTheme.colorScheme.primary
+                    })
                 }
             },
             shape = RoundedCornerShape(32.dp),
-            containerColor = if (isYellowTheme) LightBackground else MaterialTheme.colorScheme.surface,
+            containerColor = when {
+                isYellowTheme -> LightBackground
+                isPinkTheme -> PinkSurface
+                else -> MaterialTheme.colorScheme.surface
+            },
             titleContentColor = MaterialTheme.colorScheme.onSurface,
             textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -159,22 +180,33 @@ fun InfoColumn(
     isAccent: Boolean = false,
     valueColor: Color? = null
 ) {
-    val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
+    val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
+
     Column {
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
-            color = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) 
-                    else MaterialTheme.colorScheme.onSurfaceVariant
+            color = when {
+                isYellowTheme -> MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                isPurpleTheme -> PurpleTextSecondary
+                isPinkTheme -> PinkTextSecondary
+                else -> MaterialTheme.colorScheme.onSurfaceVariant
+            }
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = value,
             style = if (isTitle) MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
                     else MaterialTheme.typography.titleMedium,
-            color = valueColor ?: if (isAccent) MaterialTheme.colorScheme.primary 
-                    else if (isYellowTheme) MaterialTheme.colorScheme.onSurface 
-                    else MaterialTheme.colorScheme.onSurface,
+            color = valueColor ?: when {
+                isAccent -> MaterialTheme.colorScheme.primary
+                isYellowTheme -> MaterialTheme.colorScheme.onSurface
+                isPurpleTheme -> PurpleTextPrimary
+                isPinkTheme -> PinkText
+                else -> MaterialTheme.colorScheme.onSurface
+            },
             lineHeight = 24.sp
         )
     }

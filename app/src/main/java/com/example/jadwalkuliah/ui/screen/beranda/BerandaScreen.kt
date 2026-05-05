@@ -147,33 +147,47 @@ fun TopAppBarCustom(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+        val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
         Text(
             text = "Jadwal Kuliah",
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary
+                color = when {
+                    isPurpleTheme -> PurpleTextSecondary
+                    isPinkTheme -> PinkPrimary
+                    else -> MaterialTheme.colorScheme.primary
+                }
             )
         )
         
-        val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
+        val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
         
         Box(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
                 .background(
-                    if (isYellowTheme) MaterialTheme.colorScheme.primaryContainer 
-                    else if (isSystemInDarkTheme()) DarkSurfaceVariant 
-                    else MaterialTheme.colorScheme.surfaceVariant
+                    when {
+                        isYellowTheme -> YellowCapsuleBg 
+                        isPurpleTheme -> PurpleIconActive
+                        isPinkTheme -> PinkSurfaceVariant
+                        isSystemInDarkTheme() && !isPurpleTheme && !isYellowTheme && !isPinkTheme -> DarkSurfaceVariant 
+                        else -> MaterialTheme.colorScheme.surfaceVariant
+                    }
                 ),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = if (userName.isNotEmpty()) userName.take(1).uppercase() else "A",
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                color = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer 
-                        else if (isSystemInDarkTheme()) DarkTextPrimary 
-                        else MaterialTheme.colorScheme.onSurfaceVariant,
+                color = when {
+                    isYellowTheme -> MaterialTheme.colorScheme.onPrimaryContainer 
+                    isPurpleTheme -> PurplePrimary
+                    isPinkTheme -> PinkPrimary
+                    isSystemInDarkTheme() -> DarkTextPrimary 
+                    else -> MaterialTheme.colorScheme.onSurfaceVariant
+                },
                 modifier = Modifier.wrapContentSize(Alignment.Center)
             )
         }
@@ -186,6 +200,14 @@ fun WelcomeCard(
     date: String,
     photoPath: String?
 ) {
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
+    val onPrimaryColor = when {
+        isPurpleTheme -> PurpleIconActive
+        isPinkTheme -> PinkOnPrimaryContainer
+        else -> MaterialTheme.colorScheme.onPrimary
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -198,10 +220,16 @@ fun WelcomeCard(
                 .fillMaxSize()
                 .background(
                     brush = Brush.verticalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primaryContainer,
-                            MaterialTheme.colorScheme.primary
-                        )
+                        colors = if (isPurpleTheme) {
+                            listOf(PurpleHeader, PurpleHeader)
+                        } else if (isPinkTheme) {
+                            listOf(PinkPrimaryContainer, PinkPrimaryContainer)
+                        } else {
+                            listOf(
+                                MaterialTheme.colorScheme.primaryContainer,
+                                MaterialTheme.colorScheme.primary
+                            )
+                        }
                     )
                 )
                 .padding(20.dp),
@@ -216,7 +244,7 @@ fun WelcomeCard(
                         .size(64.dp)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .border(2.5.dp, MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f), CircleShape),
+                        .border(2.5.dp, onPrimaryColor.copy(alpha = 0.5f), CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     photoPath?.let { path ->
@@ -230,7 +258,7 @@ fun WelcomeCard(
                         Text(
                             text = if (userName.isNotEmpty()) userName.take(1).uppercase() else "A",
                             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                            color = MaterialTheme.colorScheme.onPrimary
+                            color = onPrimaryColor
                         )
                     }
                 }
@@ -240,10 +268,10 @@ fun WelcomeCard(
                 Column {
                     Text(
                         text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimary)) {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = onPrimaryColor)) {
                                 append("Halo, Selamat Datang! ")
                             }
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f))) {
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold, color = onPrimaryColor.copy(alpha = 0.9f))) {
                                 append(userName)
                             }
                         },
@@ -253,7 +281,7 @@ fun WelcomeCard(
                     Text(
                         text = date,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+                        color = onPrimaryColor.copy(alpha = 0.8f)
                     )
                 }
             }
@@ -265,7 +293,9 @@ fun WelcomeCard(
 fun AlarmPengingatSection(
     onPengingatClick: () -> Unit
 ) {
-    val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
+    val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -284,16 +314,24 @@ fun AlarmPengingatSection(
                         .size(44.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(
-                            if (isYellowTheme) MaterialTheme.colorScheme.primaryContainer 
-                            else MaterialTheme.colorScheme.surfaceVariant
+                            when {
+                                isYellowTheme -> YellowCapsuleBg
+                                isPurpleTheme -> PurpleBubble
+                                isPinkTheme -> PinkSurfaceVariant
+                                else -> MaterialTheme.colorScheme.surfaceVariant
+                            }
                         ),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.NotificationsActive,
                         contentDescription = null,
-                        tint = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer 
-                               else MaterialTheme.colorScheme.tertiary,
+                        tint = when {
+                            isYellowTheme -> MaterialTheme.colorScheme.onPrimaryContainer 
+                            isPurpleTheme -> PurpleTextSecondary
+                            isPinkTheme -> PinkPrimary
+                            else -> MaterialTheme.colorScheme.tertiary
+                        },
                         modifier = Modifier.size(22.dp)
                     )
                 }
@@ -317,7 +355,11 @@ fun AlarmPengingatSection(
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.Normal,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = when {
+                            isPurpleTheme -> PurpleIconActive
+                            isPinkTheme -> PinkOnPrimaryContainer
+                            else -> MaterialTheme.colorScheme.onPrimary
+                        }
                     )
                 )
             }
@@ -342,7 +384,7 @@ fun SectionHeader(title: String) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = if (MaterialTheme.colorScheme.primary == PurplePrimary) PurpleTextPrimary else MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 16.dp)
         )

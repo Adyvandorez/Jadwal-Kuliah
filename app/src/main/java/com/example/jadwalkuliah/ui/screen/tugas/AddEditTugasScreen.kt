@@ -88,7 +88,8 @@ fun AddEditTugasScreen(
         }
     }
 
-    val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
+    val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
 
     Scaffold(
         topBar = {
@@ -118,9 +119,9 @@ fun AddEditTugasScreen(
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
+                    unfocusedBorderColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
                     focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    unfocusedLabelColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedLabelColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
                     focusedTextColor = MaterialTheme.colorScheme.onSurface,
                     unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 )
@@ -136,9 +137,9 @@ fun AddEditTugasScreen(
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
+                    unfocusedBorderColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
                     focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    unfocusedLabelColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedLabelColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
                     focusedTextColor = MaterialTheme.colorScheme.onSurface,
                     unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 )
@@ -158,9 +159,9 @@ fun AddEditTugasScreen(
                     shape = RoundedCornerShape(20.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
+                        unfocusedBorderColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
                         focusedLabelColor = MaterialTheme.colorScheme.primary,
-                        unfocusedLabelColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                        unfocusedLabelColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
                         focusedTextColor = MaterialTheme.colorScheme.onSurface,
                         unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                     )
@@ -168,7 +169,7 @@ fun AddEditTugasScreen(
                 ExposedDropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
-                    modifier = Modifier.background(if (isYellowTheme) LightBackground else MaterialTheme.colorScheme.surface)
+                    modifier = Modifier.background(if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.surface)
                 ) {
                     listOf("Tugas", "Catatan").forEach { selectionOption ->
                         DropdownMenuItem(
@@ -186,8 +187,6 @@ fun AddEditTugasScreen(
             val currentDeadline = deadline ?: System.currentTimeMillis()
             calendar.timeInMillis = currentDeadline
 
-            val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
-
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
                     if (kategori == "Catatan") "Tanggal Catatan" else "Batas Waktu (Deadline)",
@@ -199,9 +198,14 @@ fun AddEditTugasScreen(
                     // Date Picker Button
                     Button(
                         onClick = {
+                            val dialogTheme = when {
+                                isPurpleTheme -> R.style.CustomPickerDialogThemePurple
+                                isYellowTheme -> R.style.CustomPickerDialogTheme
+                                else -> R.style.CustomPickerDialogThemeDark
+                            }
                             val datePickerDialog = android.app.DatePickerDialog(
                                 context,
-                                R.style.CustomPickerDialogTheme,
+                                dialogTheme,
                                 { _, year, month, dayOfMonth ->
                                     calendar.set(Calendar.YEAR, year)
                                     calendar.set(Calendar.MONTH, month)
@@ -217,20 +221,20 @@ fun AddEditTugasScreen(
                         modifier = Modifier.weight(1f).height(56.dp),
                         shape = RoundedCornerShape(20.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isYellowTheme) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
+                            containerColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
                         )
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 Icons.Default.Today, 
                                 contentDescription = null, 
-                                tint = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary, 
+                                tint = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary, 
                                 modifier = Modifier.size(20.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = sdfDate.format(Date(currentDeadline)),
-                                color = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary,
+                                color = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 14.sp
                             )
@@ -240,9 +244,14 @@ fun AddEditTugasScreen(
                     // Time Picker Button
                     Button(
                         onClick = {
+                            val dialogTheme = when {
+                                isPurpleTheme -> R.style.CustomPickerDialogThemePurple
+                                isYellowTheme -> R.style.CustomPickerDialogTheme
+                                else -> R.style.CustomPickerDialogThemeDark
+                            }
                             val timePickerDialog = android.app.TimePickerDialog(
                                 context,
-                                R.style.CustomPickerDialogTheme,
+                                dialogTheme,
                                 { _, hourOfDay, minute ->
                                     calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                                     calendar.set(Calendar.MINUTE, minute)
@@ -257,20 +266,20 @@ fun AddEditTugasScreen(
                         modifier = Modifier.weight(0.8f).height(56.dp),
                         shape = RoundedCornerShape(20.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isYellowTheme) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
+                            containerColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
                         )
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 Icons.Default.AccessTime, 
                                 contentDescription = null, 
-                                tint = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary, 
+                                tint = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary, 
                                 modifier = Modifier.size(20.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = sdfTime.format(Date(currentDeadline)),
-                                color = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary,
+                                color = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 14.sp
                             )

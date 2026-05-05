@@ -42,6 +42,35 @@ fun AboutScreen(
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
+    val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+
+    val cardColor = when {
+        isYellowTheme -> MaterialTheme.colorScheme.surface
+        isPurpleTheme -> PurpleCard
+        else -> DarkSurface
+    }
+    val cardOnSurface = when {
+        isYellowTheme -> MaterialTheme.colorScheme.onSurface
+        isPurpleTheme -> PurpleTextPrimary
+        else -> WhiteSoft
+    }
+    val secondaryText = when {
+        isYellowTheme -> MaterialTheme.colorScheme.onSurfaceVariant
+        isPurpleTheme -> PurpleTextSecondary
+        else -> TextSoftSecondary
+    }
+    val accentColor = when {
+        isYellowTheme -> MaterialTheme.colorScheme.primary
+        isPurpleTheme -> PurplePrimary
+        else -> GoldAccent
+    }
+    val boxBg = when {
+        isYellowTheme -> YellowCapsuleBg
+        isPurpleTheme -> PurpleBubble
+        else -> DarkSurfaceVariant
+    }
+
     Scaffold(
         topBar = {
             SimpleHeader(title = "Tentang Aplikasi", onBack = onNavigateBack)
@@ -60,7 +89,7 @@ fun AboutScreen(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(32.dp),
-                colors = CardDefaults.cardColors(containerColor = DarkSurface),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
             ) {
                 Column(
@@ -70,10 +99,10 @@ fun AboutScreen(
                     Box(
                         modifier = Modifier
                             .size(150.dp)
-                            .border(4.dp, GoldAccent, CircleShape)
+                            .border(4.dp, accentColor, CircleShape)
                             .padding(6.dp)
                             .clip(CircleShape)
-                            .background(DarkSurfaceVariant)
+                            .background(boxBg)
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.placeholder),
@@ -88,12 +117,12 @@ fun AboutScreen(
                     Text(
                         text = "Ady_vandorez",
                         style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold),
-                        color = WhiteSoft
+                        color = cardOnSurface
                     )
                     Text(
-                        text = "@adyvandorez,com",
+                        text = "@adyvandorez.com",
                         style = MaterialTheme.typography.titleMedium,
-                        color = GoldAccent,
+                        color = accentColor,
                         modifier = Modifier.clickable { 
                             openUrl(context, "https://id.linkedin.com/in/ady-vandorez-7a9549322")
                         }
@@ -102,13 +131,13 @@ fun AboutScreen(
                     Spacer(modifier = Modifier.height(12.dp))
                     
                     Surface(
-                        color = DarkSurfaceVariant,
+                        color = boxBg,
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Text(
                             text = "Vektor Portrait Artis",
                             style = MaterialTheme.typography.labelLarge,
-                            color = TextSoftSecondary,
+                            color = secondaryText,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
                         )
                     }
@@ -121,14 +150,14 @@ fun AboutScreen(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(32.dp),
-                colors = CardDefaults.cardColors(containerColor = DarkSurface),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
             ) {
                 Column(modifier = Modifier.padding(24.dp)) {
                     Text(
                         text = "Aplikasi ini dirancang sebagai solusi sederhana namun efektif untuk membantu pengguna dalam mengatur aktivitas harian, khususnya dalam konteks perkuliahan dan produktivitas pribadi. Dengan tampilan yang bersih dan terstruktur, aplikasi ini menggabungkan berbagai kebutuhan penting seperti pengelolaan jadwal, pencatatan tugas, pengingat, serta catatan dalam satu tempat yang terintegrasi.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = TextSoftSecondary,
+                        color = secondaryText,
                         textAlign = TextAlign.Justify,
                         lineHeight = 24.sp
                     )
@@ -138,7 +167,7 @@ fun AboutScreen(
                     Text(
                         text = "Fokus utama dari aplikasi ini adalah memberikan pengalaman penggunaan yang nyaman, cepat, dan tidak membingungkan. Setiap fitur dirancang dengan pendekatan minimalis, sehingga pengguna dapat langsung memahami cara penggunaannya tanpa perlu proses adaptasi yang rumit. Mulai dari pengelolaan jadwal kuliah, pencatatan tugas dengan deadline, hingga sistem pengingat yang terstruktur, semuanya dibuat untuk membantu pengguna tetap terorganisir dalam menjalani aktivitas sehari-hari.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = TextSoftSecondary,
+                        color = secondaryText,
                         textAlign = TextAlign.Justify,
                         lineHeight = 24.sp
                     )
@@ -148,7 +177,7 @@ fun AboutScreen(
                     Text(
                         text = "Selain dari sisi fungsionalitas, aplikasi ini juga menekankan pada konsistensi visual dan kenyamanan antarmuka. Pemilihan warna, tata letak, serta interaksi antar elemen dirancang agar terasa halus dan tidak mengganggu fokus pengguna. Setiap detail diperhatikan untuk menciptakan pengalaman yang lebih profesional dan menyenangkan.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = TextSoftSecondary,
+                        color = secondaryText,
                         textAlign = TextAlign.Justify,
                         lineHeight = 24.sp
                     )
@@ -158,7 +187,7 @@ fun AboutScreen(
                     Text(
                         text = "Seiring dengan perkembangan kebutuhan pengguna, aplikasi ini dirancang agar fleksibel dan dapat terus dikembangkan. Aplikasi ini tidak hanya ditujukan sebagai alat bantu sementara, tetapi juga sebagai sistem yang dapat digunakan dalam jangka panjang untuk menunjang produktivitas.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = TextSoftSecondary,
+                        color = secondaryText,
                         textAlign = TextAlign.Justify,
                         lineHeight = 24.sp
                     )
@@ -168,7 +197,7 @@ fun AboutScreen(
                     Text(
                         text = "Di balik pengembangan aplikasi ini, terdapat proses belajar dan eksplorasi yang tidak singkat. Aplikasi ini dibangun sebagai bagian dari perjalanan dalam memahami bagaimana sebuah sistem tidak hanya bekerja secara fungsional, tetapi juga mampu memberikan pengalaman yang nyaman bagi penggunanya.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = TextSoftSecondary,
+                        color = secondaryText,
                         textAlign = TextAlign.Justify,
                         lineHeight = 24.sp
                     )
@@ -178,7 +207,7 @@ fun AboutScreen(
                     Text(
                         text = "Pengembangan aplikasi ini menjadi titik pertemuan antara dua hal yang berbeda namun saling melengkapi, yaitu desain visual dan pemrograman. Pendekatan ini memungkinkan aplikasi tidak hanya berfungsi dengan baik, tetapi juga memiliki tampilan yang terarah dan konsisten.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = TextSoftSecondary,
+                        color = secondaryText,
                         textAlign = TextAlign.Justify,
                         lineHeight = 24.sp
                     )
@@ -188,7 +217,7 @@ fun AboutScreen(
                     Text(
                         text = "Aplikasi ini dikembangkan oleh Muhammad Adi, yang dikenal sebagai Ady Vandorez, seorang desainer grafis sekaligus vector portrait artist asal Bondowoso, Jawa Timur. Selain aktif di dunia desain, Ady juga mendalami bidang pemrograman sebagai mahasiswa Informatika di Universitas Nurul Jadid, Paiton.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = TextSoftSecondary,
+                        color = secondaryText,
                         textAlign = TextAlign.Justify,
                         lineHeight = 24.sp
                     )
@@ -198,7 +227,7 @@ fun AboutScreen(
                     Text(
                         text = "Dengan menggabungkan kemampuan desain dan logika pemrograman, Ady berupaya menciptakan aplikasi yang tidak hanya berguna, tetapi juga memiliki identitas visual yang kuat. Melalui aplikasi ini, ia mencoba menghadirkan solusi yang relevan sekaligus menjadi representasi dari proses belajar, konsistensi, dan perkembangan yang ia jalani.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = TextSoftSecondary,
+                        color = secondaryText,
                         textAlign = TextAlign.Justify,
                         lineHeight = 24.sp
                     )
@@ -211,14 +240,14 @@ fun AboutScreen(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(32.dp),
-                colors = CardDefaults.cardColors(containerColor = DarkSurface),
+                colors = CardDefaults.cardColors(containerColor = cardColor),
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
             ) {
                 Column(modifier = Modifier.padding(24.dp)) {
                     Text(
                         text = "Terhubung dengan Saya",
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                        color = WhiteSoft
+                        color = cardOnSurface
                     )
                     
                     Spacer(modifier = Modifier.height(24.dp))
@@ -230,17 +259,26 @@ fun AboutScreen(
                         SocialIcon(
                             name = "Blogger",
                             icon = Icons.Default.Language,
-                            onClick = { openUrl(context, "https://adyvandorez.blogspot.com") }
+                            onClick = { openUrl(context, "https://adyvandorez.blogspot.com") },
+                            accentColor = accentColor,
+                            boxBg = boxBg,
+                            textColor = secondaryText
                         )
                         SocialIcon(
                             name = "GitHub",
                             icon = Icons.Default.Code, 
-                            onClick = { openUrl(context, "https://github.com/adyvandorez") }
+                            onClick = { openUrl(context, "https://github.com/adyvandorez") },
+                            accentColor = accentColor,
+                            boxBg = boxBg,
+                            textColor = secondaryText
                         )
                         SocialIcon(
                             name = "Linktree",
                             icon = Icons.Default.Link,
-                            onClick = { openUrl(context, "https://linktr.ee/Ady_vandorez") }
+                            onClick = { openUrl(context, "https://linktr.ee/Ady_vandorez") },
+                            accentColor = accentColor,
+                            boxBg = boxBg,
+                            textColor = secondaryText
                         )
                     }
                 }
@@ -251,7 +289,7 @@ fun AboutScreen(
             Text(
                 text = "Versi 1.2.0 (Stable)",
                 style = MaterialTheme.typography.labelSmall,
-                color = TextSoftSecondary.copy(alpha = 0.5f)
+                color = secondaryText.copy(alpha = 0.5f)
             )
             
             Spacer(modifier = Modifier.height(32.dp))
@@ -263,7 +301,10 @@ fun AboutScreen(
 fun SocialIcon(
     name: String,
     icon: androidx.compose.ui.graphics.vector.ImageVector,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    accentColor: Color = GoldAccent,
+    boxBg: Color = DarkSurfaceVariant,
+    textColor: Color = TextSoftSecondary
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -273,13 +314,13 @@ fun SocialIcon(
             modifier = Modifier
                 .size(60.dp)
                 .clip(CircleShape)
-                .background(DarkSurfaceVariant),
+                .background(boxBg),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = name,
-                tint = GoldAccent,
+                tint = accentColor,
                 modifier = Modifier.size(30.dp)
             )
         }
@@ -287,7 +328,7 @@ fun SocialIcon(
         Text(
             text = name,
             style = MaterialTheme.typography.labelSmall,
-            color = TextSoftSecondary
+            color = textColor
         )
     }
 }

@@ -24,7 +24,9 @@ fun JadwalCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
+    val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
     
     Card(
         modifier = modifier
@@ -46,8 +48,12 @@ fun JadwalCard(
                     .width(90.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(
-                        if (isYellowTheme) MaterialTheme.colorScheme.primaryContainer 
-                        else MaterialTheme.colorScheme.surfaceVariant
+                        when {
+                            isYellowTheme -> YellowCapsuleBg
+                            isPurpleTheme -> PurpleBubble
+                            isPinkTheme -> PinkSurfaceVariant
+                            else -> MaterialTheme.colorScheme.surfaceVariant
+                        }
                     )
                     .padding(vertical = 10.dp),
                 contentAlignment = Alignment.Center
@@ -56,22 +62,34 @@ fun JadwalCard(
                     Icon(
                         imageVector = Icons.Default.AccessTime,
                         contentDescription = null,
-                        tint = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer 
-                               else MaterialTheme.colorScheme.tertiary,
+                        tint = when {
+                            isYellowTheme -> MaterialTheme.colorScheme.onPrimaryContainer 
+                            isPurpleTheme -> PurpleTextSecondary
+                            isPinkTheme -> PinkPrimary
+                            else -> MaterialTheme.colorScheme.tertiary
+                        },
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = jadwal.waktuMulai,
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                        color = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer 
-                                else MaterialTheme.colorScheme.tertiary
+                        color = when {
+                            isYellowTheme -> MaterialTheme.colorScheme.onPrimaryContainer 
+                            isPurpleTheme -> PurpleTextSecondary
+                            isPinkTheme -> PinkPrimary
+                            else -> MaterialTheme.colorScheme.tertiary
+                        }
                     )
                     Text(
                         text = jadwal.waktuSelesai,
                         style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                        color = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer 
-                                else MaterialTheme.colorScheme.tertiary
+                        color = when {
+                            isYellowTheme -> MaterialTheme.colorScheme.onPrimaryContainer 
+                            isPurpleTheme -> PurpleTextSecondary
+                            isPinkTheme -> PinkPrimary
+                            else -> MaterialTheme.colorScheme.tertiary
+                        }
                     )
                 }
             }

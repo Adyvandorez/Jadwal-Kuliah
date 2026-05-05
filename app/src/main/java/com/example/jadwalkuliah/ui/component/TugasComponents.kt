@@ -42,6 +42,10 @@ fun TugasCard(
     val countdown = DateTimeUtils.getCountdown(tugas.deadline)
     val isOverdue = DateTimeUtils.isOverdue(tugas.deadline) && !tugas.isCompleted
 
+    val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -110,11 +114,20 @@ fun TugasCard(
 
                 CategoryBadge(
                     text = if (tugas.kategori.isNotEmpty()) tugas.kategori else "Tugas",
-                    containerColor = if (MaterialTheme.colorScheme.background == LightBackground) 
-                        MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                    contentColor = if (MaterialTheme.colorScheme.background == LightBackground) 
-                        MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.tertiary
+                    containerColor = when {
+                        isYellowTheme -> YellowCapsuleBg
+                        isPurpleTheme -> PurpleBubble
+                        isPinkTheme -> PinkSurfaceVariant
+                        else -> MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                    },
+                    contentColor = when {
+                        isYellowTheme -> MaterialTheme.colorScheme.onPrimaryContainer
+                        isPurpleTheme -> PurpleTextSecondary
+                        isPinkTheme -> PinkPrimary
+                        else -> MaterialTheme.colorScheme.tertiary
+                    }
                 )
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 if (tugas.deskripsi.isNotEmpty()) {
@@ -222,11 +235,13 @@ fun AttachmentPill(
         else -> Icons.AutoMirrored.Filled.InsertDriveFile to MaterialTheme.colorScheme.onSurfaceVariant
     }
 
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+
     val surfaceModifier = if (onClick != null) modifier.clickable { onClick() } else modifier
 
     Surface(
         modifier = surfaceModifier,
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+        color = if (isPurpleTheme) PurpleBubble else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
         shape = CircleShape,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f))
     ) {
@@ -441,11 +456,17 @@ fun DateDisplay(
 ) {
     if (date == null) return
     
-    val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
+    val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
     
     Surface(
-        color = if (isYellowTheme) MaterialTheme.colorScheme.primaryContainer 
-                else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+        color = when {
+            isYellowTheme -> YellowCapsuleBg
+            isPurpleTheme -> PurpleBubble
+            isPinkTheme -> PinkSurfaceVariant
+            else -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+        },
         shape = RoundedCornerShape(12.dp),
         modifier = modifier
     ) {
@@ -457,15 +478,23 @@ fun DateDisplay(
             Icon(
                 imageVector = Icons.Default.CalendarToday,
                 contentDescription = null,
-                tint = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer 
-                       else MaterialTheme.colorScheme.primary,
+                tint = when {
+                    isYellowTheme -> MaterialTheme.colorScheme.onPrimaryContainer
+                    isPurpleTheme -> PurpleTextSecondary
+                    isPinkTheme -> PinkPrimary
+                    else -> MaterialTheme.colorScheme.primary
+                },
                 modifier = Modifier.size(18.dp)
             )
             Text(
                 text = DateTimeUtils.formatDateOnly(date),
                 style = MaterialTheme.typography.labelSmall,
-                color = if (isYellowTheme) MaterialTheme.colorScheme.onPrimaryContainer 
-                        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                color = when {
+                    isYellowTheme -> MaterialTheme.colorScheme.onPrimaryContainer
+                    isPurpleTheme -> PurpleTextSecondary
+                    isPinkTheme -> PinkPrimary
+                    else -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                }
             )
         }
     }

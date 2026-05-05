@@ -164,16 +164,28 @@ fun PengingatScreen(
 
 @Composable
 fun PengingatHeader(title: String, onBack: () -> Unit) {
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
+    val headerTextColor = when {
+        isPurpleTheme -> PurpleIconActive
+        isPinkTheme -> PinkOnPrimaryContainer
+        else -> MaterialTheme.colorScheme.onPrimary
+    }
+    
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primaryContainer,
-                        MaterialTheme.colorScheme.primary
-                    )
+                    colors = when {
+                        isPurpleTheme -> listOf(PurpleHeader, PurpleHeader)
+                        isPinkTheme -> listOf(PinkPrimaryContainer, PinkPrimaryContainer)
+                        else -> listOf(
+                            MaterialTheme.colorScheme.primaryContainer,
+                            MaterialTheme.colorScheme.primary
+                        )
+                    }
                 ),
                 shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp)
             )
@@ -188,19 +200,19 @@ fun PengingatHeader(title: String, onBack: () -> Unit) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = MaterialTheme.colorScheme.onPrimary,
+                    tint = headerTextColor,
                     modifier = Modifier.size(28.dp)
                 )
             }
             Text(
                 text = title,
                 style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.onPrimary
+                color = headerTextColor
             )
             Text(
                 text = "Atur pengingat rutin harian kamu!",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
+                color = headerTextColor.copy(alpha = 0.7f)
             )
         }
     }
@@ -214,6 +226,10 @@ fun PengingatItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
+    
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -234,13 +250,24 @@ fun PengingatItem(
                 modifier = Modifier
                     .size(52.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                    .background(
+                        when {
+                            isYellowTheme -> YellowCapsuleBg
+                            isPurpleTheme -> PurpleBubble
+                            isPinkTheme -> PinkSurfaceVariant
+                            else -> MaterialTheme.colorScheme.surfaceVariant
+                        }
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = if (pengingat.judul.lowercase().contains("makan")) Icons.Default.Restaurant else Icons.Default.Notifications,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.tertiary,
+                    tint = when {
+                        isPurpleTheme -> PurpleTextSecondary
+                        isPinkTheme -> PinkPrimary
+                        else -> MaterialTheme.colorScheme.tertiary
+                    },
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -257,7 +284,11 @@ fun PengingatItem(
                     Text(
                         text = pengingat.waktu,
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                        color = MaterialTheme.colorScheme.tertiary
+                        color = when {
+                            isPurpleTheme -> PurpleTextSecondary
+                            isPinkTheme -> PinkPrimary
+                            else -> MaterialTheme.colorScheme.tertiary
+                        }
                     )
                     Text(
                         text = " • ${if (pengingat.tipeUlang == "Daily") "Harian" else if (pengingat.tipeUlang == "Sekali") "Sekali" else "Kustom"}",
@@ -307,6 +338,9 @@ fun AddEditPengingatDialog(
     
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
+    
+    val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
 
     Dialog(onDismissRequest = onDismiss) {
         Surface(
@@ -345,9 +379,14 @@ fun AddEditPengingatDialog(
 
                 Button(
                     onClick = {
+                        val dialogTheme = when {
+                            isPurpleTheme -> R.style.CustomPickerDialogThemePurple
+                            isYellowTheme -> R.style.CustomPickerDialogTheme
+                            else -> R.style.CustomPickerDialogThemeDark
+                        }
                         TimePickerDialog(
                             context,
-                            R.style.CustomPickerDialogTheme,
+                            dialogTheme,
                             { _, h, m -> waktu = String.format(Locale.getDefault(), "%02d:%02d", h, m) },
                             calendar.get(Calendar.HOUR_OF_DAY),
                             calendar.get(Calendar.MINUTE),
@@ -356,12 +395,21 @@ fun AddEditPengingatDialog(
                     },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
+                    )
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.AccessTime, contentDescription = null, tint = MaterialTheme.colorScheme.tertiary)
+                        Icon(
+                            Icons.Default.AccessTime, 
+                            contentDescription = null, 
+                            tint = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.tertiary
+                        )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Waktu: $waktu", color = MaterialTheme.colorScheme.tertiary)
+                        Text(
+                            "Waktu: $waktu", 
+                            color = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.tertiary
+                        )
                     }
                 }
 

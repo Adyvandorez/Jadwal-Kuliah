@@ -85,6 +85,10 @@ fun TugasScreen(
                 .fillMaxSize()
         ) {
             // Tab Filter Pill
+            val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+            val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+            val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
+            
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -95,7 +99,15 @@ fun TugasScreen(
                     val isSelected = pagerState.currentPage == index
                     Surface(
                         onClick = { scope.launch { pagerState.scrollToPage(index) } },
-                        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
+                        color = if (isSelected) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            when {
+                                isPurpleTheme -> PurpleBubble
+                                isPinkTheme -> PinkSurfaceVariant
+                                else -> MaterialTheme.colorScheme.surfaceVariant
+                            }
+                        },
                         shape = RoundedCornerShape(20.dp),
                         modifier = Modifier.height(36.dp)
                     ) {
@@ -106,7 +118,19 @@ fun TugasScreen(
                             Text(
                                 text = title,
                                 style = MaterialTheme.typography.labelLarge,
-                                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                                color = if (isSelected) {
+                                    when {
+                                        isPurpleTheme -> PurpleIconActive
+                                        isPinkTheme -> PinkOnPrimaryContainer
+                                        else -> MaterialTheme.colorScheme.onPrimary
+                                    }
+                                } else {
+                                    when {
+                                        isPurpleTheme -> PurpleTextSecondary
+                                        isPinkTheme -> PinkTextSecondary
+                                        else -> MaterialTheme.colorScheme.onSurfaceVariant
+                                    }
+                                },
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                             )
                         }
@@ -235,6 +259,7 @@ fun TugasScreen(
 
 @Composable
 fun SectionHeader(title: String) {
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -250,7 +275,7 @@ fun SectionHeader(title: String) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = if (isPurpleTheme) PurpleTextPrimary else MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
@@ -272,16 +297,28 @@ fun HeaderSection(
     isSearching: Boolean,
     onSearchToggle: (Boolean) -> Unit
 ) {
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
+    val headerTextColor = when {
+        isPurpleTheme -> PurpleIconActive
+        isPinkTheme -> PinkOnPrimaryContainer
+        else -> MaterialTheme.colorScheme.onPrimary
+    }
+    
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primaryContainer,
-                        MaterialTheme.colorScheme.primary
-                    )
+                    colors = when {
+                        isPurpleTheme -> listOf(PurpleHeader, PurpleHeader)
+                        isPinkTheme -> listOf(PinkPrimaryContainer, PinkPrimaryContainer)
+                        else -> listOf(
+                            MaterialTheme.colorScheme.primaryContainer,
+                            MaterialTheme.colorScheme.primary
+                        )
+                    }
                 ),
                 shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp)
             )
@@ -299,21 +336,21 @@ fun HeaderSection(
                     Text(
                         "Cari...", 
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f) 
+                        color = headerTextColor.copy(alpha = 0.5f) 
                     ) 
                 },
-                leadingIcon = { Icon(Icons.Default.Search, null, tint = MaterialTheme.colorScheme.onPrimary) },
+                leadingIcon = { Icon(Icons.Default.Search, null, tint = headerTextColor) },
                 trailingIcon = {
                     IconButton(onClick = { onSearchToggle(false) }) {
-                        Icon(Icons.Default.Close, null, tint = MaterialTheme.colorScheme.onPrimary)
+                        Icon(Icons.Default.Close, null, tint = headerTextColor)
                     }
                 },
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.1f),
-                    unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.1f),
-                    focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                    cursorColor = MaterialTheme.colorScheme.onPrimary,
+                    focusedContainerColor = headerTextColor.copy(alpha = 0.1f),
+                    unfocusedContainerColor = headerTextColor.copy(alpha = 0.1f),
+                    focusedTextColor = headerTextColor,
+                    unfocusedTextColor = headerTextColor,
+                    cursorColor = headerTextColor,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
                 ),
@@ -331,23 +368,23 @@ fun HeaderSection(
                     Text(
                         text = title,
                         style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = headerTextColor
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = subtitle,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+                        color = headerTextColor.copy(alpha = 0.8f)
                     )
                 }
                 IconButton(
                     onClick = { onSearchToggle(true) },
                     modifier = Modifier
                         .padding(bottom = 4.dp)
-                        .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.1f), CircleShape)
+                        .background(headerTextColor.copy(alpha = 0.1f), CircleShape)
                         .size(40.dp)
                 ) {
-                    Icon(Icons.Default.Search, contentDescription = "Search", tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(24.dp))
+                    Icon(Icons.Default.Search, contentDescription = "Search", tint = headerTextColor, modifier = Modifier.size(24.dp))
                 }
             }
         }
@@ -371,6 +408,10 @@ fun CatatanItem(
         ) {
             Column(modifier = Modifier.padding(20.dp)) {
                 Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+                    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+                    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
+                    
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = item.judul,
@@ -382,8 +423,18 @@ fun CatatanItem(
                         
                         CategoryBadge(
                             text = "Catatan",
-                            containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                            contentColor = MaterialTheme.colorScheme.tertiary
+                            containerColor = when {
+                                isYellowTheme -> YellowCapsuleBg
+                                isPurpleTheme -> PurpleBubble
+                                isPinkTheme -> PinkSurfaceVariant
+                                else -> MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                            },
+                            contentColor = when {
+                                isYellowTheme -> MaterialTheme.colorScheme.onPrimaryContainer
+                                isPurpleTheme -> PurpleTextSecondary
+                                isPinkTheme -> PinkPrimary
+                                else -> MaterialTheme.colorScheme.tertiary
+                            }
                         )
                     }
 

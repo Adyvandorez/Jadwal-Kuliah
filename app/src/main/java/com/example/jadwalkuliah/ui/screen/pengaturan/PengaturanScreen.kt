@@ -38,6 +38,16 @@ fun PengaturanScreen(
     var notificationsEnabled by remember { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
+    
+    val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
+    val iconBoxBg = when {
+        isYellowTheme -> YellowCapsuleBg
+        isPurpleTheme -> PurpleBubble
+        isPinkTheme -> PinkSurfaceVariant
+        else -> MaterialTheme.colorScheme.surfaceVariant
+    }
 
     LaunchedEffect(Unit) {
         scrollState.scrollTo(0)
@@ -85,7 +95,7 @@ fun PengaturanScreen(
                             modifier = Modifier
                                 .size(56.dp)
                                 .clip(RoundedCornerShape(20.dp))
-                                .background(MaterialTheme.colorScheme.surfaceVariant),
+                                .background(iconBoxBg),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
@@ -142,7 +152,7 @@ fun PengaturanScreen(
                                 modifier = Modifier
                                     .size(56.dp)
                                     .clip(RoundedCornerShape(20.dp))
-                                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                                    .background(iconBoxBg),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
@@ -229,7 +239,7 @@ fun PengaturanScreen(
                                 modifier = Modifier
                                     .size(56.dp)
                                     .clip(RoundedCornerShape(20.dp))
-                                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                                    .background(iconBoxBg),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
@@ -271,7 +281,7 @@ fun PengaturanScreen(
                                 modifier = Modifier
                                     .size(56.dp)
                                     .clip(RoundedCornerShape(20.dp))
-                                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                                    .background(iconBoxBg),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
@@ -321,7 +331,7 @@ fun PengaturanScreen(
                             Box(
                                 modifier = Modifier
                                     .size(40.dp)
-                                    .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(12.dp)),
+                                    .background(iconBoxBg, RoundedCornerShape(12.dp)),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(Icons.Default.Info, contentDescription = null, tint = MaterialTheme.colorScheme.tertiary, modifier = Modifier.size(24.dp))
@@ -352,16 +362,22 @@ fun PengaturanScreen(
 
 @Composable
 fun HeaderSection(title: String) {
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primaryContainer,
-                        MaterialTheme.colorScheme.primary
-                    )
+                    colors = when {
+                        isPurpleTheme -> listOf(PurpleHeader, PurpleHeader)
+                        isPinkTheme -> listOf(PinkPrimaryContainer, PinkPrimaryContainer)
+                        else -> listOf(
+                            MaterialTheme.colorScheme.primaryContainer,
+                            MaterialTheme.colorScheme.primary
+                        )
+                    }
                 ),
                 shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp)
             )
@@ -372,13 +388,21 @@ fun HeaderSection(title: String) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.onPrimary
+                color = when {
+                    isPurpleTheme -> PurpleIconActive
+                    isPinkTheme -> PinkOnPrimaryContainer
+                    else -> MaterialTheme.colorScheme.onPrimary
+                }
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "Sesuaikan pengalaman aplikasi kamu!",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+                color = (when {
+                    isPurpleTheme -> PurpleIconActive
+                    isPinkTheme -> PinkOnPrimaryContainer
+                    else -> MaterialTheme.colorScheme.onPrimary
+                }).copy(alpha = 0.8f)
             )
         }
     }

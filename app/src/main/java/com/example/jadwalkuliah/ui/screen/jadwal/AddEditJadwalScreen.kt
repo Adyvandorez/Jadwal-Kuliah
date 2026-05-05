@@ -41,7 +41,8 @@ fun AddEditJadwalScreen(
     val hariList = listOf("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu")
     var expanded by remember { mutableStateOf(false) }
     
-    val isYellowTheme = MaterialTheme.colorScheme.background == LightBackground
+    val isYellowTheme = MaterialTheme.colorScheme.primary == LightPrimary
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
     
     val context = LocalContext.current
     val alarmScheduler = remember { AlarmScheduler(context) }
@@ -87,9 +88,9 @@ fun AddEditJadwalScreen(
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
+                    unfocusedBorderColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
                     focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    unfocusedLabelColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedLabelColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
                     focusedTextColor = MaterialTheme.colorScheme.onSurface,
                     unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 )
@@ -103,9 +104,9 @@ fun AddEditJadwalScreen(
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
+                    unfocusedBorderColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
                     focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    unfocusedLabelColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedLabelColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
                     focusedTextColor = MaterialTheme.colorScheme.onSurface,
                     unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 )
@@ -125,9 +126,9 @@ fun AddEditJadwalScreen(
                     shape = RoundedCornerShape(20.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
+                        unfocusedBorderColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
                         focusedLabelColor = MaterialTheme.colorScheme.primary,
-                        unfocusedLabelColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                        unfocusedLabelColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
                         focusedTextColor = MaterialTheme.colorScheme.onSurface,
                         unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                     )
@@ -135,7 +136,7 @@ fun AddEditJadwalScreen(
                 ExposedDropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
-                    modifier = Modifier.background(if (isYellowTheme) LightBackground else MaterialTheme.colorScheme.surface)
+                    modifier = Modifier.background(if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.surface)
                 ) {
                     hariList.forEach { selectionOption ->
                         DropdownMenuItem(
@@ -161,9 +162,9 @@ fun AddEditJadwalScreen(
                         shape = RoundedCornerShape(20.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
+                            unfocusedBorderColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
                             focusedLabelColor = MaterialTheme.colorScheme.primary,
-                            unfocusedLabelColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                            unfocusedLabelColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
                             focusedTextColor = MaterialTheme.colorScheme.onSurface,
                             unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                         )
@@ -175,9 +176,14 @@ fun AddEditJadwalScreen(
                                 val timeParts = waktuMulai.split(":")
                                 val h = if (timeParts.size == 2) timeParts[0].toIntOrNull() ?: 8 else 8
                                 val m = if (timeParts.size == 2) timeParts[1].toIntOrNull() ?: 0 else 0
+                                val dialogTheme = when {
+                                    isPurpleTheme -> R.style.CustomPickerDialogThemePurple
+                                    isYellowTheme -> R.style.CustomPickerDialogTheme
+                                    else -> R.style.CustomPickerDialogThemeDark
+                                }
                                 TimePickerDialog(
                                     context,
-                                    R.style.CustomPickerDialogTheme,
+                                    dialogTheme,
                                     { _, hour, minute ->
                                         waktuMulai = String.format(Locale.getDefault(), "%02d:%02d", hour, minute)
                                     },
@@ -198,9 +204,9 @@ fun AddEditJadwalScreen(
                         shape = RoundedCornerShape(20.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
+                            unfocusedBorderColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
                             focusedLabelColor = MaterialTheme.colorScheme.primary,
-                            unfocusedLabelColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                            unfocusedLabelColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
                             focusedTextColor = MaterialTheme.colorScheme.onSurface,
                             unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                         )
@@ -212,9 +218,14 @@ fun AddEditJadwalScreen(
                                 val timeParts = waktuSelesai.split(":")
                                 val h = if (timeParts.size == 2) timeParts[0].toIntOrNull() ?: 10 else 10
                                 val m = if (timeParts.size == 2) timeParts[1].toIntOrNull() ?: 0 else 0
+                                val dialogTheme = when {
+                                    isPurpleTheme -> R.style.CustomPickerDialogThemePurple
+                                    isYellowTheme -> R.style.CustomPickerDialogTheme
+                                    else -> R.style.CustomPickerDialogThemeDark
+                                }
                                 TimePickerDialog(
                                     context,
-                                    R.style.CustomPickerDialogTheme,
+                                    dialogTheme,
                                     { _, hour, minute ->
                                         waktuSelesai = String.format(Locale.getDefault(), "%02d:%02d", hour, minute)
                                     },
@@ -233,9 +244,9 @@ fun AddEditJadwalScreen(
                 shape = RoundedCornerShape(20.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
+                    unfocusedBorderColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
                     focusedLabelColor = MaterialTheme.colorScheme.primary,
-                    unfocusedLabelColor = if (isYellowTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedLabelColor = if (isYellowTheme || isPurpleTheme) MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
                     focusedTextColor = MaterialTheme.colorScheme.onSurface,
                     unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 )

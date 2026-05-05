@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.jadwalkuliah.ui.theme.WhiteSoft
+import com.example.jadwalkuliah.ui.theme.*
 
 @Composable
 fun SimpleHeader(
@@ -19,6 +19,9 @@ fun SimpleHeader(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isPurpleTheme = MaterialTheme.colorScheme.primary == PurplePrimary
+    val isPinkTheme = MaterialTheme.colorScheme.primary == PinkPrimary
+    
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -30,7 +33,11 @@ fun SimpleHeader(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Kembali",
-                tint = MaterialTheme.colorScheme.primary
+                tint = when {
+                    isPurpleTheme -> PurpleTextPrimary
+                    isPinkTheme -> PinkPrimary
+                    else -> MaterialTheme.colorScheme.primary
+                }
             )
         }
         
@@ -42,7 +49,11 @@ fun SimpleHeader(
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             ),
-            color = MaterialTheme.colorScheme.primary
+            color = when {
+                isPurpleTheme -> PurpleTextPrimary
+                isPinkTheme -> PinkPrimary
+                else -> MaterialTheme.colorScheme.primary
+            }
         )
     }
 }
